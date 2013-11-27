@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="jobApp" ng-controller="JobCtrl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{machineName}} Job Details</title>
+    <link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+    <link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="static/js/common.js"></script>
+    <script src="static/js/jobs/allJobs.js"></script>
+    <script src="static/js/urlprovider.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="static/css/iu.css" rel="stylesheet">
+</head>
+
+<body>
+  <div ng-include src="'static/topbars.html'"></div>
+
+  <div class="well container-fluid">
+    <div class="row-fluid">
+        <div class="well-iu span12">
+            <div class="well-heading">{{machineName}} Job Details<a href="#" onclick="window.location.reload(true);" class="refresh">Refresh</a></div>
+            <div>
+                <table class="table table-hover table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th><a href="#" ng-click="predicate = 'jobid'; reverse=!reverse">Job ID</a> <i ng-show="predicate=='jobid' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='jobid' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'name'; reverse=!reverse">Name</a> <i ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'username'; reverse=!reverse">Run By User</a> <i ng-show="predicate=='username' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='username' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'state'; reverse=!reverse">Job State</a> <i ng-show="predicate=='state' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='state' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'startDate'; reverse=!reverse">Start Date</a> <i ng-show="predicate=='startDate' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='startDate' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'submitDate'; reverse=!reverse">Submit Date</a> <i ng-show="predicate=='submitDate' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='submitDate' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'walltimesecs'; reverse=!reverse">Walltime</a> <i ng-show="predicate=='walltimesecs' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='walltimesecs' && !reverse" class="icon-arrow-down"></i></th>
+                        <th><a href="#" ng-click="predicate = 'runtimesecs'; reverse=!reverse">Job Runtime</a> <i ng-show="predicate=='runtimesecs' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='runtimesecs' && !reverse" class="icon-arrow-down"></i></th>
+                    </tr>
+
+                    <tr><th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.jobid"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.name"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.username"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.state"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.startDate"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.submitDate"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.walltime"/></th>
+                        <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.runtime"/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-hide="hideLoader"></tr>
+                    <tr ng-hide="hideLoader"><td colspan="8"><div class="loading-iu"></div></td></tr>
+                    <tr ng-show="showError"></tr>
+                    <tr ng-show="showError"><td colspan="8"><div class="alert alert-error">There was an error loading the job data !</div></td></tr>
+                    <tr ng-show="jobs.length<1"></tr>
+                    <tr ng-show="jobs.length<1"><td colspan="8"><div>No jobs running currently !</div></td></tr>
+                    <tr ng-click="showDetails(job)" href="#myModal" role="button" data-toggle="modal" ng-repeat="job in jobs | filter:filterText | orderBy:predicate:reverse">
+                        <td>{{job.jobid}}</td>
+                        <td style="max-width:100px; word-wrap: break-word;">{{job.name}}</td>
+                        <td>{{job.username}}</td>
+                        <td>{{job.state}}</td>
+                        <td>{{job.startDate | date:'medium'}}</td>
+                        <td>{{job.submitDate | date:'medium'}}</td>
+                        <td>{{job.walltime}}</td>
+                        <td>{{job.runtime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="myModalLabel">Job Details</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row-fluid"><div class="span4"><strong>Job ID</strong></div><div> {{item.jobid}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Name</strong></div><div> {{item.name}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Run By User</strong></div><div> {{item.username}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Job State</strong></div><div> {{item.state}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Start Date</strong></div><div> {{item.startDate | date:'medium'}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Submit Date</strong></div><div> {{item.submitDate | date:'medium'}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Walltime</strong></div><div> {{item.walltime}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Job Runtime</strong></div><div> {{item.runtime}}</div></div>
+                <div class="row-fluid"><div class="span4"><strong>Running Nodes</strong></div><div><span ng-repeat="node in item.nodes">{{node}} </span></div></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+
+        </div>
+    </div>
+  </div>
+
+  <div ng-include src="'static/footer.html'"></div>
+</body>
+</html>

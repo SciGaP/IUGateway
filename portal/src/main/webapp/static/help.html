@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html ng-app="helpApp">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>Help</title>
+		<link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+		<link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+	
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		<script src="static/js/common.js"></script>
+
+		<!-- Bootstrap -->
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+ 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet"> 
+		<link href="static/css/iu.css" rel="stylesheet">
+
+	</head>
+	
+	<body>
+	  <div ng-include src="'static/topbars.html'"></div>
+	  <div class="row-fluid">
+		<div class="well span12">
+		<!-- Help -->		
+		<section id="help">
+		  <div class="row-fluid">
+			<div class="well-iu span12">
+			  <div class="well-heading">Getting Help</div>
+			  <ul>
+				 <li><b>Accounts:</b> To create new accounts/manage existing accounts on HPCs, go to <a href="https://itaccounts.iu.edu/" target="_blank">https://itaccounts.iu.edu/ </a></li>
+				 <li><b>Knowledge Base:</b> Questions on Information Technology at IU, go to <a href="https://kb.iu.edu/" target="_blank">https://kb.iu.edu/</a></li>
+			  </ul>
+			</div>
+		  </div>
+		</section>
+		
+		<!-- IU CI -->
+		<section id="iuci">
+		  <div class="row-fluid">
+			<div class="well-iu span12">
+			  <div class="well-heading">IU Cyberinfrastructure</div>
+			  <ul>
+				 <li><b>UITS Research Technologies:</b> UITS Research Technologies (RT) run IU's computing and storage resources, provide expertise in visualization and analytics, help build scientific and scholarly communities, and support outreach and training.  See the <a href="http://rt.uits.iu.edu/" target="_blank">Research Technologies website</a> for more information. </li>
+				 <li><b>Computational Systems:</b> More information on Big Red II, Quarry, Mason, Rockhopper, and Big Red is available from <a href="http://rt.uits.iu.edu/ci/systems/index.php" target="_blank">http://rt.uits.iu.edu/ci/systems/index.php</a></li>
+				 <li><b>Research Storage:</b> More information on the Data Capacitor, the Scholarly Data Archive, the Research File System, and the Research Database Complex is available from <a href="http://rt.uits.iu.edu/ci/storage/index.php" target="_blank">http://rt.uits.iu.edu/ci/storage/index.php</a></li>
+			  </ul>
+			</div>
+		  </div>
+		</section>
+		
+		<!-- Science Gateways -->
+		<section id="gateway">
+		  <div class="row-fluid">
+			<div class="well-iu span12">
+			  <div class="well-heading">IU Science Gateways</div>
+			  <ul>
+				 <li><b>NCGAS Galaxy Portal:</b> The IU-led NCGAS project provides support for four different Galaxy instances for bioinformatics compuations. See <a href="http://ncgas.org/galaxy.php" target="_blank">Galaxy Services </a> for more information. </li>
+				 <li><b>QuakeSim Portal:</b> IU is a participant in the QuakeSim earthquake-modeling science gateway project. The portal is available at <a href="http://www.quakesim.org" target="_blank">http://www.quakesim.org</a>.</li>
+				 <li><b>Structural Protein-Ligand Interactome (SPLINTER) Portal:</b> SPLINTER is a computational resource to enable chemical genomics and drug discovery.  See the <a href="http://biodrugscreen.org" target="_blank">SPLINTER Start Page </a> for more information.</li>
+				 <li><b>Science Gateways:</b> More information on the NSF-funded <a href="http://www.xsede.org" target="_blank">XSEDE</a> Science Gateway program is available <a href="http://www.xsede.org/gateways-overview">here</a>. </li>
+				 <li><b>Science Gateway Hosting:</b> The NSF XSEDE program allocates free Virtual Machine hosting for science gateways.  For more information, see <a href="https://www.xsede.org/resources/overview?p_p_id=rdr_WAR_rdrportlet_INSTANCE_7Vbz&p_p_lifecycle=1&p_p_state=normal&p_p_mode=view&p_p_col_id=column-2&p_p_col_pos=1&p_p_col_count=2&_rdr_WAR_rdrportlet_INSTANCE_7Vbz_RESOURCE_ID=quarry.iu.teragrid.org" target="_blank">here.</a></li>
+			  </ul>
+			  Do you have a science gateway that you would like to list here, or would you like more information
+			  on creating a science gateway?  <a href="contactus">Contact </a> the Science Gateway Group.
+			</div>
+		  </div>
+		</section>
+		 </div>
+	  </div>
+		
+	<div ng-include src="'static/footer.html'"></div>
+		<script type="text/javascript">
+			angular.module("helpApp",["user"]);
+			$(document).ready(function() {
+				setTimeout(function() {
+					$("#helpLink").parent().addClass('active');
+				},50);
+			});
+		</script>
+	</body>
+	
+	
+</html>

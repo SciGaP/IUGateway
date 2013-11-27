@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html ng-app="chartApp" ng-controller="ChartCtrl">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>Charts</title>
+		<link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+		<link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+	
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		<script src="static/js/library/highcharts.js"></script>
+		<!--  Not the official bootstrap datepicker -->
+		<script src="static/js/library/bootstrap-datepicker.js"></script>
+		<script src="static/js/common.js"></script>
+		<script src="static/js/charts.js"></script>
+
+			
+		<!-- Bootstrap -->
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+ 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet"> 
+		<link href="static/css/iu.css" rel="stylesheet">
+		<link href="static/css/datepicker.css" rel="stylesheet">
+
+	</head>
+	
+	<body>
+		<div ng-include src="'static/topbars.html'"></div>
+		
+		<div class="row-fluid">
+		  <div class="well span12">
+		  
+		    <div class="span2 bs-docs-sidebar">
+		      <div id="dateInputs">
+		      <ul class="nav nav-list bs-docs-sidenav">
+	          	<li class="nav-header">User Charts</li>
+	          	<!--<li><a href="#uniqueUsers">Unique Users </a></li>-->
+	          	<li><a href="#jobsPerMonth">User Jobs per month </a></li>
+	          	<li><a href="#rwPerMonth">Read Writes per month </a></li>
+	          	<li><a href="#cHPerMonth">Core Hours Used per month </a></li>
+	          	<li><a href="#qtPerMonth">Median Queue time per month </a></li>
+	          	<li><a href="#rfsFilesPerMonth">RFS Files per month </a></li>
+	          	<li><a href="#rfsGBPerMonth">RFS GB per month </a></li>
+	          	<li><a href="#hpssFilesPerMonth">HPSS Files per month </a></li>
+	          	<li><a href="#hpssGBPerMonth">HPSS GB per month </a></li>
+	          	<li class="nav-header">Charts Period</li>
+	          	<li><div><label>Start Date</label>
+		    	<div class="input-append date" id="startDate" data-date="01-01-2013" data-date-format="mm-dd-yyyy">
+  				  <input style="width:100px;" id="startDateText" type="text">
+  				  <span class="add-on"><i class="icon-th"></i></span>
+				</div>
+				<label>End Date</label>
+				<div class="input-append date" id="endDate" data-date="01-02-2013" data-date-format="mm-dd-yyyy">
+  				  <input style="width:100px;" id="endDateText" type="text">
+  				  <span class="add-on"><i class="icon-th"></i></span>
+				</div>
+				<div>
+				  <button ng-click="update()" class="btn">Update Charts</button>
+				</div></div></li>
+	          </ul>
+		    	
+			  </div>
+		    </div>
+		    <div class="span10">
+		    	<!--<section id="uniqueUsers">
+		      	<div class="row-fluid">
+		  	  	  <div class="well-iu">
+		  			<div id="hps_users_chart"> <div class="loading-iu"></div> </div>
+		  	  	  </div>
+		  	    </div>
+		  	    </section>-->
+		  	    <section id="jobsPerMonth">
+		  		<div class="row-fluid">
+		  	  	  <div class="well-iu">
+		  			<div id="jobs_chart"> <div class="loading-iu"></div> </div>
+		  	  	  </div>
+		  		</div>
+		  		</section>
+		  		<section id="rwPerMonth">
+		  		<div class="row-fluid">
+		  	  	  <div class="well-iu">
+		  			<div id="io_chart"> <div class="loading-iu"></div> </div>
+		  	  	  </div>
+		    	</div>
+		    	</section>
+                <section id="cHPerMonth">
+                  <div class="row-fluid">
+                  	<div class="well-iu">
+                      <div id="hours_chart"> <div class="loading-iu"></div> </div>
+                    </div>
+                  </div>
+                </section>
+                <section id="qtPerMonth">
+                  <div class="row-fluid">
+                  	<div class="well-iu">
+                      <div id="queue_chart"> <div class="loading-iu"></div> </div>
+                    </div>
+                  </div>
+                </section>
+                <section id="rfsFilesPerMonth">
+		  		<div class="row-fluid">
+		  	  	  <div class="well-iu">
+		  			<div id="rfs_files_chart"> <div class="loading-iu"></div> </div>
+		  	  	  </div>
+		  		</div>
+		  		</section>
+		  		<section id="rfsGBPerMonth">
+		  		<div class="row-fluid">
+		  	  	  <div class="well-iu">
+		  			<div id="rfs_gb_chart"> <div class="loading-iu"></div> </div>
+		  	  	  </div>
+		    	</div>
+		    	</section>
+                <section id="hpssFilesPerMonth">
+                  <div class="row-fluid">
+                  	<div class="well-iu">
+                      <div id="hpss_files_chart"> <div class="loading-iu"></div> </div>
+                    </div>
+                  </div>
+                </section>
+                <section id="hpssGBPerMonth">
+                  <div class="row-fluid">
+                  	<div class="well-iu">
+                      <div id="hpss_gb_chart"> <div class="loading-iu"></div> </div>
+                    </div>
+                  </div>
+                </section>
+		   	</div>
+			
+		  </div>
+		</div>
+		
+		<div ng-include src="'static/footer.html'"></div>
+	</body>
+	
+	
+</html>

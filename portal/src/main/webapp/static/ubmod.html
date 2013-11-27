@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>Information Services</title>
+		<link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+		<link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="static/js/common.js"></script>
+
+		<!-- Bootstrap -->
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+ 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<link href="static/css/iu.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="topbar"></div>
+		
+		<div class="well container-fluid">
+		<div class="row-fluid">
+		  <div class="well-iu span12">
+		  	<div class="well-heading span12">UBMoD</div>
+		  	<iframe class="span11" height="800" seamless src="https://cybergateway.uits.iu.edu"></iframe>
+		  </div>
+		</div>
+		</div>
+		
+		<div id="footer"></div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				setTimeout(function() {
+					$("#infoLink").parent().attr('class','dropdown active');
+				},50);
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-app="reservationApp" ng-controller="ResvCtrl">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>{{machineName}} Node Reservations</title>
+		<link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+		<link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		<script src="static/js/common.js"></script>
+		<script src="static/js/reservations.js"></script>
+		<script src="static/js/urlprovider.js"></script>
+
+		<!-- Bootstrap -->
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+ 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<link href="static/css/iu.css" rel="stylesheet">
+	</head>
+	<body>
+		<div ng-include src="'static/topbars.html'"></div>
+		
+		<div class="well container-fluid">
+		<div class="row-fluid">
+		  <div class="well-iu span12">
+			<div class="well-heading">{{machineName}} Node Reservations</div>
+			<div>
+			
+		  		  <table class='table table-hover table-striped table-condensed'>
+					<thead>
+					  <tr><th><a href="#" ng-click="predicate = 'id'; reverse=!reverse">ID</a> <i ng-show="predicate=='id' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='id' && !reverse" class="icon-arrow-down"></i></th>
+						<th><a href="#" ng-click="predicate = 'startDate'; reverse=!reverse">Start time</a> <i ng-show="predicate=='startDate' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='startDate' && !reverse" class="icon-arrow-down"></i></th>
+						<th><a href="#" ng-click="predicate = 'endDate'; reverse=!reverse">End time</a> <i ng-show="predicate=='endDate' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='endDate' && !reverse" class="icon-arrow-down"></i></th>
+						<th><a href="#" ng-click="predicate = 'allocatedNodeCount'; reverse=!reverse">Node count</a> <i ng-show="predicate=='allocatedNodeCount' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='allocatedNodeCount' && !reverse" class="icon-arrow-down"></i></th>
+					  </tr>
+					  <tr><th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.id"/></th>
+						<th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.startDate"/></th>
+						<th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.endDate"/></th>
+						<th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini" ng-model="filterText.allocatedNodeCount"/></th>
+					  </tr>
+					</thead>
+					<tbody>
+					<tr ng-hide="hideLoader"></tr>
+					<tr ng-hide="hideLoader"><td colspan="4"><div class="loading-iu"></div></td></tr>
+					<tr ng-show="showError"></tr>
+					<tr ng-show="showError"><td colspan="4"><div class="alert alert-error">There was an error loading the reservations data !</div></td></tr>
+					<tr ng-show="reservations.length<1"></tr>
+                    <tr ng-show="reservations.length<1"><td colspan="4"><div>No reservation information available currently !</div></td></tr>
+					  <tr ng-click="showDetails(reservation)" href="#myModal" role="button" data-toggle="modal" ng-repeat="reservation in reservations | filter:filterText | orderBy:predicate:reverse">
+						<td>{{reservation.id}}</td>
+						<td>{{reservation.startDate}}</td>
+						<td>{{reservation.endDate}}</td>
+						<td>{{reservation.allocatedNodeCount}}</td>
+					  </tr>
+					</tbody>
+				  </table>
+			</div>
+		  </div> 
+		  
+			<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-header">
+	    		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    		<h3 id="myModalLabel">Reservation Details</h3>
+			  </div>
+			  <div class="modal-body">
+			  	<div class="row-fluid"><div class="span4"><strong>Reservation ID</strong></div><div> {{item.id}}</div></div>
+			  	<div class="row-fluid"><div class="span4"><strong>Reserved By</strong></div><div> {{item.accountingUser}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Start Date</strong></div><div> {{item.startDate}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>End Date</strong></div><div> {{item.endDate}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Node Count</strong></div><div> {{item.allocatedNodeCount}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Processor Count</strong></div><div> {{item.allocatedProcessorCount}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Active</strong></div><div> {{item.isActive}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Flags</strong></div><div> {{item.flags.toString()}}</div></div>
+			    <div class="row-fluid"><div class="span4"><strong>ACL</strong></div><div class="span8"><div ng-repeat="rule in item.aclRules">{{rule.type}} : {{rule.value}} is {{rule.affinity}}</div></div></div>
+			    <div class="row-fluid"><div class="span4"><strong>Nodes</strong></div><div class="span8"><span ng-repeat="node in item.allocatedNodes">{{node.id}} </span></div></div>
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			  </div>
+			</div>
+		</div>
+		</div>
+		
+		<div ng-include src="'static/footer.html'"></div>
+
+	</body>
+</html>

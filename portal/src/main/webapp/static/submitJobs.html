@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html ng-app="submitJobApp" ng-controller="SubmitJobCtrl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Submit Jobs</title>
+    <link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+    <link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="static/js/library/filesaver.js"></script>
+    <script src="static/js/common.js"></script>
+    <script src="static/js/jobs/submitJobs.js"></script>
+    <script src="static/js/urlprovider.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="static/css/iu.css" rel="stylesheet">
+</head>
+
+<body>
+  <div ng-include src="'static/topbars.html'"></div>
+
+  <div class="well container-fluid">
+    <div class="row-fluid">
+        <div class="well-iu span12">
+            <div class="well-heading">Submit New Jobs</div>
+            <div>
+            	<form id="jobSubmissionForm" name="jobSubmissionForm" class="form-horizontal">
+				<div class="control-group">
+			  	  <label class="control-label" for="inputMachine">Choose Machine</label>
+			  	  <div class="controls">
+			      	<div class="btn-group" data-toggle="buttons-radio">
+                  	  <button ng-click="chooseMachine('bigred2')" type="button" class="btn">Big Red II</button>
+                  	  <button ng-click="chooseMachine('quarry')"  type="button" class="btn">Quarry</button>
+                  	  <button ng-click="chooseMachine('mason')"  type="button" class="btn">Mason</button>
+                  	</div>
+		      	  </div>
+		      	</div>
+		      	<div ng-show="machine[machinename].credentialsExist">
+		      	  <div class="span6">
+					<div class="control-group" ng-class="{error: jobSubmissionForm.application.$invalid}">
+				  	  <label class="control-label" for="inputApplication">Applications*</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="application" name="application" placeholder="Start typing to search our list" id="appsTextbox" autocomplete="off" class="typeahead" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.jobname.$invalid}">
+				  	  <label class="control-label" for="inputJobName">Job Name*</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="jobname" name="jobname" placeholder="A name for your job" required/>
+			      	  </div>
+			    	</div>
+			    	<div ng-init="jobtype='MPI'" class="control-group" ng-class="{error: jobSubmissionForm.jobtype.$invalid}">
+				  	  <label class="control-label" for="inputJobType">Job Type</label>
+				  	  <div class="controls">
+				    	<select ng-model="jobtype" name="jobtype" ng-options="type for type in ['OpenMP','MPI']"></select>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.workingdir.$invalid}">
+				  	  <label class="control-label" for="inputWorkingDirectory">Working Directory*</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="workingdir" name="workingdir" placeholder="Location to generate output files" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.executable.$invalid}">
+				  	  <label class="control-label" for="inputExecutable">Executable File*</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="executable" name="executable" placeholder="Full path to executable file" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.inputfile.$invalid}">
+				  	  <label class="control-label" for="inputFiles">Input Files*</label>
+				  	  <div class="controls">
+				    	<textarea ng-model="inputfile" name="inputfile" placeholder="Full path to input files separated by semicolon" rows="2" required></textarea>
+			      	  </div>
+			    	</div>
+		    	  </div>
+		    	  <div class="span6">
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.queuename.$invalid}">
+				  	  <label class="control-label" for="inputQueueName">Queue Name</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="queuename" name="queuename" placeholder="normal"/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.maxwalltime.$invalid}">
+				  	  <label class="control-label" for="inputMaxWallTime">Max Wall Time*</label>
+				  	  <div class="controls">
+				    	<input type="text" ng-model="maxwalltime" name="maxwalltime" placeholder="" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.cpucount.$invalid}">
+				  	  <label class="control-label" for="inputCPUCount">CPU Count*</label>
+				  	  <div class="controls">
+				    	<input type="number" ng-model="cpucount" name="cpucount" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.nodecount.$invalid}">
+				  	  <label class="control-label" for="inputNodeCount">Node Count*</label>
+				  	  <div class="controls">
+				    	<input type="number" ng-model="nodecount" name="nodecount" required/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.ppn.$invalid}">
+				  	  <label class="control-label" for="inputppn">Processor Per Node</label>
+				  	  <div class="controls">
+				    	<input type="number" ng-model="ppn" name="ppn"/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.minmemory.$invalid}">
+				  	  <label class="control-label" for="inputMinMemory">Min Memory</label>
+				  	  <div class="controls">
+				    	<input type="number" ng-model="minmemory" name="minmemory"/>
+			      	  </div>
+			    	</div>
+			    	<div class="control-group" ng-class="{error: jobSubmissionForm.maxmemory.$invalid}">
+				  	  <label class="control-label" for="inputMaxMemory">Max Memory</label>
+				  	  <div class="controls">
+				    	<input type="number" ng-model="maxmemory" name="maxmemory"/>
+			      	  </div>
+			    	</div>
+		    	  </div>
+		    	  <div class="control-group">
+			  	  	<div class="controls">
+			    	  <button ng-click="submitJob()" ng-disabled="!machine[machinename].credentialsExist || isClean() || jobSubmissionForm.$invalid" class="btn">Submit Job</button>
+		      	  	</div>
+		    	  </div>
+		    	</div>
+		    	<div ng-show="machinename!=undefined && machinename!='' && !machine[machinename].credentialsExist">You do not have a credential on this machine!</div>
+				</form>
+            </div>
+        </div>
+        
+        <div id="myModal" class="modal hide fade jobsubmit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 id="myModalLabel">One time setup</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row-fluid">To let you submit jobs through our portal, we will generate a new pair of ssh keys for you</div><br>
+                    <div class="row-fluid"><ul class="nav nav-pills"><li class="active"><a href="#">Step 1</a></li></ul></div>
+                    <div class="row-fluid">
+                    	<div class="span5">Enter a password to protect your key:</div>
+                    	<div class="span5"><input class="input-large span12" type="password" ng-model="password"/></div>
+                    	<div class="span2">
+                    		<button ng-hide="machine[machinename].pubkey!=''" ng-click="submitPassword()" type="button" class="btn">Submit</button>
+                    		<button ng-show="machine[machinename].pubkey!=''" ng-disabled type="button" class="btn btn-success disabled">Success</button>
+                    	</div>
+                    </div>
+                    <div class="row-fluid" ng-show="machine[machinename].keyCreationError"><div class="alert alert-error">Sorry. There was an error generating the key pair. Please try again later.</div></div>
+                    <br>
+                    <div class="row-fluid" ng-show="machine[machinename].pubkey!=''">
+                    	<div class="span5">The public key we generated is:</div>
+                    	<div class="span7"><textarea class="span12" name="pubkey" ng-model="machine[machinename].pubkey" rows="8"></textarea><a href="#" ng-click="download()">Download Public Key</a></div>
+                    </div>
+                    <br>
+                    <div class="row-fluid" ng-show="machine[machinename].pubkey!=''"><ul class="nav nav-pills"><li class="active"><a href="#">Step 2</a></li></ul></div>
+                    <div class="row-fluid" ng-show="machine[machinename].pubkey!=''">Download the public key and save it. Then add it to the list of authorized keys on your machine.
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Done</button></div>
+                </div>
+            </div>
+
+    </div>
+  </div>
+
+  <div ng-include src="'static/footer.html'"></div>
+</body>
+</html>

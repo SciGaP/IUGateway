@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
+           
+	<security:http auto-config="true"  use-expressions="true" >
+		<security:intercept-url pattern="/news" access="permitAll" />
+		<security:intercept-url pattern="/contactus" access="permitAll" />
+		<security:intercept-url pattern="/about" access="permitAll" />
+		<security:intercept-url pattern="/feedback" access="permitAll" />
+		<security:intercept-url pattern="/help" access="permitAll" />
+		<security:intercept-url pattern="/logout" access="permitAll" />
+		<security:intercept-url pattern="/loginFailure" access="permitAll" />
+		<security:intercept-url pattern="/static/**" access="permitAll" />
+		<security:intercept-url pattern="/index" access="permitAll" />
+		<security:intercept-url pattern="/getUserinfo" access="permitAll" />
+		<security:intercept-url pattern="/receiveCert" access="permitAll" />
+        <security:intercept-url pattern="/modulesInfo" access="permitAll" />
+        <security:intercept-url pattern="/searchModulesInfo" access="permitAll" />
+		<security:intercept-url pattern="/" access="permitAll" />
+		<security:intercept-url pattern="/modules/**" access="permitAll" />
+        <!-- security:intercept-url pattern="/modules/all" access="permitAll" />
+        <security:intercept-url pattern="/modules/quarry" access="permitAll" />
+        <security:intercept-url pattern="/modules/mason" access="permitAll" />
+        <security:intercept-url pattern="/modules/bigred2" access="permitAll" />
+        <security:intercept-url pattern="/modules/search" access="permitAll" /-->
+		<security:intercept-url pattern="/nodeInfo/quarry/nodestatus" access="permitAll" />
+		<security:intercept-url pattern="/nodeInfo/mason/nodestatus" access="permitAll" />
+		<security:intercept-url pattern="/nodeInfo/bigred2/nodestatus" access="permitAll" />
+		<security:intercept-url pattern="/jobInfo/quarry/jobstatus" access="permitAll" />
+		<security:intercept-url pattern="/jobInfo/mason/jobstatus" access="permitAll" />
+		<security:intercept-url pattern="/jobInfo/bigred2/jobstatus" access="permitAll" />
+		<security:intercept-url pattern="/submitFeedback" access="permitAll" />
+		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+        <security:form-login login-page="/../cilogon2/startRequest" default-target-url="/index" authentication-failure-url="/loginFailure" />
+	</security:http>
+ 
+	<!-- The below section is dummy as of now. It will be needed when we maintain user information in DB -->
+	<security:authentication-manager>
+	  <security:authentication-provider user-service-ref="userService" />
+	</security:authentication-manager>
+ 
+</beans>
