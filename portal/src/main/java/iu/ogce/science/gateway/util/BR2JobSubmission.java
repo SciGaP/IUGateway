@@ -47,6 +47,12 @@ public class BR2JobSubmission {
 //    }
 
 
+    /**
+     * Submit jobs
+     * @param jobParameters job parameters
+     * @param portalUser portal user
+     * @return
+     */
     public static String submitJob(JobParameters jobParameters, String portalUser) {
         try {
             AuthenticationInfo authInfo = getAuthInfo(portalUser);
