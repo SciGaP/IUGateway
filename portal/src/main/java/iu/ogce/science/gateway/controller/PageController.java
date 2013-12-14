@@ -121,5 +121,11 @@ public class PageController {
         logger.debug("Load node reservations page");
         return ViewNames.NODE_RESERVATIONS_PAGE;
     }
+    
+    @RequestMapping(value = "/amber", method = RequestMethod.GET)
+    public String getAmberApplicationPage() {
+    	logger.debug("Load Amber Application page");
+    	return ViewNames.AMBER_PAGE;
+    }
 
 }

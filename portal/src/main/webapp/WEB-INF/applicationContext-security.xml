@@ -21,6 +21,7 @@
 		<security:intercept-url pattern="/receiveCert" access="permitAll" />
         <security:intercept-url pattern="/modulesInfo" access="permitAll" />
         <security:intercept-url pattern="/searchModulesInfo" access="permitAll" />
+        <security:intercept-url pattern="/amber" access="permitAll" />
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/modules/**" access="permitAll" />
         <!-- security:intercept-url pattern="/modules/all" access="permitAll" />

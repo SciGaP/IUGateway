@@ -283,8 +283,8 @@ body .jobsubmit-modal {
     margin-left: -375px;
 }
 .modal-body {
-  position: relative;
-  max-height: 800px;
-  padding: 15px;
-  overflow-y: auto;
+	position: relative;
+	max-height: 800px;
+	padding: 15px;
+	overflow-y: auto;
 }
