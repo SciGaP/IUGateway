@@ -1,0 +1,32 @@
+<div class="span12">
+	<a href="#/"><button class="btn"><i class="icon-arrow-left"></i>&nbsp;&nbsp;Job listings</button></a>
+	<div class="row-fluid" style="padding-top:1%;">
+		<div class="span3"></div>
+		<div class="span5">
+			<a class="circle active" href="#/job/{{job.id}}/tleap">&nbsp;1&nbsp;</a>
+			<a class="circle" style="left:47%;" href="#/job/{{job.id}}/amber">&nbsp;2&nbsp;</a>
+			<a class="circle" style="left:95%;" href="#/job/{{job.id}}/postprocess">&nbsp;3&nbsp;</a>
+		</div>
+	</div>
+	<div class="row-fluid" style="padding-top:0.5%;padding-bottom:3%;">
+		<div class="span3"></div>
+		<div class="span5">
+			<a style="position:relative; left:1%;" href="#/job/{{job.id}}/tleap">TLeap</a>
+			<a style="position:relative; left:50%;" href="#/job/{{job.id}}/amber">Amber</a>
+			<a style="position:relative; left:96%;" href="#/job/{{job.id}}/postprocess">Post Process</a>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span3">Input PDB File:</div>
+		<div class="span9"><input type="file"></div>
+	</div>
+	<div class="row-fluid">
+		<div class="span3">Output Amber Re-start File:</div>
+		<div class="span9"><a href="#">Link to download the restart file</a></div>
+	</div>
+	<div class="row-fluid">
+		<button class="btn">Run TLeap</button>
+		<button class="btn">Use above files&nbsp;&nbsp;<i class="icon-arrow-right"></i></button>
+		<button class="btn">Next&nbsp;&nbsp;<i class="icon-arrow-right"></i></button>
+	</div>
+</div>

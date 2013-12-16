@@ -9,14 +9,44 @@
 	</div>
 	<div class="row span12" ng-repeat="job in jobs">
 		<div class="row-fluid">
-			<div class="span2"><a style="margin-left:-20px; margin-right:10px;" ng-click="showDetail=!showDetail"><i ng-hide="showDetail" class="icon-plus"></i><i ng-show="showDetail" class="icon-minus"></i></a><a ng-href="#/job/{{job.id}}/tleap">{{job.id}}</a></div>
+			<div class="span2">
+			  <span style="margin-left:-20px; margin-right:10px;" ng-click="showDetail=!showDetail">
+				<i ng-hide="showDetail" class="icon-plus"></i>
+				<i ng-show="showDetail" class="icon-minus"></i>
+			  </span>
+			  <a ng-href="#/job/{{job.id}}/tleap">{{job.id}}</a>
+			</div>
 			<div class="span2">{{job.name}}</div>
 			<div class="span2">{{job.machine}}</div>
 			<div class="span2">{{job.currentStep}}</div>
 			<div class="span2">{{job.lastRunTime | date:'medium'}}</div>
 		</div>
 		<div ng-show="showDetail" class="row-fluid">
-			Detail listing!
+			<div class="span12" style="min-height:10px;"></div>
+			<div class="row-fluid">
+			  <div class="span1"></div>
+			  <div class="span6">TLeap</div>
+			  <div class="span5">Started</div>
+			</div>
+			<div class="row-fluid">
+			  <div class="span1"></div>
+			  <div class="span6">Amber</div>
+			  <div class="span5">-</div>
+			</div>
+			<div class="row-fluid">
+			  <div class="span1"></div>
+			  <div class="span6">Post Processing</div>
+			  <div class="span5">-</div>
+			</div>
+			<div class="row-fluid">
+			  <div class="span1"></div>
+			  <div class="span4"></div>
+			  <div class="span7">
+			    <button class="btn">View Job</button>
+			    <button class="btn">Clone Job</button>
+			  </div>
+			</div>
+			<div class="span12"></div>
 		</div>
 	</div>
 </div>
