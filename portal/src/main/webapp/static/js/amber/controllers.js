@@ -13,6 +13,11 @@ controller("JobListCtrl",["JobService","$scope",function(JobService,$scope){
 	$scope.refresh = function() {
 		loadJobs();
 	};
+	$scope.fetchDetail = function(jobIndex, jobId) {
+		JobService.fetchJob(jobId).then(function(job) {
+			$scope.jobs[jobIndex].detail = job;
+		});
+	};
 	
 }]).
 controller("TleapCtrl",["$scope","$routeParams",function($scope,$routeParams) {
