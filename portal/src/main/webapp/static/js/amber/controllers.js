@@ -1,10 +1,19 @@
 angular.module("amberControllers",["amberServices"]).
 controller("JobListCtrl",["JobService","$scope",function(JobService,$scope){
 	console.log("In JobListCtrl");
-	JobService.getAllJobs().then(function(jobs) {
-		$scope.jobs = jobs;
-		console.log(jobs);
-	});
+	
+	var loadJobs = function() {
+		JobService.getAllJobs().then(function(jobs) {
+			$scope.jobs = jobs;
+			console.log(jobs);
+		});
+	};
+	
+	loadJobs();
+	$scope.refresh = function() {
+		loadJobs();
+	};
+	
 }]).
 controller("TleapCtrl",["$scope","$routeParams",function($scope,$routeParams) {
 	$scope.job = {};
