@@ -1,6 +1,6 @@
 angular.module("amberControllers",["amberServices"]).
 controller("JobListCtrl",["JobService","$scope",function(JobService,$scope){
-	console.log("In JobListCtrl1");
+	console.log("In JobListCtrl");
 	JobService.getAllJobs().then(function(jobs) {
 		$scope.jobs = jobs;
 		console.log(jobs);
