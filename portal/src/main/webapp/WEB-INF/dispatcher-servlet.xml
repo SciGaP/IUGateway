@@ -8,13 +8,13 @@
         http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd">
 
 	<!-- Scan for controllers -->
-	<context:component-scan base-package="iu.ogce.science.gateway.controller" />
+	<context:component-scan base-package="org.scigap.iucig.controller" />
 
 	<!-- Scan for services -->	
-	<context:component-scan base-package="iu.ogce.science.gateway.service"/>
+	<context:component-scan base-package="org.scigap.iucig.service"/>
 	
 	<!-- Scan for repositories -->
-	<context:component-scan base-package="iu.ogce.science.gateway.repository"/>
+	<context:component-scan base-package="org.scigap.iucig.repository"/>
 
 	<mvc:annotation-driven />
 	<mvc:view-controller path="/" view-name="index" />
