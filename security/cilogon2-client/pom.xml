@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
-		<artifactId>gateway-project</artifactId>
-		<groupId>iu.ogce</groupId>
+		<groupId>org.scigap</groupId>
+		<artifactId>iu-cybergateway</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<description>Checkout the source from https://cilogon.svn.sourceforge.net/svnroot/cilogon/releases/cilogon/2.0.1/cilogon2-client/ 

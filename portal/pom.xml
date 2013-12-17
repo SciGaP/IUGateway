@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>iu.ogce</groupId>
-		<artifactId>gateway-project</artifactId>
+		<groupId>org.scigap</groupId>
+		<artifactId>iu-cybergateway</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>gateway-portal</artifactId>
@@ -193,7 +193,7 @@
 					</container>
 					<deployables>
 						<deployable>
-							<groupId>iu.ogce</groupId>
+							<groupId>org.scigap</groupId>
 							<artifactId>gateway-portal</artifactId>
 							<type>war</type>
 							<properties>
