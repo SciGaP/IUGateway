@@ -6,6 +6,7 @@
 		<groupId>org.scigap</groupId>
 		<artifactId>iu-cybergateway</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>gateway-portal</artifactId>
 	<packaging>war</packaging>
@@ -120,7 +121,7 @@
         <dependency>
             <groupId>org.apache.airavata</groupId>
             <artifactId>gsissh</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.11-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.airavata</groupId>
