@@ -17,7 +17,15 @@
 	<modules>
 		<module>portal</module>
         <module>security/cilogon2-client</module>
-  </modules>
+    </modules>
+    
+    <repositories>
+		<repository>
+			<id>CILogon</id>
+			<name>CILogon Repository</name>
+			<url>http://cilogon.svn.sourceforge.net/svnroot/cilogon/m2-repo</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>

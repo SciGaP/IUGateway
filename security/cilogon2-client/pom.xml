@@ -6,7 +6,7 @@
 		<groupId>org.scigap</groupId>
 		<artifactId>iu-cybergateway</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<description>Checkout the source from https://cilogon.svn.sourceforge.net/svnroot/cilogon/releases/cilogon/2.0.1/cilogon2-client/ 
 	and change the parent pom, jsp pages to use with the gateway portal. The snapshot version of the client is available at
