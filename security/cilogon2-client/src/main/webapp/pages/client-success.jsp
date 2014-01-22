@@ -2,62 +2,55 @@
   User: Jeff Gaynor
   Date: 9/27/11
   Time: 4:58 PM
-  Modified by Viknes Balasubramanee to post the certificate to IUGateway portal
+
+    NOTE:This page is supplied as an example and under no circumstances should ever be deployed
+  on a live server. It is intended to show control flow as simply as possible.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head>
-    <title>CILogon 2 success page.</title>
-    <link rel="stylesheet"
-          type="text/css"
-          media="all"
-          href="static/cilogon.css"/>
-</head>
+<head><title>Simple client success page.</title></head>
+<style type="text/css">
+    .hidden {
+        display: none;
+    }
+
+    .unhidden {
+        display: block;
+    }
+</style>
+<script type="text/javascript">
+    function unhide(divID) {
+        var item = document.getElementById(divID);
+        if (item) {
+            item.className = (item.className == 'hidden') ? 'unhidden' : 'hidden';
+        }
+    }
+</script>
 <body onload="document.certForm.submit()">
-<div id="topimgfill">
-    <div id="topimg"></div>
-</div>
+<h1>Success!</h1>
 
-<br clear="all"/>
+<p>The subject of the first cert is<br><br> ${certSubject}
+    <br><br>and the user id found for this request was <b>${username}</b>
 
-<div class="main">
-    <p><b>Success!</b><br><br> The subject of the cert is<br><br> ${certSubject}
-        <br><br>and the user id found for this request was <b>${username}</b>
-        <br>The certificate is ${cert}
+<p>You have successfully requested a certificate from the server.<br>
 
-<%--     <form name="input" action="${action}/" method="get"/>
-    <input type="submit" value="Return to client"/>
-    </form> --%>
     <!--  Got the certificate from CILogon. Posting it to the iugateway portal -->
-    <form name="certForm" action="../iugateway/receiveCert" method="POST">
-    	<input type="hidden" name="certSubject" value="${certSubject}"/>
-    	<input type="hidden" name="cert" value="${cert}"/>
-    	<input type="hidden" name="username" value="${username}"/>
-    	<input type="submit" value="Return to Homepage"/>
-    </form>
-    <div class="footer">
+<form name="certForm" action="../iugateway/receiveCert" method="POST">
+    <input type="hidden" name="certSubject" value="${certSubject}"/>
+    <input type="hidden" name="cert" value="${cert}"/>
+    <input type="hidden" name="username" value="${username}"/>
+    <input type="submit" value="Return to Homepage"/>
+</form>
 
+<ul>
+    <li><a href="javascript:unhide('showCert');">Show/Hide certificates</a></li>
+    <div id="showCert" class="hidden">
         <p>
-            For questions about this site, please see the
-            <a target="_blank" href="http://www.cilogon.org/portal-delegation">Portal
-                Delegation FAQ</a> or send email to <a
-                href="mailto:help@cilogon.org">help&nbsp;@&nbsp;cilogon.org</a>.
-        </p>
-
-        <p>
-            This material is based upon work supported by the <a target="_blank"
-                                                                 href="http://www.nsf.gov/">National Science
-            Foundation</a> under grant
-            number <a target="_blank"
-                      href="http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0943633">0943633</a>.
-        </p>
-
-        <p>
-            Any opinions, findings, and conclusions or recommendations expressed in this
-            material are those of the authors and do not necessarily reflect the views
-            of the National Science Foundation.
-        </p>
+        <pre>${cert}</pre>
     </div>
-</div>
+</ul>
+<form name="input" action="${action}" method="get"/>
+<input type="submit" value="Return to client"/>
+</form>
 </body>
 </html>

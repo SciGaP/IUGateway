@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<parent>
-		<groupId>org.scigap</groupId>
-		<artifactId>iu-cybergateway</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent>
-	<description>Checkout the source from https://cilogon.svn.sourceforge.net/svnroot/cilogon/releases/cilogon/2.0.1/cilogon2-client/ 
-	and change the parent pom, jsp pages to use with the gateway portal. The snapshot version of the client is available at
-	https://cilogon.svn.sourceforge.net/svnroot/cilogon/main/ncsa-security-all/cilogon2/cilogon2-client/</description>
-	<name>CILogon 2 Client</name>
-	<groupId>edu.uiuc.ncsa.security</groupId>
-	<artifactId>cilogon2-client</artifactId>
-	<version>2.0.1</version>
-	<packaging>war</packaging>
-	<modelVersion>4.0.0</modelVersion>
-	<dependencies>
-		<dependency>
-            <artifactId>oa4mp-client-api</artifactId>
+    <parent>
+        <groupId>org.scigap</groupId>
+        <artifactId>iu-cybergateway</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <description>Checkout the source from https://cilogon.svn.sourceforge.net/svnroot/cilogon/releases/cilogon/2.0.1/cilogon2-client/
+        and change the parent pom, jsp pages to use with the gateway portal. The snapshot version of the client is available at
+        https://cilogon.svn.sourceforge.net/svnroot/cilogon/main/ncsa-security-all/cilogon2/cilogon2-client/</description>
+    <name>CILogon 2 Client</name>
+    <groupId>edu.uiuc.ncsa.security</groupId>
+    <artifactId>cilogon2-client</artifactId>
+    <version>2.0.1</version>
+    <packaging>war</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
             <groupId>edu.uiuc.ncsa.myproxy</groupId>
-            <version>1.0.6-SNAPSHOT</version>
+            <artifactId>oa4mp-client-oauth1</artifactId>
+            <version>1.0.7</version>
         </dependency>
-		<dependency>
-        	<artifactId>cilogon2-client-oauth1</artifactId>
-        	<groupId>edu.uiuc.ncsa.security</groupId>
-        	<version>2.0.2-SNAPSHOT</version>
+        <dependency>
+            <groupId>edu.uiuc.ncsa.security</groupId>
+            <artifactId>ncsa-security-servlet</artifactId>
+            <version>1.0.7</version>
         </dependency>
-	</dependencies>
-	<build>
-		<finalName>cilogon2</finalName>
-	</build>
-	<repositories>
-		<repository>
-			<id>CILogon</id>
-			<name>CILogon Repository</name>
-			<url>http://cilogon.svn.sourceforge.net/svnroot/cilogon/m2-repo</url>
-		</repository>
-		<repository>
-			<id>CILogonSnapshots</id>
-			<name>CILogon Snapshot Repository</name>
-			<url>http://cilogon.svn.sourceforge.net/svnroot/cilogon/m2-repo/snapshots</url>
-		</repository>
-	</repositories>
+    </dependencies>
+    <build>
+        <finalName>cilogon2</finalName>
+    </build>
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>CILogon</id>-->
+            <!--<name>CILogon Repository</name>-->
+            <!--<url>http://cilogon.svn.sourceforge.net/svnroot/cilogon/m2-repo</url>-->
+        <!--</repository>-->
+        <!--&lt;!&ndash;<repository>&ndash;&gt;-->
+        <!--&lt;!&ndash;<id>CILogonSnapshots</id>&ndash;&gt;-->
+        <!--&lt;!&ndash;<name>CILogon Snapshot Repository</name>&ndash;&gt;-->
+        <!--&lt;!&ndash;<url>http://cilogon.svn.sourceforge.net/svnroot/cilogon/m2-repo/snapshots</url>&ndash;&gt;-->
+        <!--&lt;!&ndash;</repository>&ndash;&gt;-->
+    <!--</repositories>-->
 </project>
