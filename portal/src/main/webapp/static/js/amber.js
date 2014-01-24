@@ -11,12 +11,7 @@ amberApp.config(['$routeProvider' ,function($routeProvider) {
 
 // For Dev Server - To bypass actual http calls to Server and provide mock data
 amberApp.run(function($httpBackend) {
-	var jobs = [];
-	jobs.push({id:"j1",name:"Job One",machine:"Mason",currentStep:"TLeap",lastRunTime:new Date(2011,0,13)});
-	jobs.push({id:"j2",name:"Job Two",machine:"Quarry",currentStep:"TLeap",lastRunTime:new Date(2013,11,1)});
-	jobs.push({id:"j3",name:"Viknes's Job",machine:"Big Red II",currentStep:"Post Processing",lastRunTime:new Date(2012,4,6)});
-	jobs.push({id:"j4",name:"Job Four",machine:"Big Red II",currentStep:"Amber",lastRunTime:new Date()});
-	var jobj1 = {};
+    var jobj1 = {};
 	jobj1.tleap = {};
 	jobj1.tleap.status = "Completed";
 	jobj1.tleap.inputFiles = ["/usr/home/job/input.pdb"];
@@ -57,12 +52,14 @@ amberApp.run(function($httpBackend) {
 	jobj4.postProcess.outputFiles = [];
 	
 	// Do not bother server, return specified response status code, data and header
-	$httpBackend.whenGET('amberCtrl/jobs/all').respond(200, jobs, {header: 'one'});
+	//$httpBackend.whenGET('amberCtrl/jobs/all').respond(200, jobs, {header: 'one'});
+	$httpBackend.whenGET('amberCtrl/allJobs').passThrough();
 	// Do not bother server, return data. Status and header are automatically set!
-	$httpBackend.whenGET('amberCtrl/jobs/j1').respond(jobj1);
-	$httpBackend.whenGET('amberCtrl/jobs/j2').respond(jobj1);
-	$httpBackend.whenGET('amberCtrl/jobs/j3').respond(jobj3);
-	$httpBackend.whenGET('amberCtrl/jobs/j4').respond(jobj4);
+	//$httpBackend.whenGET('amberCtrl/jobs/j1').respond(jobj1);
+	//$httpBackend.whenGET('amberCtrl/jobs/j2').respond(jobj1);
+	$httpBackend.whenGET('amberCtrl/jobs/j3').passThrough();
+	$httpBackend.whenGET('amberCtrl/jobs/j4').passThrough();
+	//$httpBackend.whenGET('amberCtrl/jobs/j4').respond(jobj4);
 	$httpBackend.whenGET('anotherURL').respond('Another content');
 	// Do real request
 	$httpBackend.whenGET("static/topbars.html").passThrough();

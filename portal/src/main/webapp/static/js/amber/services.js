@@ -2,7 +2,7 @@ angular.module("amberServices",[]).
 factory("JobService",["$http",function($http) {
 	return {
 		getAllJobs : function() {
-			return $http({method:"GET", url:"amberCtrl/jobs/all", cache:false}).
+			return $http({method:"GET", url:"amberCtrl/allJobs", cache:false}).
 				then(function(response) {
 					return response.data;
 				},function(response,status) {
@@ -20,6 +20,19 @@ factory("JobService",["$http",function($http) {
 					console.log(response);
 					console.log(status);
 				});
-		}
+		},
+        uploadFile: function (file,jobID, callback) {
+            $http.uploadFile({
+                url: "amberCtrl/uploadPDB/"+jobID,
+                file: file
+            }).progress(function(event) {
+                    console.log('percent: ' + parseInt(100.0 * event.loaded / event.total));
+                }).error(function (data, status, headers, config) {
+                    console.error('Error uploading file')
+                    callback(status);
+                }).then(function(data, status, headers, config) {
+                    callback(null);
+                });
+        }
 	};
 }]);
