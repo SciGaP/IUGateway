@@ -12,4 +12,4 @@ If you would like to contribute to the project, please create a Pull Request.
 
 The developers of the project hangout on the developer mailing list at - https://groups.google.com/a/scigap.org/forum/#!forum/cig-dev
 
-The commit emails from this project will be sent to mailing list - https://groups.google.com/a/scigap.org/forum/#!forum/iucig-commits.
+The commit emails from this project will be sent to mailing list - https://groups.google.com/a/scigap.org/forum/#!forum/cig-commits.
