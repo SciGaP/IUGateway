@@ -70,7 +70,7 @@ public class AmberController {
     }
 
     @ResponseBody
-    @RequestMapping(value="/uploadPDB/{jobID}", method = RequestMethod.GET)
+    @RequestMapping(value="/uploadPDB/{jobID}")
     public String uploadPDBfile(@PathVariable(value="jobID") final String jobID) throws IOException {
         return "file_uploaded";
     }

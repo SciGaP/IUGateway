@@ -1,4 +1,5 @@
-
+(function() {
+	
 var angularFileUpload = angular.module('angularFileUpload', []);
 
 angularFileUpload.service('$upload', ['$http', '$rootScope', '$timeout', function($http, $rootScope, $timeout) {
@@ -174,4 +175,4 @@ angularFileUpload.directive('ngFileDrop', [ '$parse', '$http', '$timeout', funct
 	};
 } ]);
 
-
+})();

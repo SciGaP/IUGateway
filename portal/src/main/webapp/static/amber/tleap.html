@@ -1,3 +1,5 @@
+<script src="static/js/amber/angular-file-upload.js"></script>
+
 <div class="span12">
 	<a href="#/"><button class="btn"><i class="icon-arrow-left"></i>&nbsp;&nbsp;Job listings</button></a>
 	<div class="row-fluid" style="padding-top:1%;">
@@ -18,8 +20,9 @@
 	</div>
 	<div class="row-fluid">
 		<div class="span3">Input PDB File:</div>
-		<div class="span9">
-            <input type="file"></div>
+		<div class="span9" ng-controller="FileUploadController">
+            <input type="text" ng-model="myModelObj"/>
+            <input type="file" ng-file-select="onFileSelect($files)"></div>
 	</div>
 	<div class="row-fluid">
 		<div class="span3">Output Amber Re-start File:</div>

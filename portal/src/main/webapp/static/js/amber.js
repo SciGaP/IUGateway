@@ -1,4 +1,4 @@
-var amberApp = angular.module("amberApp",["user","amberServices","amberControllers","ngRoute","ngMockE2E"]);
+var amberApp = angular.module("amberApp",["user","amberServices","amberControllers","ngRoute","ngMockE2E","angularFileUpload"]);
 
 amberApp.config(['$routeProvider' ,function($routeProvider) {
 	$routeProvider.
@@ -59,6 +59,7 @@ amberApp.run(function($httpBackend) {
 	//$httpBackend.whenGET('amberCtrl/jobs/j2').respond(jobj1);
 	$httpBackend.whenGET('amberCtrl/jobs/j3').passThrough();
 	$httpBackend.whenGET('amberCtrl/jobs/j4').passThrough();
+	$httpBackend.when('POST','amberCtrl/uploadPDB/test').passThrough();
 	//$httpBackend.whenGET('amberCtrl/jobs/j4').respond(jobj4);
 	$httpBackend.whenGET('anotherURL').respond('Another content');
 	// Do real request
