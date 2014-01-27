@@ -30,6 +30,12 @@
 		<property name="username" value="${modulesdb.username}" />
 		<property name="password" value="${modulesdb.password}" />
 	</bean>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="100000"/>
+    </bean>
 	<!-- <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
 		<property name="messageConverters">
 			<list>

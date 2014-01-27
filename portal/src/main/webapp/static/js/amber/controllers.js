@@ -43,9 +43,11 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
                 $scope.upload = $upload.upload({
                     url: 'amberCtrl/uploadPDB/test', //upload.php script, node.js route, or servlet url
                     method: 'POST',
-                    headers: {'headerKey': 'headerValue'}, withCredential: true,
-                    data: {myObj: $scope.myModelObj},
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': 'multipart/form-data'}, withCredential: true,
+                    data: {file: file},
                     file: file,
+
                     // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
                     /* set file formData name for 'Content-Desposition' header. Default: 'file' */
                     fileFormDataName: 'myFile' //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]

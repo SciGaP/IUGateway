@@ -4,16 +4,16 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value="/amberCtrl/")
@@ -69,12 +69,36 @@ public class AmberController {
         return jsonArray.toString();
     }
 
+    private String checkFileUpload = "fileNotUploaded";
     @ResponseBody
-    @RequestMapping(value="/uploadPDB/{jobID}")
-    public String uploadPDBfile(@PathVariable(value="jobID") final String jobID) throws IOException {
-        return "file_uploaded";
+    @RequestMapping(value="/uploadPDB/{jobID}", headers = "content-type=multipart/*",method = RequestMethod.POST)
+    public String uploadPDBfile(@PathVariable(value="jobID") final String jobID,
+                                @RequestParam("file") MultipartFile file) throws IOException {
+
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File( "testFileUpload.torrent")));
+                stream.write(bytes);
+                stream.close();
+                checkFileUpload = "You successfully uploaded " +"-uploaded !";
+            } catch (Exception e) {
+                checkFileUpload= "You failed to upload " + e.getMessage();
+            }
+        } else {
+            checkFileUpload =  "You failed to upload " + " because the file was empty.";
+        }
+        return checkFileUpload;
     }
 
+    @ResponseBody
+    @RequestMapping(value="/uploadPDB/{jobID}", method = RequestMethod.GET)
+    public String fileUploadCheck(@PathVariable(value="jobID") final String jobID) throws IOException {
+
+
+        return checkFileUpload;
+    }
     private void log(String message){
         logger.info(message);
     }
