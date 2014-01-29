@@ -5,6 +5,7 @@ amberApp.config(['$routeProvider' ,function($routeProvider) {
 	when('/', {controller:'JobListCtrl', templateUrl:'static/amber/jobs.html'}).
 	when('/job/:jobId/tleap', {controller:'TleapCtrl', templateUrl:'static/amber/tleap.html'}).
 	when('/job/:jobId/amber', {controller:'AmberCtrl', templateUrl:'static/amber/amberStep.html'}).
+	when('/newJob', {controller:'NewJobCtrl', templateUrl:'static/amber/newJob.html'}).
 	when('/job/:jobId/postprocess', {controller:'PostProcessCtrl', templateUrl:'static/amber/postProcess.html'}).
 	otherwise({redirectTo:'/'});
 }]);
@@ -68,6 +69,7 @@ amberApp.run(function($httpBackend) {
 	$httpBackend.whenGET("static/footer.html").passThrough();
 	$httpBackend.whenGET("getUserinfo").passThrough();
 	$httpBackend.whenGET("static/amber/jobs.html").passThrough();
+	$httpBackend.whenGET("static/amber/newJob.html").passThrough();
 	$httpBackend.whenGET("static/amber/tleap.html").passThrough();
 	$httpBackend.whenGET("static/amber/amberStep.html").passThrough();
 	$httpBackend.whenGET("static/amber/postProcess.html").passThrough();

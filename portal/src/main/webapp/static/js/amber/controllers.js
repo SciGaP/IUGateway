@@ -35,6 +35,18 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
         $scope.job.id = $routeParams.jobId;
         console.log("In PostProcessCtrl");
     }]).
+    controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
+        $scope.job = {};
+        $scope.job.id = $routeParams.jobId;
+        $scope.selected = "";
+        $scope.phases=[{name:TLeap, id:1},{name:Amber, id:2},{name:PostProcess, id:3}];
+
+        var onItemClick = function (phaseID) {
+            $scope.selected = phaseID;
+        };
+
+        console.log("In New Job Controller ...");
+    }]).
     controller("FileUploadController", [ '$scope', '$upload', function ($scope, $upload) {
         $scope.onFileSelect = function ($files) {
             //$files: an array of files selected, each file has name, size, and type.

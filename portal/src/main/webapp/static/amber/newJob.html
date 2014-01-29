@@ -1,0 +1,25 @@
+
+<div>
+    <div class="row-fluid" style="padding-top:1%;">
+        <div class="span3"></div>
+        <div class="span5">
+            <a class="btn pull-right" title="Create a new Amber Job" ><i class="icon-plus"></i>New Job</a>
+        </div>
+    </div>
+    <li class="dropdown">
+        <a class="dropdown-toggle">
+            Select the Task
+        </a>
+        <ul class="dropdown-menu">
+            <li ng-repeat="phase in phases">
+                <a>{{phase.name}}</a>
+                <a>test1</a>
+                <a>test2</a>
+            </li>
+        </ul>
+    </li>
+    selected :{{selected}}
+    <script>
+        $('.dropdown-toggle').dropdown()
+    </script>
+</div>
