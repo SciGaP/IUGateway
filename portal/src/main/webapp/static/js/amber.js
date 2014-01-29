@@ -58,11 +58,16 @@ amberApp.run(function($httpBackend) {
 	// Do not bother server, return data. Status and header are automatically set!
 	//$httpBackend.whenGET('amberCtrl/jobs/j1').respond(jobj1);
 	//$httpBackend.whenGET('amberCtrl/jobs/j2').respond(jobj1);
+	
 	$httpBackend.whenGET('amberCtrl/jobs/j3').passThrough();
 	$httpBackend.whenGET('amberCtrl/jobs/j4').passThrough();
+	
 	$httpBackend.when('POST','amberCtrl/uploadPDB/test').passThrough();
 	$httpBackend.when('GET','amberCtrl/uploadPDB/test').passThrough();
-	//$httpBackend.whenGET('amberCtrl/jobs/j4').respond(jobj4);
+	
+	//$httpBackend.whenGET('amberCtrl/jobs/j4').respond(job4);
+	//$httpBackend.whenGET('amberCtrl/jobs/j4').respond(job3);
+	
 	$httpBackend.whenGET('anotherURL').respond('Another content');
 	// Do real request
 	$httpBackend.whenGET("static/topbars.html").passThrough();
@@ -70,6 +75,9 @@ amberApp.run(function($httpBackend) {
 	$httpBackend.whenGET("getUserinfo").passThrough();
 	$httpBackend.whenGET("static/amber/jobs.html").passThrough();
 	$httpBackend.whenGET("static/amber/newJob.html").passThrough();
+	$httpBackend.whenGET("static/amber/newTleapJob.html").passThrough();
+	$httpBackend.whenGET("static/amber/newAmberJob.html").passThrough();
+	$httpBackend.whenGET("static/amber/newPostProcessJob.html").passThrough();
 	$httpBackend.whenGET("static/amber/tleap.html").passThrough();
 	$httpBackend.whenGET("static/amber/amberStep.html").passThrough();
 	$httpBackend.whenGET("static/amber/postProcess.html").passThrough();

@@ -38,13 +38,16 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
     controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};
         $scope.job.id = $routeParams.jobId;
-        $scope.selected = "";
-        $scope.phases=[{name:TLeap, id:1},{name:Amber, id:2},{name:PostProcess, id:3}];
+        $scope.selected = "Select the phase";
+        $scope.phases=[{name:"Tleap", id:1},{name:"Amber", id:2},{name:"PostProcess", id:3}];
+        $scope.jobForm ="static/amber/newTleapJob.html"
 
-        var onItemClick = function (phaseID) {
+        $scope.onItemClick = function (phaseID) {
             $scope.selected = phaseID;
+            $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
         };
 
+        console.log($scope.selected);
         console.log("In New Job Controller ...");
     }]).
     controller("FileUploadController", [ '$scope', '$upload', function ($scope, $upload) {
