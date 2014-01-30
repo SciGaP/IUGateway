@@ -20,10 +20,12 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
         };
 
     }]).
-    controller("TleapCtrl", ["$scope", '$upload', "$routeParams", function ($scope, $routeParams, $upload) {
+    controller("TleapCtrl", ["$scope", '$upload', "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};
         $scope.job.id = $routeParams.jobId;
         console.log("In TleapCtrl");
+        console.log($scope.job.id);
+        console.log("Job ID: "+$routeParams.jobId);
     }]).
     controller("AmberCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};

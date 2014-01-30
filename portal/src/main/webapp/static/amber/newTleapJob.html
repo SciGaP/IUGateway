@@ -1,10 +1,26 @@
 <form>
     <div id="pdb-group" class="form-group">
-        <label>PDB file</label>
-        <input type="file" name="name" class="form-control" placeholder="choose the PDB file">
+        <div class="row-fluid">
+            <div class="span3">
+                Experiment Name:
+            </div>
+            <div class="span9">
+                <input type="text"/>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span3">
+                PDB file:
+            </div>
+            <div class="span9">
+                <input type="file" name="name" class="form-control" placeholder="choose the PDB file">
+            </div>
+        </div>
         <span class="help-block"></span>
     </div>
-
+    <br>
+    <br>
     <!-- SUBMIT BUTTON -->
     <button type="submit" class="btn btn-success btn-lg btn-block">
         <span class="glyphicon glyphicon-flash"></span> Run Job!
