@@ -58,14 +58,43 @@ public class AmberController {
         job4.put("name", "Job four");
         job4.put("machine", "Big Red II");
         job4.put("currentStep", "Tleap");
-        job4.put("lastRunTime", "01232014");
+        job4.put("lastRunTime", "993399");
+
+
+        Map<String, String> job5 = new HashMap<String, String>();
+        job5.put("id", "j5");
+        job5.put("name", "Test Experiment");
+        job5.put("machine", "Quarry");
+        job5.put("currentStep", "PostProcess");
+        job5.put("lastRunTime", "0123442014");
+
+        Map<String, String> job6 = new HashMap<String, String>();
+        job6.put("id", "j6");
+        job6.put("name", "r2pg0-119 Exp");
+        job6.put("machine", "Big Red II");
+        job6.put("currentStep", "PostProcess");
+        job6.put("lastRunTime", "012332014");
+
+        Map<String, String> job7 = new HashMap<String, String>();
+        job7.put("id", "j7");
+        job7.put("name", "Airavata Tester");
+        job7.put("machine", "Big Red II");
+        job7.put("currentStep", "Amber");
+        job7.put("lastRunTime", "0123442014");
 
         JSONObject job3_json = new JSONObject(job3);
         JSONObject job4_json = new JSONObject(job4);
+        JSONObject job5_json = new JSONObject(job5);
+        JSONObject job6_json = new JSONObject(job6);
+        JSONObject job7_json = new JSONObject(job7);
         JSONArray jsonArray = new JSONArray();
 
         jsonArray.add(job3_json);
         jsonArray.add(job4_json);
+        jsonArray.add(job5_json);
+        jsonArray.add(job6_json);
+        jsonArray.add(job7_json);
+
         return jsonArray.toString();
     }
 

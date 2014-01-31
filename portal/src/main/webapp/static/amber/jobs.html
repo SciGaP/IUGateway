@@ -1,5 +1,9 @@
 <div>
 	<div class="row-fluid">
+        <div class="span3">Search Jobs:</div>
+        <div class="span9">
+            <input type="text" ng-model="filter.expName">
+        </div>
 		<button class="btn pull-right" title="Refresh Job Listings" ng-click="refresh()"><i class="icon-refresh"></i></button>
 	</div>
 	<div class="span12" style="min-height:10px;"></div>
@@ -10,7 +14,7 @@
 		<div class="span2"><strong>Current Step</strong></div>
 		<div class="span2"><strong>Last run time</strong></div>
 	</div>
-	<div class="row span12" ng-repeat="item in jobs">
+	<div class="row span12" ng-repeat="item in jobs | filter:filter.expName | orderBy:'item.name'">
 		<div class="row-fluid">
 			<div class="span2">
 			  <span style="margin-left:-20px; margin-right:10px;" ng-click="showDetail=!showDetail; fetchDetail($index,item.id)">
