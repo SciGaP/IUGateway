@@ -18,6 +18,14 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
                 $scope.jobs[jobIndex].detail = job;
             });
         };
+        $scope.selected = "MyJobs";
+        $scope.phases=[{name:"MyJobs", id:1},{name:"ProteinX23 Project", id:2},{name:"ProteinScala Project", id:3}];
+
+        $scope.onItemClick = function (phaseID) {
+            $scope.selected = phaseID;
+            $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
+        };
+
 
     }]).
     controller("TleapCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
@@ -40,7 +48,7 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
     controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};
         $scope.job.id = $routeParams.jobId;
-        $scope.selected = "Select the phase";
+        $scope.selected = "Tleap";
         $scope.phases=[{name:"Tleap", id:1},{name:"Amber", id:2},{name:"PostProcess", id:3}];
         $scope.jobForm ="static/amber/newTleapJob.html"
 
@@ -90,7 +98,7 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
     $scope.open = function () {
 
         var modalInstance = $modal.open({
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'static/amber/myModalContent.html',
             controller: ModalInstanceCtrl,
             resolve: {
                 items: function () {
