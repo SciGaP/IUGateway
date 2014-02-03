@@ -21,6 +21,16 @@ factory("JobService",["$http",function($http) {
 					console.log(status);
 				});
 		},
+        newJob : function(step,expName,files) {
+            return $http({method:"GET", url:"amberCtrl/newExperiment/", cache:false}).
+                then(function(response) {
+                    return response.data;
+                }, function(response, status) {
+                    console.log("Error fetching job detail for Job Id "+jobId);
+                    console.log(response);
+                    console.log(status);
+                });
+        },
         uploadFile: function (file,jobID, callback) {
             $http.uploadFile({
                 url: "amberCtrl/uploadPDB/"+jobID,

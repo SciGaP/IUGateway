@@ -57,6 +57,9 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
             $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
         };
 
+        $scope.createJob = function(step,expName,files){
+
+        };
         console.log($scope.selected);
         console.log("In New Job Controller ...");
     }]).
