@@ -50,20 +50,20 @@ application.run(function($httpBackend) {
     jobj4.postProcess.outputFiles = [];
 
     // Do not bother server, return specified response status code, data and header
-    //$httpBackend.whenGET('amberCtrl/jobs/all').respond(200, jobs, {header: 'one'});
-    $httpBackend.whenGET('amberCtrl/allJobs').passThrough();
+    //$httpBackend.whenGET('application/jobs/all').respond(200, jobs, {header: 'one'});
+    $httpBackend.whenGET('application/allJobs').passThrough();
     // Do not bother server, return data. Status and header are automatically set!
-    //$httpBackend.whenGET('amberCtrl/jobs/j1').respond(jobj1);
-    //$httpBackend.whenGET('amberCtrl/jobs/j2').respond(jobj1);
+    //$httpBackend.whenGET('application/jobs/j1').respond(jobj1);
+    //$httpBackend.whenGET('application/jobs/j2').respond(jobj1);
 
-    $httpBackend.whenGET('amberCtrl/jobs/j3').passThrough();
-    $httpBackend.whenGET('amberCtrl/jobs/j4').passThrough();
+    $httpBackend.whenGET('application/jobs/j3').passThrough();
+    $httpBackend.whenGET('application/jobs/j4').passThrough();
 
-    $httpBackend.when('POST','amberCtrl/uploadPDB/test').passThrough();
-    $httpBackend.when('GET','amberCtrl/uploadPDB/test').passThrough();
+    $httpBackend.when('POST','application/uploadPDB/test').passThrough();
+    $httpBackend.when('GET','application/uploadPDB/test').passThrough();
 
-    //$httpBackend.whenGET('amberCtrl/jobs/j4').respond(job4);
-    //$httpBackend.whenGET('amberCtrl/jobs/j4').respond(job3);
+    //$httpBackend.whenGET('application/jobs/j4').respond(job4);
+    //$httpBackend.whenGET('application/jobs/j4').respond(job3);
 
     $httpBackend.whenGET('anotherURL').respond('Another content');
     // Do real request

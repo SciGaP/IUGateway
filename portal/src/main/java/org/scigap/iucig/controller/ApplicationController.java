@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping(value="/amberCtrl/")
-public class AmberController {
+@RequestMapping(value="/application/")
+public class ApplicationController {
     private final Logger logger = Logger.getLogger(getClass());
 
     @ResponseBody

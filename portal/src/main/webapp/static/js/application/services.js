@@ -2,7 +2,7 @@ angular.module("appServices",[]).
 factory("JobService",["$http",function($http) {
 	return {
 		getAllJobs : function() {
-			return $http({method:"GET", url:"amberCtrl/allJobs", cache:false}).
+			return $http({method:"GET", url:"application/allJobs", cache:false}).
 				then(function(response) {
 					return response.data;
 				},function(response,status) {
@@ -12,7 +12,7 @@ factory("JobService",["$http",function($http) {
 				});
 		},
 		fetchJob : function(jobId) {
-			return $http({method:"GET", url:"amberCtrl/jobs/"+jobId, cache:false}).
+			return $http({method:"GET", url:"application/jobs/"+jobId, cache:false}).
 				then(function(response) {
 					return response.data;
 				}, function(response, status) {
@@ -22,7 +22,7 @@ factory("JobService",["$http",function($http) {
 				});
 		},
         newJob : function(step,expName,files) {
-            return $http({method:"GET", url:"amberCtrl/newExperiment/", cache:false}).
+            return $http({method:"GET", url:"application/newExperiment/", cache:false}).
                 then(function(response) {
                     return response.data;
                 }, function(response, status) {
@@ -33,7 +33,7 @@ factory("JobService",["$http",function($http) {
         },
         uploadFile: function (file,jobID, callback) {
             $http.uploadFile({
-                url: "amberCtrl/uploadPDB/"+jobID,
+                url: "application/uploadPDB/"+jobID,
                 file: file
             }).progress(function(event) {
                     console.log('percent: ' + parseInt(100.0 * event.loaded / event.total));
