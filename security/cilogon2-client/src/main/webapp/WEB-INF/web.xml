@@ -78,7 +78,7 @@
 	<!-- Location of the config file name and the name of the config -->
 	<context-param>
     	<param-name>oa4mp:client.config.file</param-name>
-    	<param-value>/Users/chathuri/dev/IU_gateway/source/git_latest/CyberGateway/keys/cfg.xml</param-value>
+    	<param-value>/Users/swithana/git/keys/cfg.xml</param-value>
   	</context-param>
   	<context-param>
     	<param-name>oa4mp:client.config.name</param-name>

@@ -3,6 +3,15 @@
         <button class="btn"><i class="icon-arrow-left"></i>&nbsp;&nbsp;Job listings</button>
     </a>
 
+    <div class="row-fluid">
+        <div class="span3">
+            <b>Experiment Name:</b>
+        </div>
+        <div class="span9">
+            {{tester}}
+        </div>
+    </div>
+
     <div class="row-fluid" style="padding-top:1%;">
         <div class="span3"></div>
         <div class="span5">
@@ -20,9 +29,16 @@
         </div>
     </div>
     <div class="row-fluid">
+        <div class="span3">Tleap step Status :</div>
+        <div class="span9">
+            Completed.
+            <button title="Refresh TLeap status"><i class="icon-refresh"></i></button>
+        </div>
+
+    </div>
+    <div class="row-fluid">
         <div class="span3">Input PDB File:</div>
         <div class="span9" ng-controller="FileUploadController">
-            <input type="text" ng-model="myModelObj"/>
             <input type="file" ng-file-select="onFileSelect($files)"></div>
     </div>
     <div class="row-fluid">

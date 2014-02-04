@@ -28,12 +28,25 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
 
 
     }]).
-    controller("TleapCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
+    controller("TleapCtrl", ["$scope", "$routeParams","JobService", function ($scope, $routeParams,JobService) {
         $scope.job = {};
         $scope.job.id = $routeParams.jobId;
         console.log("In TleapCtrl");
         console.log($scope.job.id);
         console.log("Job ID: "+$routeParams);
+        $scope.tester = "test";
+        console.log("this is the tester: "+$scope.tester);
+
+
+        var fetchExperimentName = function (jobId) {
+            JobService.fetchJob(jobId).then(function (job) {
+                $scope.jobData =job;
+            });
+        };
+        fetchExperimentName($scope.job.id);
+        //$scope.expName = $scope.exp.name;
+
+        console.log($scope.jobData);
     }]).
     controller("AmberCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};
