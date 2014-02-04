@@ -1,4 +1,4 @@
-angular.module("amberServices",[]).
+angular.module("appServices",[]).
 factory("JobService",["$http",function($http) {
 	return {
 		getAllJobs : function() {

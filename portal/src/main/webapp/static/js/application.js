@@ -1,17 +1,14 @@
-var amberApp = angular.module("amberApp",["user","amberServices","amberControllers","ngRoute","ngMockE2E","angularFileUpload"]);
+var application = angular.module("application",["user","appServices","appControllers","ngRoute","ngMockE2E","angularFileUpload"]);
 
-amberApp.config(['$routeProvider' ,function($routeProvider) {
+application.config(['$routeProvider' ,function($routeProvider) {
     $routeProvider.
-        when('/', {controller:'JobListCtrl', templateUrl:'static/amber/jobs.html'}).
-        when('/job/:jobId/tleap', {controller:'TleapCtrl', templateUrl:'static/amber/tleap.html'}).
-        when('/job/:jobId/amber', {controller:'AmberCtrl', templateUrl:'static/amber/amberStep.html'}).
-        when('/newJob', {controller:'NewJobCtrl', templateUrl:'static/amber/newJob.html'}).
-        when('/job/:jobId/postprocess', {controller:'PostProcessCtrl', templateUrl:'static/amber/postProcess.html'}).
+        when('/', {controller:'JobListCtrl', templateUrl:'static/application/jobs.html'}).
+        when('/newJob', {controller:'NewJobCtrl', templateUrl:'static/application/newJob.html'}).
         otherwise({redirectTo:'/'});
 }]);
 
 // For Dev Server - To bypass actual http calls to Server and provide mock data
-amberApp.run(function($httpBackend) {
+application.run(function($httpBackend) {
     var jobj1 = {};
     jobj1.tleap = {};
     jobj1.tleap.status = "Completed";
@@ -73,14 +70,8 @@ amberApp.run(function($httpBackend) {
     $httpBackend.whenGET("static/topbars.html").passThrough();
     $httpBackend.whenGET("static/footer.html").passThrough();
     $httpBackend.whenGET("getUserinfo").passThrough();
-    $httpBackend.whenGET("static/amber/jobs.html").passThrough();
-    $httpBackend.whenGET("static/amber/newJob.html").passThrough();
-    $httpBackend.whenGET("static/amber/newTleapJob.html").passThrough();
-    $httpBackend.whenGET("static/amber/newAmberJob.html").passThrough();
-    $httpBackend.whenGET("static/amber/newPostProcessJob.html").passThrough();
-    $httpBackend.whenGET("static/amber/tleap.html").passThrough();
-    $httpBackend.whenGET("static/amber/amberStep.html").passThrough();
-    $httpBackend.whenGET("static/amber/postProcess.html").passThrough();
+    $httpBackend.whenGET("static/application/jobs.html").passThrough();
+    $httpBackend.whenGET("static/application/newJob.html").passThrough();
 });
 // End For Dev Server
 /**

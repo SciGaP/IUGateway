@@ -126,5 +126,10 @@ public class PageController {
     	logger.debug("Load Amber Application page");
     	return ViewNames.AMBER_PAGE;
     }
+    @RequestMapping(value = "/application", method = RequestMethod.GET)
+    public String getApplicationPage() {
+        logger.debug("Load Amber Application page");
+        return ViewNames.APP_PAGE;
+    }
 
 }

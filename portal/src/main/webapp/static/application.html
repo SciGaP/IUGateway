@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
-<html ng-app="amberApp">
+<html ng-app="application">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Amber Portal</title>
+    <title>Application Portal</title>
     <link rel="icon" href="https://www.indiana.edu/favicon.ico"/>
     <link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico"/>
 
@@ -12,7 +12,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-mocks.js"></script>
-    <script src="static/js/amber/angular-file-upload.js"></script>
+    <script src="static/js/application/angular-file-upload.js"></script>
 
     <script src="static/js/common.js"></script>
     <script src="static/js/application.js"></script>
@@ -29,10 +29,12 @@
 <body>
 <div ng-include src="'static/topbars.html'"></div>
 
+<!--TODO: app Name should be displayed using the controller variable -->
+
 <div class="row">
     <div class="span20">
         <ul class="nav nav-list">
-            <li class="nav-header">AMBER PORTAL</li>
+            <li class="nav-header">{{appName}} PORTAL</li>
             <li><a href="#">My Jobs</a></li>
             <li><a href="#/newJob">New Job</a></li>
             <li><a href="#">Our Services</a></li>
@@ -47,7 +49,7 @@
         </ul>
     </div>
     <div class="well-iu span12">
-        <div class="well-heading">Amber Jobs</div>
+        <div class="well-heading">{{appName}} Jobs</div>
         <div ng-view></div>
     </div>
 </div>

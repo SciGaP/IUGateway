@@ -1,4 +1,4 @@
-angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
+angular.module("appControllers", ["appServices", "angularFileUpload"]).
     controller("JobListCtrl", ["JobService", "$scope", function (JobService, $scope) {
         console.log("In JobListCtrl");
 
@@ -48,10 +48,9 @@ angular.module("amberControllers", ["amberServices", "angularFileUpload"]).
 
         console.log($scope.jobData);
     }]).
-    controller("AmberCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
-        $scope.job = {};
-        $scope.job.id = $routeParams.jobId;
-        console.log("In AmberCtrl");
+    controller("MainController", ["$scope", "$routeParams", function ($scope, $routeParams) {
+        $scope.appName="WRF";
+        console.log("In MainController");
     }]).
     controller("PostProcessCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.job = {};
