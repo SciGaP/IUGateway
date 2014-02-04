@@ -1,26 +1,42 @@
 <div>
-    <div>
-        <li class="dropdown">
-            Select the Task Type:
-            <a class="dropdown-toggle btn">
-                {{selected}}
-            </a>
-            <ul class="dropdown-menu">
-                <li ng-repeat="phase in phases">
-                    <a ng-click="onItemClick(phase.name)">{{phase.name}}</a>
-                </li>
-            </ul>
-        </li>
-    </div>
-    <br>
-    <br>
-    <br>
-    <p ng-include src="jobForm">
-
-    </p>
-
-    <script>
-        $('.dropdown-toggle').dropdown()
-    </script>
+    <form name="newJob" ng-submit="createJob()" novalidate="novalidate">
+        <div class="row-fluid">
+            <div class="span3">Experiment Name:</div>
+            <div class="span9">
+                <input type="text" ng-minlength="2" ng-model="expName" required> {{expName}}
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row-fluid">
+            <div class="span3">Input file_1:</div>
+            <div class="span9">
+                <input type="file"/>
+            </div>
+        </div>
+        <br>
+        <div class="row-fluid">
+            <div class="span3">Input file_2:</div>
+            <div class="span9">
+                <input type="file"/>
+            </div>
+        </div>
+        <br>
+        <div class="row-fluid">
+            <div class="span3">Input file_3:</div>
+            <div class="span9">
+                <input type="file"/>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row-fluid">
+            <div class="span3"></div>
+            <div class="span9">
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="btn btn-primary">Run the Job</button>
+            </div>
+        </div>
+    </form>
 
 </div>

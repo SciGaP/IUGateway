@@ -52,24 +52,15 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         $scope.appName="WRF";
         console.log("In MainController");
     }]).
-    controller("PostProcessCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
-        $scope.job = {};
-        $scope.job.id = $routeParams.jobId;
-        console.log("In PostProcessCtrl");
-    }]).
     controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
-        $scope.job = {};
-        $scope.job.id = $routeParams.jobId;
-        $scope.selected = "Tleap";
-        $scope.phases=[{name:"Tleap", id:1},{name:"Amber", id:2},{name:"PostProcess", id:3}];
-        $scope.jobForm ="static/amber/newTleapJob.html"
+        $scope.expName = '';
 
         $scope.onItemClick = function (phaseID) {
             $scope.selected = phaseID;
             $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
         };
 
-        $scope.createJob = function(step,expName,files){
+        $scope.createJob = function(){
 
         };
         console.log($scope.selected);
