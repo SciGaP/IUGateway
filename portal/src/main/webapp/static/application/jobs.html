@@ -1,49 +1,70 @@
 <div>
-	<div class="row-fluid">
+    <div class="row-fluid">
         <div class="span3">Search Jobs:</div>
         <div class="span9">
             <input type="text" ng-model="filter.expName">
         </div>
-		<button class="btn pull-right" title="Refresh Job Listings" ng-click="refresh()"><i class="icon-refresh"></i></button>
-	</div>
-    <div>
-        <li class="dropdown">
-            Select Group:
-            <a class="dropdown-toggle btn">
-                {{selected}}
-            </a>
-            <ul class="dropdown-menu">
-                <li ng-repeat="phase in phases">
-                    <a ng-click="onItemClick(phase.name)">{{phase.name}}</a>
-                </li>
-            </ul>
-        </li>
     </div>
-	<div class="span12" style="min-height:10px;"></div>
-	<div class="row span12">
-		<div class="span2"><strong>Job Id</strong></div>
-		<div class="span2"><strong>Name</strong></div>
-		<div class="span2"><strong>Run on</strong></div>
-		<div class="span2"><strong>Current Status</strong></div>
-		<div class="span2"><strong>Last run time</strong></div>
-	</div>
     <br>
-	<div class="row span12" ng-repeat="item in jobs | filter:filter.expName | orderBy:'item.name'">
-		<div class="row-fluid">
-			<div class="span2">
-			  <span style="margin-left:-20px; margin-right:10px;" ng-click="showDetail=!showDetail; fetchDetail($index,item.id)">
+
+    <div class="row-fluid">
+        <div class="span3">
+            <li class="dropdown">
+                Select Group:
+                <a class="dropdown-toggle btn">
+                    {{selected}}
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="phase in phases">
+                        <a ng-click="onGroupSelect(phase.name)">{{phase.name}}</a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="span9">
+            <li class="dropdown">
+                Job Type:
+                <a class="dropdown-toggle btn">
+                    {{status}}
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="status in statuses">
+                        <a ng-click="onStatusSelect(status.name)">{{status.name}}</a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="span12" style="min-height:10px;"></div>
+    <div class="row span12">
+        <div class="span2"><strong>Job Id</strong></div>
+        <div class="span2"><strong>Name</strong></div>
+        <div class="span2"><strong>Run on</strong></div>
+        <div class="span2"><strong>Current Status</strong></div>
+        <div class="span2"><strong>Last run time</strong></div>
+    </div>
+    <br>
+
+    <div class="row span12" ng-repeat="item in jobs | filter: jobFilter |filter: filter.expName| orderBy:'item.name'">
+        <div class="row-fluid">
+            <div class="span2">
+			  <span style="margin-left:-20px; margin-right:10px;"
+                    ng-click="showDetail=!showDetail; fetchDetail($index,item.id)">
 				<i ng-hide="showDetail" class="icon-plus"></i>
 				<i ng-show="showDetail" class="icon-minus"></i>
 			  </span>
-			  <a ng-href="#/job/{{item.id}}/details">{{item.id}}</a>
-			</div>
-			<div class="span2">{{item.name}}</div>
-			<div class="span2">{{item.machine}}</div>
-			<div class="span2">{{item.currentStep}}</div>
-			<div class="span2">{{item.lastRunTime | date:'medium'}}</div>
-		</div>
+                <a ng-href="#/job/{{item.id}}/details">{{item.id}}</a>
+            </div>
+            <div class="span2">{{item.name}}</div>
+            <div class="span2">{{item.machine}}</div>
+            <div class="span2">{{item.status}}</div>
+            <div class="span2">{{item.lastRunTime | date:'medium'}}</div>
+        </div>
 
-	</div>
+    </div>
     <script>
         $('.dropdown-toggle').dropdown()
     </script>

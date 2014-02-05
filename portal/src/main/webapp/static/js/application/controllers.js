@@ -21,11 +21,34 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         $scope.selected = "MyJobs";
         $scope.phases=[{name:"MyJobs", id:1},{name:"ProteinX23 Project", id:2},{name:"ProteinScala Project", id:3}];
 
-        $scope.onItemClick = function (phaseID) {
+        $scope.status = "AllJobs";
+
+        $scope.statuses=[{name:"AllJobs", value:"AllJobs"},{name:"Finished", value:"Finished"},{name:"Launched", value:"Launched"}];
+
+
+        $scope.onGroupSelect = function (phaseID) {
             $scope.selected = phaseID;
             $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
         };
 
+
+        $scope.onStatusSelect = function(status){
+            $scope.status = status;
+            console.log($scope.status);
+        };
+
+
+        //job list filter
+        $scope.jobFilter = function (job) {
+            console.log(job.status + " status: " +$scope.status+ "   result: "+(job.status === $scope.status));
+            if($scope.status == "AllJobs"){
+                return true;
+            }
+            if(job.status != $scope.status){
+                return false;
+            }
+            return true;
+        };
 
     }]).
     controller("TleapCtrl", ["$scope", "$routeParams","JobService", function ($scope, $routeParams,JobService) {

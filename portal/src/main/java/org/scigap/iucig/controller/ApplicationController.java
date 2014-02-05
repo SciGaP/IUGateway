@@ -50,14 +50,14 @@ public class ApplicationController {
         job3.put("id", "j3");
         job3.put("name", "Job three");
         job3.put("machine", "Mason");
-        job3.put("currentStep", "Amber");
+        job3.put("status", "Finished");
         job3.put("lastRunTime", "01232014");
 
         Map<String, String> job4 = new HashMap<String, String>();
         job4.put("id", "j4");
         job4.put("name", "Job four");
         job4.put("machine", "Big Red II");
-        job4.put("currentStep", "Tleap");
+        job4.put("status", "Queued");
         job4.put("lastRunTime", "993399");
 
 
@@ -65,21 +65,21 @@ public class ApplicationController {
         job5.put("id", "j5");
         job5.put("name", "Test Experiment");
         job5.put("machine", "Quarry");
-        job5.put("currentStep", "PostProcess");
+        job5.put("status", "Launched");
         job5.put("lastRunTime", "0123442014");
 
         Map<String, String> job6 = new HashMap<String, String>();
         job6.put("id", "j6");
         job6.put("name", "r2pg0-119 Exp");
         job6.put("machine", "Big Red II");
-        job6.put("currentStep", "PostProcess");
+        job6.put("status", "Finished");
         job6.put("lastRunTime", "012332014");
 
         Map<String, String> job7 = new HashMap<String, String>();
         job7.put("id", "j7");
         job7.put("name", "Airavata Tester");
         job7.put("machine", "Big Red II");
-        job7.put("currentStep", "Amber");
+        job7.put("status", "Queued");
         job7.put("lastRunTime", "0123442014");
 
         JSONObject job3_json = new JSONObject(job3);
