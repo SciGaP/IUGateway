@@ -13,6 +13,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 @Controller
@@ -24,12 +25,32 @@ public class ApplicationController {
     @RequestMapping(value="/jobs/{jobID}", method = RequestMethod.GET)
     public String getDummyJob(@PathVariable(value="jobID") final String jobID) throws IOException {
 
-        Map<String, String> job = new HashMap<String, String>();
+        Map<String, Object> job = new HashMap<String, Object>();
         job.put("id", jobID);
         job.put("name", "Airavata Tester");
-        job.put("machine", "Big Red II");
+        job.put("resource", "Big Red II");
         job.put("status", "Queued");
-        job.put("lastRunTime", "0123442014");
+        job.put("createdDate", "01_14_2014");
+
+        //todo : test if two input files contain the same name because Angular doesn't allow that.
+
+        List<String> inputs = new ArrayList<String>();
+        List<String> intermediateFiles = new ArrayList<String>();
+        List<String> outputs = new ArrayList<String>();
+
+        inputs.add("/Users/swithana/test.trt");
+        inputs.add("test/lastInput.java");
+
+        intermediateFiles.add("test/lastintermid.java");
+        intermediateFiles.add("test/lastIntermid.class");
+
+        outputs.add("test/output1.java");
+        outputs.add("test/output2.csv");
+
+
+        job.put("inputs",inputs);
+        job.put("intermediateFiles",intermediateFiles);
+        job.put("outputs",outputs);
 
         JSONObject job_json = new JSONObject(job);
 

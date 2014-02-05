@@ -1,19 +1,70 @@
 <div>
     <form name="newJob" novalidate="novalidate">
         <div class="row-fluid">
-            <div class="span3">Experiment Name:</div>
+            <div class="span3"><strong>Experiment Name:</strong></div>
             <div class="span9">
-                {{job_details.name}}
+                <i>{{job_details.name}}</i>
             </div>
+
         </div>
+        <br>
+
         <div class="row-fluid">
-            <div class="span3">Status:</div>
-            <div class="span9">
-                {{job_details.status}}
-            </div>
+            <div class="span2"><Strong>Job Id :</Strong> {{job_details.id}}</div>
+            <div class="span2"><Strong>Resource:</Strong> {{job_details.resource}}</div>
+            <div class="span2"><Strong>Status:</Strong> {{job_details.status}}</div>
+            <div class="span2"><Strong>Created time:</Strong> {{job_details.createdDate}}</div>
         </div>
         <br>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <strong> Input Files:</strong>
+            </div>
+        </div>
+        <div ng-repeat="input in job_details.inputs">
+            <li>
+                {{input}}
+            </li>
+        </div>
         <br>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <strong> Intermediate Files:</strong>
+            </div>
+        </div>
+        <div ng-repeat="intermid in job_details.intermediateFiles">
+            <li>
+                {{intermid}}
+            </li>
+        </div>
+        <br>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <strong> Output Files:</strong>
+            </div>
+        </div>
+        <div ng-repeat="output in job_details.outputs">
+            <li>
+                {{output}}
+            </li>
+        </div>
+        <br>
+
+
+        <br>
+        <br>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <button type="submit" class="btn btn-primary">Re-Submit Job</button>
+            </div>
+            <div class="span9">
+                <button type="submit" class="btn btn-primary btn-danger">Cancel Job</button>
+            </div>
+        </div>
     </form>
 
 </div>
