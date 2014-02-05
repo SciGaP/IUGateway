@@ -28,7 +28,6 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
 
         $scope.onGroupSelect = function (phaseID) {
             $scope.selected = phaseID;
-            $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
         };
 
 
@@ -51,25 +50,20 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         };
 
     }]).
-    controller("TleapCtrl", ["$scope", "$routeParams","JobService", function ($scope, $routeParams,JobService) {
-        $scope.job = {};
-        $scope.job.id = $routeParams.jobId;
-        console.log("In TleapCtrl");
-        console.log($scope.job.id);
-        console.log("Job ID: "+$routeParams);
-        $scope.tester = "test";
-        console.log("this is the tester: "+$scope.tester);
+    controller("JobController", ["$scope", "$routeParams","JobService", function ($scope, $routeParams,JobService) {
 
+        $scope.jobID = $routeParams.jobID;
+        console.log("In Job Controller, Job ID: "+$scope.jobID);
 
-        var fetchExperimentName = function (jobId) {
-            JobService.fetchJob(jobId).then(function (job) {
-                $scope.jobData =job;
+        $scope.fetchSingleJob = function (){
+            JobService.fetchJob($scope.jobID).then(function (job) {
+                $scope.job_details = job;
             });
         };
-        fetchExperimentName($scope.job.id);
-        //$scope.expName = $scope.exp.name;
+        console.log($scope.job_details);
+        $scope.fetchSingleJob();
+        console.log("Job details : " + $scope.job_details);
 
-        console.log($scope.jobData);
     }]).
     controller("MainController", ["$scope", "$routeParams", function ($scope, $routeParams) {
         $scope.appName="WRF";
@@ -119,46 +113,4 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
                 //.then(success, error, progress);
             }
         };
-    }]).
-    controller("ModalDemoCtrl", function ($scope, $modal, $log) {
-
-    $scope.items = ['item1', 'item2', 'item3'];
-
-    $scope.open = function () {
-
-        var modalInstance = $modal.open({
-            templateUrl: 'static/amber/myModalContent.html',
-            controller: ModalInstanceCtrl,
-            resolve: {
-                items: function () {
-                    return $scope.items;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-}).
-
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
-controller("ModalInstanceCtrl", function ($scope, $modalInstance, items) {
-
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
-
-    $scope.ok = function () {
-        $modalInstance.close($scope.selected.item);
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-});
+    }]);

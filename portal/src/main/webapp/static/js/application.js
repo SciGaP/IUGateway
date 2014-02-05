@@ -4,6 +4,7 @@ application.config(['$routeProvider' ,function($routeProvider) {
     $routeProvider.
         when('/', {controller:'JobListCtrl', templateUrl:'static/application/jobs.html'}).
         when('/newJob', {controller:'NewJobCtrl', templateUrl:'static/application/newJob.html'}).
+        when('/job/:jobID/details', {controller:'JobController', templateUrl:'static/application/jobDetails.html'}).
         otherwise({redirectTo:'/'});
 }]);
 
@@ -71,6 +72,7 @@ application.run(function($httpBackend) {
     $httpBackend.whenGET("static/footer.html").passThrough();
     $httpBackend.whenGET("getUserinfo").passThrough();
     $httpBackend.whenGET("static/application/jobs.html").passThrough();
+    $httpBackend.whenGET("static/application/jobDetails.html").passThrough();
     $httpBackend.whenGET("static/application/newJob.html").passThrough();
 });
 // End For Dev Server

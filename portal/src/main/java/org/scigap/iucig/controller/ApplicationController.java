@@ -24,23 +24,16 @@ public class ApplicationController {
     @RequestMapping(value="/jobs/{jobID}", method = RequestMethod.GET)
     public String getDummyJob(@PathVariable(value="jobID") final String jobID) throws IOException {
 
-        Map job = new HashMap();
-        job.put("tleap_status", "Completed");
-        job.put("amber_status", "Completed");
-        job.put("postProcess_status", "Pending");
-        job.put("tleap_inputFiles", "/Users/swithana");
-        job.put("amber_inputFiles", "/Users/swithana");
-        job.put("postProcess_inputFiles", "/Users/swithana");
-        job.put("tleap_outputFiles", "/Users/swithana/output");
-        job.put("amber_outputFiles", "/Users/swithana/output");
-        job.put("postProcess_outputFiles", "/Users/swithana/output");
+        Map<String, String> job = new HashMap<String, String>();
+        job.put("id", jobID);
+        job.put("name", "Airavata Tester");
+        job.put("machine", "Big Red II");
+        job.put("status", "Queued");
+        job.put("lastRunTime", "0123442014");
 
         JSONObject job_json = new JSONObject(job);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(job_json);
 
-        String result = job_json.toString();
-        return result;
+        return job_json.toString();
     }
 
     @ResponseBody
