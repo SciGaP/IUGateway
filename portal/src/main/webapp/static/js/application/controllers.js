@@ -37,6 +37,7 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         };
 
 
+
         //job list filter
         $scope.jobFilter = function (job) {
             console.log(job.status + " status: " +$scope.status+ "   result: "+(job.status === $scope.status));
@@ -47,6 +48,9 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
                 return false;
             }
             return true;
+        };
+        $scope.showDetails = function(item) {
+            $scope.item = item;
         };
 
     }]).

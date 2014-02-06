@@ -12,7 +12,7 @@ factory("JobService",["$http",function($http) {
 				});
 		},
 		fetchJob : function(jobId) {
-			return $http({method:"GET", url:"application/jobs/"+jobId, cache:false}).
+			return $http({method:"GET", url:"application/jobs/"+jobId+"/info", cache:false}).
 				then(function(response) {
 					return response.data;
 				}, function(response, status) {

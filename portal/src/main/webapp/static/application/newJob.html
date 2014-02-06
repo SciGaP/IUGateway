@@ -1,42 +1,54 @@
-<div>
-    <form name="newJob" ng-submit="createJob()" novalidate="novalidate">
-        <div class="row-fluid">
-            <div class="span3">Experiment Name:</div>
-            <div class="span9">
-                <input type="text" ng-minlength="2" ng-model="expName" required> {{expName}}
-            </div>
-        </div>
-        <br>
-        <br>
-        <div class="row-fluid">
-            <div class="span3">Input file_1:</div>
-            <div class="span9">
-                <input type="file"/>
-            </div>
-        </div>
-        <br>
-        <div class="row-fluid">
-            <div class="span3">Input file_2:</div>
-            <div class="span9">
-                <input type="file"/>
-            </div>
-        </div>
-        <br>
-        <div class="row-fluid">
-            <div class="span3">Input file_3:</div>
-            <div class="span9">
-                <input type="file"/>
-            </div>
-        </div>
-        <br>
-        <br>
-        <div class="row-fluid">
-            <div class="span3"></div>
-            <div class="span9">
-                <!-- SUBMIT BUTTON -->
-                <button type="submit" class="btn btn-primary">Run the Job</button>
-            </div>
-        </div>
-    </form>
+<div class="well container-fluid">
+    <div class="row-fluid">
+        <div class="well-iu span12">
+            <div class="well-heading"> Job Details</div>
 
+            <div>
+                <form name="newJob" ng-submit="createJob()" novalidate="novalidate">
+                    <div class="row-fluid">
+                        <div class="span3">Experiment Name:</div>
+                        <div class="span9">
+                            <input type="text" ng-minlength="2" ng-model="expName" required> {{expName}}
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+
+                    <div class="row-fluid">
+                        <div class="span3">Input file_1:</div>
+                        <div class="span9">
+                            <input type="file"/>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row-fluid">
+                        <div class="span3">Input file_2:</div>
+                        <div class="span9">
+                            <input type="file"/>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row-fluid">
+                        <div class="span3">Input file_3:</div>
+                        <div class="span9">
+                            <input type="file"/>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span9">
+                            <!-- SUBMIT BUTTON -->
+                            <button type="submit" class="btn btn-primary">Run the Job</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 </div>

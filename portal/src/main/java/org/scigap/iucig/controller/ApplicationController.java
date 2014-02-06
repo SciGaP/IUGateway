@@ -3,18 +3,19 @@ package org.scigap.iucig.controller;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value="/application/")
@@ -22,7 +23,7 @@ public class ApplicationController {
     private final Logger logger = Logger.getLogger(getClass());
 
     @ResponseBody
-    @RequestMapping(value="/jobs/{jobID}", method = RequestMethod.GET)
+    @RequestMapping(value="/jobs/{jobID}/info", method = RequestMethod.GET)
     public String getDummyJob(@PathVariable(value="jobID") final String jobID) throws IOException {
 
         Map<String, Object> job = new HashMap<String, Object>();
@@ -112,6 +113,11 @@ public class ApplicationController {
         return jsonArray.toString();
     }
 
+    @RequestMapping(value = "/jobs/{jobID}/{file_name}", method = RequestMethod.GET)
+    @ResponseBody
+    public FileSystemResource getFile(@PathVariable("file_name") String fileName,@PathVariable("jobID") String jobID) {
+        return new FileSystemResource(fileName);
+    }
     private String checkFileUpload = "fileNotUploaded";
     @ResponseBody
     @RequestMapping(value="/uploadPDB/{jobID}", headers = "content-type=multipart/*",method = RequestMethod.POST)
