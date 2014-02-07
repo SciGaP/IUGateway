@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value="/application/")
+@RequestMapping(value = "/application/")
 public class ApplicationController {
     private final Logger logger = Logger.getLogger(getClass());
 
     @ResponseBody
-    @RequestMapping(value="/jobs/{jobID}/info", method = RequestMethod.GET)
-    public String getDummyJob(@PathVariable(value="jobID") final String jobID) throws IOException {
+    @RequestMapping(value = "/jobs/{jobID}/info", method = RequestMethod.GET)
+    public String getDummyJob(@PathVariable(value = "jobID") final String jobID) throws IOException {
 
         Map<String, Object> job = new HashMap<String, Object>();
         job.put("id", jobID);
@@ -49,9 +49,9 @@ public class ApplicationController {
         outputs.add("test/output2.csv");
 
 
-        job.put("inputs",inputs);
-        job.put("intermediateFiles",intermediateFiles);
-        job.put("outputs",outputs);
+        job.put("inputs", inputs);
+        job.put("intermediateFiles", intermediateFiles);
+        job.put("outputs", outputs);
 
         JSONObject job_json = new JSONObject(job);
 
@@ -59,7 +59,7 @@ public class ApplicationController {
     }
 
     @ResponseBody
-    @RequestMapping(value="/allJobs", method = RequestMethod.GET)
+    @RequestMapping(value = "/allJobs", method = RequestMethod.GET)
     public String getAllJobs() throws IOException {
         Map<String, String> job3 = new HashMap<String, String>();
         job3.put("id", "j3");
@@ -124,40 +124,43 @@ public class ApplicationController {
 
     @RequestMapping(value = "/jobs/{jobID}/{file_name}", method = RequestMethod.GET)
     @ResponseBody
-    public FileSystemResource getFile(@PathVariable("file_name") String fileName,@PathVariable("jobID") String jobID) {
+    public FileSystemResource getFile(@PathVariable("file_name") String fileName, @PathVariable("jobID") String jobID) {
         return new FileSystemResource(fileName);
     }
+
     private String checkFileUpload = "fileNotUploaded";
+
     @ResponseBody
-    @RequestMapping(value="/uploadPDB/{jobID}", headers = "content-type=multipart/*",method = RequestMethod.POST)
-    public String uploadPDBfile(@PathVariable(value="jobID") final String jobID,
+    @RequestMapping(value = "/uploadPDB/{jobID}", headers = "content-type=multipart/*", method = RequestMethod.POST)
+    public String uploadPDBfile(@PathVariable(value = "jobID") final String jobID,
                                 @RequestParam("file") MultipartFile file) throws IOException {
 
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File( "testFileUpload.torrent")));
+                        new BufferedOutputStream(new FileOutputStream(new File("testFileUpload.torrent")));
                 stream.write(bytes);
                 stream.close();
-                checkFileUpload = "You successfully uploaded " +"-uploaded !";
+                checkFileUpload = "You successfully uploaded " + "-uploaded !";
             } catch (Exception e) {
-                checkFileUpload= "You failed to upload " + e.getMessage();
+                checkFileUpload = "You failed to upload " + e.getMessage();
             }
         } else {
-            checkFileUpload =  "You failed to upload " + " because the file was empty.";
+            checkFileUpload = "You failed to upload " + " because the file was empty.";
         }
         return checkFileUpload;
     }
 
     @ResponseBody
-    @RequestMapping(value="/uploadPDB/{jobID}", method = RequestMethod.GET)
-    public String fileUploadCheck(@PathVariable(value="jobID") final String jobID) throws IOException {
+    @RequestMapping(value = "/uploadPDB/{jobID}", method = RequestMethod.GET)
+    public String fileUploadCheck(@PathVariable(value = "jobID") final String jobID) throws IOException {
 
 
         return checkFileUpload;
     }
-    private void log(String message){
+
+    private void log(String message) {
         logger.info(message);
     }
 }

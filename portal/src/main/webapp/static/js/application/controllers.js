@@ -3,7 +3,6 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         console.log("In JobListCtrl");
 
 
-
         var loadJobs = function () {
             JobService.getAllJobs().then(function (jobs) {
                 $scope.jobs = jobs;
@@ -22,11 +21,19 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         };
         //for project showing and filtering
         $scope.selectedProject = "AllExperiments";
-        $scope.projects=[{name:"AllExperiments", id:1},{name:"Protein", id:2},{name:"Cybergateway", id:3}];
+        $scope.projects = [
+            {name: "AllExperiments", id: 1},
+            {name: "Protein", id: 2},
+            {name: "Cybergateway", id: 3}
+        ];
         $scope.project = "";
 
         $scope.status = "AllJobs";
-        $scope.statuses=[{name:"AllJobs", value:"AllJobs"},{name:"Finished", value:"Finished"},{name:"Launched", value:"Launched"}];
+        $scope.statuses = [
+            {name: "AllJobs", value: "AllJobs"},
+            {name: "Finished", value: "Finished"},
+            {name: "Launched", value: "Launched"}
+        ];
 
 
         $scope.onProjectSelect = function (project) {
@@ -38,7 +45,7 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         };
 
 
-        $scope.onStatusSelect = function(status){
+        $scope.onStatusSelect = function (status) {
             $scope.status = status;
             console.log($scope.status);
         };
@@ -46,26 +53,26 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
 
         //job list filter
         $scope.jobFilter = function (job) {
-            console.log(job.status + " status: " +$scope.status+ "   result: "+(job.status === $scope.status));
-            if($scope.status == "AllJobs"){
+            console.log(job.status + " status: " + $scope.status + "   result: " + (job.status === $scope.status));
+            if ($scope.status == "AllJobs") {
                 return true;
             }
-            if(job.status != $scope.status){
+            if (job.status != $scope.status) {
                 return false;
             }
             return true;
         };
-        $scope.showDetails = function(item) {
+        $scope.showDetails = function (item) {
             $scope.item = item;
         };
 
     }]).
-    controller("JobController", ["$scope", "$routeParams","JobService", function ($scope, $routeParams,JobService) {
+    controller("JobController", ["$scope", "$routeParams", "JobService", function ($scope, $routeParams, JobService) {
 
         $scope.jobID = $routeParams.jobID;
-        console.log("In Job Controller, Job ID: "+$scope.jobID);
+        console.log("In Job Controller, Job ID: " + $scope.jobID);
 
-        $scope.fetchSingleJob = function (){
+        $scope.fetchSingleJob = function () {
             JobService.fetchJob($scope.jobID).then(function (job) {
                 $scope.job_details = job;
             });
@@ -76,7 +83,7 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
 
     }]).
     controller("MainController", ["$scope", "$routeParams", function ($scope, $routeParams) {
-        $scope.appName="WRF";
+        $scope.appName = "WRF";
         console.log("In MainController");
     }]).
     controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
@@ -84,10 +91,10 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
 
         $scope.onItemClick = function (phaseID) {
             $scope.selected = phaseID;
-            $scope.jobForm = "static/amber/new"+$scope.selected+"Job.html"
+            $scope.jobForm = "static/amber/new" + $scope.selected + "Job.html"
         };
 
-        $scope.createJob = function(){
+        $scope.createJob = function () {
 
         };
         console.log($scope.selected);
