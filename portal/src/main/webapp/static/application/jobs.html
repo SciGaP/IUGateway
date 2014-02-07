@@ -103,7 +103,7 @@
                         </tr>
                         <tr ng-click="showDetails(job); fetchSingleJob(job.id)" href="#myModal" role="button"
                             data-toggle="modal"
-                            ng-repeat="job in jobs | filter:filterText|filter:project | orderBy:predicate">
+                            ng-repeat="job in jobs | filter:filterText|filter:project |filter:statusFilter| orderBy:predicate">
                             <td>{{job.id}}</td>
                             <td style="max-width:100px; word-wrap: break-word;">{{job.name}}</td>
                             <td>{{job.status}}</td>

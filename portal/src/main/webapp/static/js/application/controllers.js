@@ -52,7 +52,7 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
 
 
         //job list filter
-        $scope.jobFilter = function (job) {
+        $scope.statusFilter = function (job) {
             console.log(job.status + " status: " + $scope.status + "   result: " + (job.status === $scope.status));
             if ($scope.status == "AllJobs") {
                 return true;
