@@ -66,19 +66,27 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
             $scope.item = item;
         };
 
+        //for single job details
+
+        $scope.fetchSingleJob = function (jobID) {
+            JobService.fetchJob(jobID).then(function (job) {
+                $scope.job_details = job;
+            });
+        };
+        console.log("Job details : " + $scope.job_details);
     }]).
     controller("JobController", ["$scope", "$routeParams", "JobService", function ($scope, $routeParams, JobService) {
 
         $scope.jobID = $routeParams.jobID;
         console.log("In Job Controller, Job ID: " + $scope.jobID);
 
-        $scope.fetchSingleJob = function () {
-            JobService.fetchJob($scope.jobID).then(function (job) {
+        $scope.fetchSingleJob = function (jobID) {
+            JobService.fetchJob(jobID).then(function (job) {
                 $scope.job_details = job;
             });
         };
         console.log($scope.job_details);
-        $scope.fetchSingleJob();
+        $scope.fetchSingleJob(jobID);
         console.log("Job details : " + $scope.job_details);
 
     }]).

@@ -39,14 +39,14 @@ public class ApplicationController {
         List<String> intermediateFiles = new ArrayList<String>();
         List<String> outputs = new ArrayList<String>();
 
-        inputs.add("/Users/swithana/test.trt");
-        inputs.add("test/lastInput.java");
+        inputs.add("test.trt");
+        inputs.add("lastInput.java");
 
-        intermediateFiles.add("test/lastintermid.java");
-        intermediateFiles.add("test/lastIntermid.class");
+        intermediateFiles.add("lastintermid.java");
+        intermediateFiles.add("lastIntermid.class");
 
-        outputs.add("test/output1.java");
-        outputs.add("test/output2.csv");
+        outputs.add("output1.java");
+        outputs.add("output2.csv");
 
 
         job.put("inputs", inputs);

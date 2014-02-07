@@ -101,7 +101,8 @@
                                 <div>No jobs running currently !</div>
                             </td>
                         </tr>
-                        <tr ng-click="showDetails(job)" href="#myModal" role="button" data-toggle="modal"
+                        <tr ng-click="showDetails(job); fetchSingleJob(job.id)" href="#myModal" role="button"
+                            data-toggle="modal"
                             ng-repeat="job in jobs | filter:filterText|filter:project | orderBy:predicate">
                             <td>{{job.id}}</td>
                             <td style="max-width:100px; word-wrap: break-word;">{{job.name}}</td>
@@ -146,6 +147,32 @@
                         <div class="span4"><strong>Last status Update</strong></div>
                         <div> {{item.statusUpdateTime}}</div>
                     </div>
+
+                    <!-- adding input files -->
+                    <div class="row-fluid">
+                        <div class="span4"><strong>Input files</strong></div>
+                        <div ng-repeat="input in job_details.inputs">
+                            <li><a>{{input}}</a></li>
+                        </div>
+
+                    </div>
+                    <br>
+                    <!-- adding intermediate files -->
+                    <div class="row-fluid">
+                        <div class="span4"><strong>Intermediate files</strong></div>
+                        <div ng-repeat="intermid in job_details.intermediateFiles">
+                            <li><a>{{intermid}}</a></li>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- adding output files -->
+                    <div class="row-fluid">
+                        <div class="span4"><strong>Input files</strong></div>
+                        <div ng-repeat="output in job_details.outputs">
+                            <li><a>{{output}}</a></li>
+                        </div>
+                    </div>
+                    <br>
                 </div>
                 <div class="modal-footer">
                     <div class="row-fluid">
