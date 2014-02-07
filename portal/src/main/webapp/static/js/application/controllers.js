@@ -2,6 +2,8 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
     controller("JobListCtrl", ["JobService", "$scope", function (JobService, $scope) {
         console.log("In JobListCtrl");
 
+
+
         var loadJobs = function () {
             JobService.getAllJobs().then(function (jobs) {
                 $scope.jobs = jobs;
@@ -35,7 +37,6 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
             $scope.status = status;
             console.log($scope.status);
         };
-
 
 
         //job list filter
