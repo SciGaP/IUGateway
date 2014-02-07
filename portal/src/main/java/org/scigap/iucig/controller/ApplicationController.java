@@ -67,6 +67,8 @@ public class ApplicationController {
         job3.put("machine", "Mason");
         job3.put("status", "Finished");
         job3.put("lastRunTime", "01232014");
+        job3.put("project", "Airavata");
+        job3.put("description", "This is a test description");
 
         Map<String, String> job4 = new HashMap<String, String>();
         job4.put("id", "j4");
@@ -74,7 +76,8 @@ public class ApplicationController {
         job4.put("machine", "Big Red II");
         job4.put("status", "Queued");
         job4.put("lastRunTime", "993399");
-
+        job4.put("project", "Protein");
+        job4.put("description", "Hello Test");
 
         Map<String, String> job5 = new HashMap<String, String>();
         job5.put("id", "j5");
@@ -82,6 +85,8 @@ public class ApplicationController {
         job5.put("machine", "Quarry");
         job5.put("status", "Launched");
         job5.put("lastRunTime", "0123442014");
+        job5.put("project", "Protein");
+        job5.put("description", "Protein working test");
 
         Map<String, String> job6 = new HashMap<String, String>();
         job6.put("id", "j6");
@@ -89,6 +94,8 @@ public class ApplicationController {
         job6.put("machine", "Big Red II");
         job6.put("status", "Finished");
         job6.put("lastRunTime", "012332014");
+        job6.put("project", "Cybergateway");
+        job6.put("description", "Quary test project");
 
         Map<String, String> job7 = new HashMap<String, String>();
         job7.put("id", "j7");
@@ -96,6 +103,8 @@ public class ApplicationController {
         job7.put("machine", "Big Red II");
         job7.put("status", "Queued");
         job7.put("lastRunTime", "0123442014");
+        job7.put("project", "Cybergateway");
+        job7.put("description", "bigred 2 tester");
 
         JSONObject job3_json = new JSONObject(job3);
         JSONObject job4_json = new JSONObject(job4);

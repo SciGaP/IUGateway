@@ -20,16 +20,21 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
                 $scope.jobs[jobIndex].detail = job;
             });
         };
-        $scope.selected = "MyJobs";
-        $scope.phases=[{name:"MyJobs", id:1},{name:"ProteinX23 Project", id:2},{name:"ProteinScala Project", id:3}];
+        //for project showing and filtering
+        $scope.selectedProject = "AllExperiments";
+        $scope.projects=[{name:"AllExperiments", id:1},{name:"Protein", id:2},{name:"Cybergateway", id:3}];
+        $scope.project = "";
 
         $scope.status = "AllJobs";
-
         $scope.statuses=[{name:"AllJobs", value:"AllJobs"},{name:"Finished", value:"Finished"},{name:"Launched", value:"Launched"}];
 
 
-        $scope.onGroupSelect = function (phaseID) {
-            $scope.selected = phaseID;
+        $scope.onProjectSelect = function (project) {
+            $scope.selectedProject = project;
+            $scope.project = (project == "AllExperiments") ? "" : project;
+
+            console.log("project selected: " + project);
+            console.log("Project filter: " + $scope.project);
         };
 
 
