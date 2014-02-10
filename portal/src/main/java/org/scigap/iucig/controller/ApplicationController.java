@@ -129,6 +129,21 @@ public class ApplicationController {
     }
 
     private String checkFileUpload = "fileNotUploaded";
+    private String formUploaded = "formNot Uploaded";
+
+    @ResponseBody
+    @RequestMapping(value = "/createJob", method = RequestMethod.POST)
+    public String createJobPost() throws IOException {
+        return formUploaded = "form Uploaded";
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/createJob", method = RequestMethod.GET)
+    public String createJobGet() throws IOException {
+        return formUploaded;
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/uploadPDB/{jobID}", headers = "content-type=multipart/*", method = RequestMethod.POST)

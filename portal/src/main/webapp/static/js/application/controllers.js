@@ -94,7 +94,7 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         $scope.appName = "WRF";
         console.log("In MainController");
     }]).
-    controller("NewJobCtrl", ["$scope", "$routeParams", function ($scope, $routeParams) {
+    controller("NewJobCtrl", ["$scope", "$routeParams","$http", function ($scope, $routeParams,$http) {
         $scope.expName = '';
 
         $scope.onItemClick = function (phaseID) {
@@ -113,9 +113,27 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
         }
 
 
-        $scope.createJob = function () {
-
+        //submitting the form
+        var data = {
+            expName: "default",
+            expDescription: "default",
+            input1: "default",
+            input2: "default"
         };
+
+        $scope.saveData = function(){
+            data = $scope.form;
+        };
+
+        $scope.createJob = function() {
+            $scope.saveData();
+            console.log("posting data....");
+            $http.post('application/createJob', JSON.stringify(data)).success(function(){
+            console.log("form submission successful!!")
+            console.log(data)
+            });
+        };
+
         console.log($scope.selected);
         console.log("In New Job Controller ...");
     }]).

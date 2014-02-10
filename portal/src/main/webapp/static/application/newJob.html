@@ -8,13 +8,13 @@
                     <div class="row-fluid">
                         <div class="span3">Experiment Name:</div>
                         <div class="span9">
-                            <input type="text" ng-minlength="2" ng-model="expName" required>
+                            <input type="text" ng-minlength="2" ng-model="form.expName" required>
                         </div>
                     </div>
                     <div class="row-fluid">
                         <div class="span3">Experiment Description:</div>
                         <div class="span9">
-                            <textarea type="text" ng-model="expDesc" required></textarea>
+                            <textarea type="text" ng-model="form.expDescription" required></textarea>
                         </div>
                     </div>
                     <br>
@@ -50,7 +50,7 @@
                     <div class="row-fluid">
                         <div class="span3">Input file_1:</div>
                         <div class="span9">
-                            <input type="file"/>
+                            <input type="file" ng-model="form.input1"/>
                         </div>
                     </div>
                     <br>
@@ -58,7 +58,7 @@
                     <div class="row-fluid">
                         <div class="span3">Input file_2:</div>
                         <div class="span9">
-                            <input type="file"/>
+                            <input type="file" ng-model="form.input2"/>
                         </div>
                     </div>
                     <br>
@@ -66,7 +66,7 @@
                     <div class="row-fluid">
                         <div class="span3">Input file_3:</div>
                         <div class="span9">
-                            <input type="file"/>
+                            <input type="file" ng-model="form.input3"/>
                         </div>
                     </div>
                     <br>
@@ -76,7 +76,7 @@
                         <div class="span3"></div>
                         <div class="span9">
                             <!-- SUBMIT BUTTON -->
-                            <button type="submit" class="btn btn-primary">Run the Job</button>
+                            <button type="submit" ng-click="createJob()" class="btn btn-primary">Run the Job</button>
                         </div>
                     </div>
                 </form>
