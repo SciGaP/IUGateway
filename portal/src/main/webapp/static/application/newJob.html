@@ -8,12 +8,45 @@
                     <div class="row-fluid">
                         <div class="span3">Experiment Name:</div>
                         <div class="span9">
-                            <input type="text" ng-minlength="2" ng-model="expName" required> {{expName}}
+                            <input type="text" ng-minlength="2" ng-model="expName" required>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3">Experiment Description:</div>
+                        <div class="span9">
+                            <textarea type="text" ng-model="expDesc" required></textarea>
                         </div>
                     </div>
                     <br>
-                    <br>
 
+                    <!-- configuring advanced options -->
+                    <div>
+                        <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Advanced Options >></button>
+                        <hr>
+                        <div ng-show="isCollapsed">
+                            <div class="well well-lg">
+                                <div class="row-fluid">
+                                    <div class="span3">CPU count:</div>
+                                    <div class="span9">
+                                        <input type="text" ng-model="advCPUcount">
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3">Scheduling:</div>
+                                    <div class="span9">
+                                        <input type="text" ng-model="advScheduling">
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3"></div>
+                                    <div class="span9">
+                                        <button class="btn btn-default" ng-click="saveAdvanceOptions()"> Save</button>                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- input files -->
                     <div class="row-fluid">
                         <div class="span3">Input file_1:</div>
                         <div class="span9">

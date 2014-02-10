@@ -101,6 +101,17 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
             $scope.selected = phaseID;
             $scope.jobForm = "static/amber/new" + $scope.selected + "Job.html"
         };
+        $scope.isCollapsed = false;
+
+        $scope.savedCPUCount = ""
+        $scope.savedScheduling = ""
+
+        //save the advanced options
+        $scope.saveAdvanceOptions = function(){
+            $scope.savedCPUCount = $scope.advCPUcount;
+            $scope.savedScheduling = $scope.advScheduling;
+        }
+
 
         $scope.createJob = function () {
 
