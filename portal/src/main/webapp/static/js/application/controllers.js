@@ -1,5 +1,5 @@
 angular.module("appControllers", ["appServices", "angularFileUpload"]).
-    controller("JobListCtrl", ["JobService", "$scope", function (JobService, $scope) {
+    controller("JobListCtrl", ["JobService", "$scope","$location", function (JobService, $scope,$location) {
         console.log("In JobListCtrl");
 
 
@@ -74,6 +74,14 @@ angular.module("appControllers", ["appServices", "angularFileUpload"]).
             });
         };
         console.log("Job details : " + $scope.job_details);
+
+
+        $scope.go = function ( path ) {
+            $location.path( path );
+            console.log("path cloning going to: " +path);
+        };
+
+
     }]).
     controller("JobController", ["$scope", "$routeParams", "JobService", function ($scope, $routeParams, JobService) {
 
