@@ -73,8 +73,8 @@ application.run(function($httpBackend) {
 
     $httpBackend.whenGET('anotherURL').respond('Another content');
     // Do real request
-    $httpBackend.whenGET("static/topbars.html").passThrough();
-    $httpBackend.whenGET("static/footer.html").passThrough();
+    $httpBackend.whenGET("static/application/topbars.html").passThrough();
+    $httpBackend.whenGET("static/application/footer.html").passThrough();
     $httpBackend.whenGET("getUserinfo").passThrough();
     $httpBackend.whenGET("static/application/jobs.html").passThrough();
     $httpBackend.whenGET("static/application/jobDetails.html").passThrough();
