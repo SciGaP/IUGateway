@@ -1,0 +1,86 @@
+<div class="well container-fluid">
+    <div class="row-fluid">
+        <div class="well-iu span12">
+            <div class="well-heading"> File List</div>
+            <div>
+                <div>
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th><a href="#" ng-click="predicate = 'id'; reverse=!reverse">Job ID</a> <i
+                                    ng-show="predicate=='id' && reverse" class="icon-arrow-up"></i><i
+                                    ng-show="predicate=='id' && !reverse" class="icon-arrow-down"></i></th>
+                            <th><a href="#" ng-click="predicate = 'name'; reverse=!reverse">Name</a> <i
+                                    ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i
+                                    ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
+                            <th><a href="#" ng-click="predicate = 'status'; reverse=!reverse">Job Status</a> <i
+                                    ng-show="predicate=='status' && reverse" class="icon-arrow-up"></i><i
+                                    ng-show="predicate=='status' && !reverse" class="icon-arrow-down"></i></th>
+                            <th><a href="#" ng-click="predicate = 'project'; reverse=!reverse">Project</a> <i
+                                    ng-show="predicate=='project' && reverse" class="icon-arrow-up"></i><i
+                                    ng-show="predicate=='project' && !reverse" class="icon-arrow-down"></i></th>
+
+                            <th><a href="#" ng-click="predicate = 'submitDate'; reverse=!reverse">Submit Date</a> <i
+                                    ng-show="predicate=='submitDate' && reverse" class="icon-arrow-up"></i><i
+                                    ng-show="predicate=='submitDate' && !reverse" class="icon-arrow-down"></i></th>
+                            <th><a href="#" ng-click="predicate = 'statusDate'; reverse=!reverse">Last Status Update</a>
+                                <i
+                                        ng-show="predicate=='statusDate' && reverse" class="icon-arrow-up"></i><i
+                                        ng-show="predicate=='statusDate' && !reverse" class="icon-arrow-down"></i></th>
+                        </tr>
+
+                        <tr>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.id"/></th>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.name"/></th>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.status"/></th>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.project"/></th>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.submitDate"/></th>
+                            <th><input type="text" rel="filterTooltip" placeholder="Filter by" class="input-mini"
+                                       ng-model="filterText.runtime"/></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-hide="hideLoader"></tr>
+                        <!--tr ng-hide="hideLoader">
+                            <td colspan="8">
+                                <div class="loading-iu"></div>
+                            </td>
+                        </tr -->
+                        <tr ng-show="showError"></tr>
+                        <tr ng-show="showError">
+                            <td colspan="8">
+                                <div class="alert alert-error">There was an error loading the job data !</div>
+                            </td>
+                        </tr>
+                        <tr ng-show="jobs.length<1"></tr>
+                        <tr ng-show="jobs.length<1">
+                            <td colspan="8">
+                                <div>No jobs running currently !</div>
+                            </td>
+                        </tr>
+                        <tr ng-click="showDetails(job); fetchSingleJob(job.id)" href="#myModal" role="button"
+                            data-toggle="modal"
+                            ng-repeat="job in jobs | filter:filterText|filter:project |filter:statusFilter| orderBy:predicate">
+                            <td>{{job.id}}</td>
+                            <td style="max-width:100px; word-wrap: break-word;">{{job.name}}</td>
+                            <td>{{job.status}}</td>
+                            <td>{{job.project}}</td>
+                            <td>{{job.submitDate | date:'medium'}}</td>
+                            <td>{{job.runtime}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $('.dropdown-toggle').dropdown()
+    </script>
+</div>
