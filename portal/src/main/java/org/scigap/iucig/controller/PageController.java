@@ -126,5 +126,10 @@ public class PageController {
     	logger.debug("Load Amber Application page");
     	return ViewNames.AMBER_PAGE;
     }
+    @RequestMapping(value = "/filebrowser", method = RequestMethod.GET)
+    public String getFileBrowswerPage() {
+        logger.debug("Load file browser page");
+        return ViewNames.FILE_BROWSER;
+    }
 
 }
