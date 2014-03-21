@@ -22,71 +22,36 @@
 package org.scigap.iucig.gateway.util;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 public class ScienceDiscipline implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String username;
-    private Map<String, String> primaryDisc;
-    private Map<String, String> primarySubDisc;
-    private Map<String, String> secondaryDisc;
-    private Map<String, String> secondarySubDisc;
-    private Map<String, String> tertiaryDisc;
-    private Map<String, String> tertiarySubDisc;
+    private String disciplineName;
+    private int disciplineId;
+    private List<SubDiscipline> subDisciplines;
 
-    public String getUsername() {
-        return username;
+    public String getDisciplineName() {
+        return disciplineName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDisciplineName(String disciplineName) {
+        this.disciplineName = disciplineName;
     }
 
-    public Map<String, String> getPrimaryDisc() {
-        return primaryDisc;
+    public int getDisciplineId() {
+        return disciplineId;
     }
 
-    public void setPrimaryDisc(Map<String, String> primaryDisc) {
-        this.primaryDisc = primaryDisc;
+    public void setDisciplineId(int disciplineId) {
+        this.disciplineId = disciplineId;
     }
 
-    public Map<String, String> getPrimarySubDisc() {
-        return primarySubDisc;
+    public List<SubDiscipline> getSubDisciplines() {
+        return subDisciplines;
     }
 
-    public void setPrimarySubDisc(Map<String, String> primarySubDisc) {
-        this.primarySubDisc = primarySubDisc;
-    }
-
-    public Map<String, String> getSecondaryDisc() {
-        return secondaryDisc;
-    }
-
-    public void setSecondaryDisc(Map<String, String> secondaryDisc) {
-        this.secondaryDisc = secondaryDisc;
-    }
-
-    public Map<String, String> getSecondarySubDisc() {
-        return secondarySubDisc;
-    }
-
-    public void setSecondarySubDisc(Map<String, String> secondarySubDisc) {
-        this.secondarySubDisc = secondarySubDisc;
-    }
-
-    public Map<String, String> getTertiaryDisc() {
-        return tertiaryDisc;
-    }
-
-    public void setTertiaryDisc(Map<String, String> tertiaryDisc) {
-        this.tertiaryDisc = tertiaryDisc;
-    }
-
-    public Map<String, String> getTertiarySubDisc() {
-        return tertiarySubDisc;
-    }
-
-    public void setTertiarySubDisc(Map<String, String> tertiarySubDisc) {
-        this.tertiarySubDisc = tertiarySubDisc;
+    public void setSubDisciplines(List<SubDiscipline> subDisciplines) {
+        this.subDisciplines = subDisciplines;
     }
 }

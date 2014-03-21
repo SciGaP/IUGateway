@@ -21,26 +21,27 @@
 
 package org.scigap.iucig.controller;
 
-import edu.berkeley.cs.db.yfilterplus.dtdscanner.dtdElement;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.scigap.iucig.gateway.util.ScienceDiscipline;
+import org.scigap.iucig.gateway.util.WebClientDevWrapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.Scanner;
 
 @Controller
 public class ScienceDisciplineController {
@@ -51,55 +52,77 @@ public class ScienceDisciplineController {
     @ResponseBody
     @RequestMapping(value = "/getScienceDiscipline", method = RequestMethod.GET)
     public String getScienceDiscipline() {
-        System.out.println("********** get science discipline ********");
-        return "";
-    }
+        String responseJSON = null;
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL +"?format=json");
+        logger.debug("Executing REST GET request" + disciplines.getRequestLine());
 
-    @ResponseBody
-    @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
-    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline) {
         try {
-            if (discipline != null) {
-                int primaryDisId = 0;
-                int primarySubDisId = 0;
-                Map<String, String> primaryDisc = discipline.getPrimaryDisc();
-                for (String key : primaryDisc.keySet()) {
-                    if (key.equals("id")) {
-                        primaryDisId = Integer.valueOf(primaryDisc.get(key));
-                        System.out.println("Id1 : " + primaryDisId);
-                    }
-                }
-                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
-                for (String key : primarySubDisc.keySet()) {
-                    if (key.equals("id")) {
-                        primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
-                        System.out.println("Id2 : " + primarySubDisId);
-                    }
-                }
-                URL obj = new URL(SCIENCE_DISCIPLINE_URL);
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoInput (true);
-                con.setDoOutput (true);
-                con.setUseCaches (false);
-                String urlParameters = "user:" + discipline.getUsername() + "&discipline:" + primaryDisId + "&sub-13:" + primarySubDisId
-                        + "&source=rtstats&commit=Add";
-                System.out.println("URL params : " + urlParameters);
-                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.flush();
-                wr.close();
-                int responseCode = con.getResponseCode();
-                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
-                System.out.println("Post parameters : " + urlParameters);
-                System.out.println("Response Code : " + responseCode);
+            httpClient = (DefaultHttpClient) WebClientDevWrapper.wrapClient(httpClient);
+            HttpResponse response = httpClient.execute(disciplines);
+            HttpEntity entity = response.getEntity();
+            if (entity != null && response.getStatusLine().getStatusCode()== HttpStatus.OK.value()) {
+                responseJSON = convertStreamToString(entity.getContent());
             }
-        } catch (MalformedURLException e) {
+            EntityUtils.consume(entity);
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return responseJSON;
+    }
+
+    private String convertStreamToString(InputStream is) {
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
+    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline) {
+//        try {
+//            if (discipline != null) {
+//                int primaryDisId = 0;
+//                int primarySubDisId = 0;
+//                Map<String, String> primaryDisc = discipline.getPrimaryDisc();
+//                for (String key : primaryDisc.keySet()) {
+//                    if (key.equals("id")) {
+//                        primaryDisId = Integer.valueOf(primaryDisc.get(key));
+//                        System.out.println("Id1 : " + primaryDisId);
+//                    }
+//                }
+//                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
+//                for (String key : primarySubDisc.keySet()) {
+//                    if (key.equals("id")) {
+//                        primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
+//                        System.out.println("Id2 : " + primarySubDisId);
+//                    }
+//                }
+//                URL obj = new URL(SCIENCE_DISCIPLINE_URL);
+//                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//                con.setRequestMethod("POST");
+//                con.setDoInput (true);
+//                con.setDoOutput (true);
+//                con.setUseCaches (false);
+//                String urlParameters = "&user" + discipline.getUsername() + "&discipline:" + primaryDisId + "&sub-13:" + primarySubDisId
+//                        + "&source=rtstats&commit=Add";
+//                System.out.println("URL params : " + urlParameters);
+//                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+//                wr.writeBytes(urlParameters);
+//                wr.flush();
+//                wr.close();
+//                int responseCode = con.getResponseCode();
+//                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
+//                System.out.println("Post parameters : " + urlParameters);
+//                System.out.println("Response Code : " + responseCode);
+//            }
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }
