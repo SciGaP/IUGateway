@@ -14,9 +14,7 @@ public class KerberosConnector {
 
         String host = "gw110.iu.xsede.org";
         String user = "swithana";
-        String paraphrase = "sachithwithana";
         String  command = "ls -ltr";
-        String privateKey = "/Users/swithana/id_rsa";
 
         JSch jsch = new JSch();
         jsch.setLogger(new MyLogger());
@@ -27,11 +25,6 @@ public class KerberosConnector {
         System.setProperty("sun.security.krb5.debug", "true");
 
         try {
-            // jsch.addIdentity(privateKey,paraphrase);
-
-            // Properties props = System.getProperties();
-            // props.list(System.out);
-
             Session session = jsch.getSession(user, host, 22);
             Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
@@ -39,7 +32,6 @@ public class KerberosConnector {
                     "gssapi-with-mic");
 
             session.setConfig(config);
-//            session.setPassword(password);
             session.connect(20000);
 
             Channel channel = session.openChannel("exec");
