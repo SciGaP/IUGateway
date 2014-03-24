@@ -9,6 +9,15 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Stack;
 
+
+/*
+* SUPPORTED COMMANDS
+*
+* cd <directory name>
+* mkdir <directory>
+* rm <file or directory name>
+*
+* */
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
 
@@ -32,6 +41,7 @@ public class CommandExecutor {
         pwd();
     }
 
+   //execute any command
     public void executeCommand(String command) {
 
         Session session = kerberosConnector.getSession();
@@ -53,8 +63,17 @@ public class CommandExecutor {
             log.info("COMMAND: " + command);
             commandCentral.executeCommand(session, command);
             ls();
+
+        }else if(commandList.get(0).equals("rm")) {
+            command = "rm -r "+ workingDirectory + "/" + commandList.get(1);
+            log.info("COMMAND: " + command);
+            commandCentral.executeCommand(session, command);
+            ls();
         }
     }
+
+
+    //get the home directory
     public void pwd() {
         Session session = kerberosConnector.getSession();
 
@@ -70,11 +89,15 @@ public class CommandExecutor {
         log.info("CURRENT WORKING DIR: "+workingDirectory);
         log.info("CURRENT PATH: "+path.toString());
     }
+
+
     public void ls() {
         Session session = kerberosConnector.getSession();
         setResult(commandCentral.executeCommand(session, LS +workingDirectory));
 
     }
+
+
 
     public List<String> getResult() {
         return result;

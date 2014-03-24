@@ -37,4 +37,13 @@ public class CommandExecutorTest {
         executor.executeCommand("mkdir ssd");
         executor.getResult().toString();
     }
+
+    //do not use the rm test unless it is absolutely necessary
+    @Test
+    public void testRM() {
+        executor.executeCommand("cd temp");
+        executor.getResult().toString();
+        executor.executeCommand("rm ssd");
+        executor.getResult().toString();
+    }
 }
