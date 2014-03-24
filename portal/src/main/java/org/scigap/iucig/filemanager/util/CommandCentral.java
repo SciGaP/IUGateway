@@ -59,8 +59,14 @@ public class CommandCentral {
         } catch (JSchException e) {
             e.printStackTrace();
         }finally {
-            channel.disconnect();
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            }
+            else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
             session.disconnect();
+
             return path;
         }
 
@@ -105,8 +111,14 @@ public class CommandCentral {
         } catch (JSchException e) {
             e.printStackTrace();
         }finally {
-            channel.disconnect();
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            }
+            else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
             session.disconnect();
+
             return result;
         }
 
