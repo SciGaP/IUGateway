@@ -70,6 +70,9 @@
 		<li ng-show="authenticated">
 	      <a id="globusOnlineLink" href="https://iub.globusonline.org/SignIn">File Transfer</a>
 	    </li>
+        <li ng-show="authenticated">
+           <a id="fileManagerLink" href="fileManager">File Manager</a>
+        </li>
 	    <li class="dropdown">
 	      <a class="dropdown-toggle" id="aboutLink" href="#">Contact</a>
 	      <ul class="dropdown-menu">
@@ -120,11 +123,11 @@
         <div class="row-fluid"><div class="span5"><strong>Tertiary Discipline</strong></div><div><select name="tertiaryDisc" ng-model="item.tertiaryDisc" ng-options="tertiaryDisc.name for tertiaryDisc in disciplines"><option value="">-Select-</option></select></div></div>
         <div class="row-fluid"><div class="span5"><strong>Tertiary Sub-discipline</strong></div><div><select name="tertiarySubDisc" ng-model="item.tertiarySubDisc" ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines"><option value="">-Select-</option></select></div></div>
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="addDiscipline(item)" class="btn btn-danger pull-left" >Submit</button>
-        <button ng-show="item.submitSuccess" class="btn btn-success pull-left"  ng-disabled="true">Submit</button>
-    </div>
+      <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          <button ng-hide="item.submitSuccess" ng-click="addDiscipline(item)" class="btn btn-danger pull-left" ng-disabled="item.submitDisabled" >Submit</button>
+          <button ng-show="item.submitSuccess" class="btn btn-success pull-left"  ng-disabled="true">Submit</button>
+      </div>
   </div>
   <!-- <gcse:search></gcse:search> -->
   <div ng-bind-html-unsafe="message"></div>

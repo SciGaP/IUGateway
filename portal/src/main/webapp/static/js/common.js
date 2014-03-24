@@ -66,16 +66,29 @@ angular.module("user", []).
         };
 
         $scope.addDiscipline = function (disciplineInfo) {
-            var url = "//rtstats-devel.uits.indiana.edu/discipline/";
-            var data = "&user=" + $scope.username + "&discipline=" + disciplineInfo.primaryDisc.id
-                + "&sub-13=" + disciplineInfo.primarySubDisc.id + "&source=rtstats&commit=Add";
-            console.log($scope.username);
-            $http({method: "POST", url: url, data: data, dataType: "json", cache: false}).
+            var d = new Date();
+            var month = d.getMonth()+1;
+            var day = d.getDate();
+
+            var date = d.getFullYear() + '-' +
+                (month<10 ? '0' : '') + month + '-' +
+                (day<10 ? '0' : '') + day;
+            disciplineInfo.username = $scope.username;
+            disciplineInfo.date = date;
+//            var url = "https://rtstats-devel.uits.indiana.edu/discipline/";
+            var url = "updateScienceDiscipline";
+            var data = "user=" + $scope.username + "&discipline=" + disciplineInfo.primaryDisc.id
+                + "&sub-" + disciplineInfo.primaryDisc.id + "=" + disciplineInfo.primarySubDisc.id
+                + "&date="+ date + "&source=cybergateway&commit=Add";
+            console.log(disciplineInfo);
+            console.log(data);
+//            $http({method: "POST", url: url, data: data, dataType: "json", cache: false}).
+            $http({method:"POST", url:"updateScienceDiscipline", data:disciplineInfo, dataType:"json", cache:false}).
                 success(function (data, status) {
                     $scope.item.submitSuccess = true;
                 }).
                 error(function (data, status) {
-                    $scope.item.submitSuccess = true;
+                    $scope.item.submitDisabled = true;
                 });
         };
 
