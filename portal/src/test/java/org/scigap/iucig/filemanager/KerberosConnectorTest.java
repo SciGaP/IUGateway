@@ -16,6 +16,6 @@ public class KerberosConnectorTest {
 
     @Test
     public void testKerberosConnectivity() {
-        kerberosConnector.connect();
+        kerberosConnector.getSession();
     }
 }
