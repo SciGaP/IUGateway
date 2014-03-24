@@ -16,8 +16,9 @@ import java.util.Stack;
 * cd <directory name>
 * mkdir <directory>
 * rm <file or directory name>
+* rename <filename or directory name>
 *
-* */
+ *  */
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
 
@@ -41,7 +42,7 @@ public class CommandExecutor {
         pwd();
     }
 
-   //execute any command
+    //execute any command
     public void executeCommand(String command) {
 
         Session session = kerberosConnector.getSession();
@@ -49,7 +50,7 @@ public class CommandExecutor {
         commandList = stringUtils.deconstructCommand(command);
 
         if (commandList.get(0).equals("cd")) {
-            if(commandList.get(1).equals(".."))
+            if (commandList.get(1).equals(".."))
                 pathStack.pop();
             else
                 pathStack.push(commandList.get(1));
@@ -58,17 +59,24 @@ public class CommandExecutor {
             log.info("COMMAND: " + command);
             setResult(commandCentral.executeCommand(session, command));
 
-        }else if(commandList.get(0).equals("mkdir")) {
+        } else if (commandList.get(0).equals("mkdir")) {
             command = "mkdir " + workingDirectory + "/" + commandList.get(1);
             log.info("COMMAND: " + command);
             commandCentral.executeCommand(session, command);
             ls();
 
-        }else if(commandList.get(0).equals("rm")) {
-            command = "rm -r "+ workingDirectory + "/" + commandList.get(1);
+        } else if (commandList.get(0).equals("rm")) {
+            command = "rm -r " + workingDirectory + "/" + commandList.get(1);
             log.info("COMMAND: " + command);
             commandCentral.executeCommand(session, command);
             ls();
+
+        } else if (commandList.get(0).equals("rename")) {
+            command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+            log.info("COMMAND: " + command);
+            commandCentral.executeCommand(session, command);
+            ls();
+
         }
     }
 
@@ -86,17 +94,16 @@ public class CommandExecutor {
         //generate the working directory string using the stack
         workingDirectory = stringUtils.constructPathString(pathStack);
 
-        log.info("CURRENT WORKING DIR: "+workingDirectory);
-        log.info("CURRENT PATH: "+path.toString());
+        log.info("CURRENT WORKING DIR: " + workingDirectory);
+        log.info("CURRENT PATH: " + path.toString());
     }
 
 
     public void ls() {
         Session session = kerberosConnector.getSession();
-        setResult(commandCentral.executeCommand(session, LS +workingDirectory));
+        setResult(commandCentral.executeCommand(session, LS + workingDirectory));
 
     }
-
 
 
     public List<String> getResult() {
@@ -112,6 +119,6 @@ public class CommandExecutor {
     }
 
     public void setPath(List<String> path) {
-       this.path = path;
+        this.path = path;
     }
 }

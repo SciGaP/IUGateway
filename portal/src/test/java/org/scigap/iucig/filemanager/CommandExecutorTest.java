@@ -38,6 +38,14 @@ public class CommandExecutorTest {
         executor.getResult().toString();
     }
 
+    @Test
+    public void testRename() {
+        executor.executeCommand("cd temp");
+        executor.getResult().toString();
+        executor.executeCommand("rename ssh ssd");
+        executor.getResult().toString();
+    }
+
     //do not use the rm test unless it is absolutely necessary
     @Test
     public void testRM() {
