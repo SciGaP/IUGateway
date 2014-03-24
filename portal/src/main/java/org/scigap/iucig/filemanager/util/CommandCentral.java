@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class CommandCentral {
 
-    private static List<String> result;
+    private List<String> result;
 
-    public static List<String> pwd(Session session) {
+    public List<String> pwd(Session session) {
         result = new ArrayList<String>();
 
         Channel channel = null;

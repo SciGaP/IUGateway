@@ -38,11 +38,6 @@ public class KerberosConnector {
             session.setConfig(config);
             session.connect(20000);
 
-            List<String> result = CommandCentral.pwd(session);
-            System.out.println(result.toString());
-
-            System.out.println("DONE");
-
         } catch (JSchException e) {
             e.printStackTrace();
         }finally {
