@@ -30,4 +30,11 @@ public class CommandExecutorTest {
         executor.pwd();
 //        executor.getResult().toString();
     }
+    @Test
+    public void testMkdir() {
+        executor.executeCommand("cd temp");
+        executor.getResult().toString();
+        executor.executeCommand("mkdir ssd");
+        executor.getResult().toString();
+    }
 }

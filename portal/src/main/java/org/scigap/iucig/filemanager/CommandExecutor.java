@@ -12,7 +12,6 @@ import java.util.Stack;
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
 
-
     private KerberosConnector kerberosConnector;
     private CommandCentral commandCentral;
     private StringUtils stringUtils;
@@ -21,6 +20,8 @@ public class CommandExecutor {
     private static Stack<String> pathStack;
     private List<String> commandList;
     private static String workingDirectory;
+
+    private static final String LS = "ls ";
 
     public CommandExecutor() {
         kerberosConnector = new KerberosConnector();
@@ -43,9 +44,15 @@ public class CommandExecutor {
             else
                 pathStack.push(commandList.get(1));
             workingDirectory = stringUtils.constructPathFromStack(pathStack);
-            command = "ls " + workingDirectory;
+            command = LS + workingDirectory;
             log.info("COMMAND: " + command);
             setResult(commandCentral.executeCommand(session, command));
+
+        }else if(commandList.get(0).equals("mkdir")) {
+            command = "mkdir " + workingDirectory + "/" + commandList.get(1);
+            log.info("COMMAND: " + command);
+            commandCentral.executeCommand(session, command);
+            ls();
         }
     }
     public void pwd() {
@@ -62,6 +69,11 @@ public class CommandExecutor {
 
         log.info("CURRENT WORKING DIR: "+workingDirectory);
         log.info("CURRENT PATH: "+path.toString());
+    }
+    public void ls() {
+        Session session = kerberosConnector.getSession();
+        setResult(commandCentral.executeCommand(session, LS +workingDirectory));
+
     }
 
     public List<String> getResult() {
