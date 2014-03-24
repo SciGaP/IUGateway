@@ -9,6 +9,8 @@ import java.util.StringTokenizer;
  */
 public class StringUtils {
     private List<String> pathList;
+    private List<String> commandList;
+
 
     public List<String> deconstructPath(String path) {
         pathList = new ArrayList<String>();
@@ -24,9 +26,20 @@ public class StringUtils {
     public String constructPathString(List<String> pathAsAList) {
         String path = "";
         for (String item : pathAsAList) {
-            path += "/" + item;
+            path += "/" +item;
         }
         return path;
+    }
+
+    public List<String> deconstructCommand(String command) {
+        commandList = new ArrayList<String>();
+
+        StringTokenizer tokenizer = new StringTokenizer(command);
+
+        while (tokenizer.hasMoreTokens()) {
+            commandList.add(tokenizer.nextToken());
+        }
+        return commandList;
     }
 
 }

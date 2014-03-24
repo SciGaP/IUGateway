@@ -15,8 +15,13 @@ public class CommandExecutorTest {
     }
 
     @Test
-    public void testPWD() {
-        executor.executeCommand("pwd");
+    public void testCD() {
+        executor.executeCommand("cd temp");
         executor.getResult().toString();
+    }
+    @Test
+    public void testPWD() {
+        executor.pwd();
+//        executor.getResult().toString();
     }
 }

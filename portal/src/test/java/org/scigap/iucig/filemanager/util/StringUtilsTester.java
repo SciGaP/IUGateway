@@ -4,6 +4,8 @@ import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 
 public class StringUtilsTester {
 
@@ -21,6 +23,11 @@ public class StringUtilsTester {
 
     @Test
     public void testContructPathString() {
-        System.out.println(utils.constructPathString(utils.deconstructPath("/home/swithana/")));
+        Assert.assertEquals("/home/swithana",utils.constructPathString(utils.deconstructPath("/home/swithana/")));
+    }
+
+    @Test
+    public void testDeconstructCommand() {
+        Assert.assertEquals("[cd, temp]", utils.deconstructCommand("cd temp").toString());
     }
 }
