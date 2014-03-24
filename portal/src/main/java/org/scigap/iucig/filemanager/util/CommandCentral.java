@@ -66,6 +66,9 @@ public class CommandCentral {
 
     }
     public List<String> executeCommand(Session session,String command) {
+        //FIXME handle "cd .." explicitly ( validate the second part of the command)
+
+
         result = new ArrayList<String>();
         log.info("COMMAND: "+command);
 

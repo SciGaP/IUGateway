@@ -18,6 +18,12 @@ public class CommandExecutorTest {
     public void testCD() {
         executor.executeCommand("cd temp");
         executor.getResult().toString();
+        executor.executeCommand("cd ..");
+        executor.getResult().toString();
+        executor.executeCommand("cd temp");
+        executor.getResult().toString();
+        executor.executeCommand("cd test");
+        executor.getResult().toString();
     }
     @Test
     public void testPWD() {

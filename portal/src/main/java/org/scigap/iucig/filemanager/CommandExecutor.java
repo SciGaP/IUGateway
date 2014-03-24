@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Stack;
 
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
@@ -17,6 +18,7 @@ public class CommandExecutor {
     private StringUtils stringUtils;
     private List<String> result;
     private static List<String> path;
+    private static Stack<String> pathStack;
     private List<String> commandList;
     private static String workingDirectory;
 
@@ -36,16 +38,28 @@ public class CommandExecutor {
         commandList = stringUtils.deconstructCommand(command);
 
         if (commandList.get(0).equals("cd")) {
-            workingDirectory = workingDirectory + "/" + commandList.get(1);
+            if(commandList.get(1).equals(".."))
+                pathStack.pop();
+            else
+                pathStack.push(commandList.get(1));
+            workingDirectory = stringUtils.constructPathFromStack(pathStack);
             command = "ls " + workingDirectory;
-            log.info("COMMAND: "+command);
+            log.info("COMMAND: " + command);
             setResult(commandCentral.executeCommand(session, command));
         }
     }
     public void pwd() {
         Session session = kerberosConnector.getSession();
+
+        //getting the home directory
         String path = commandCentral.pwd(session);
-        workingDirectory = stringUtils.constructPathString(stringUtils.deconstructPath(path));
+
+        //add it to the stack
+        pathStack = stringUtils.getPathStack(path);
+
+        //generate the working directory string using the stack
+        workingDirectory = stringUtils.constructPathString(pathStack);
+
         log.info("CURRENT WORKING DIR: "+workingDirectory);
         log.info("CURRENT PATH: "+path.toString());
     }
