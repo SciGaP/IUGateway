@@ -84,6 +84,13 @@ public class CommandExecutor {
             commandCentral.executeCommand(session, command);
             ls();
 
+        }
+        else if (commandList.get(0).equals("ls")) {
+            command = LS;
+            log.info("COMMAND: " + command);
+            commandCentral.executeCommand(session, command);
+            ls();
+
         } else if (commandList.get(0).equals("rename")) {
             command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
             log.info("COMMAND: " + command);
