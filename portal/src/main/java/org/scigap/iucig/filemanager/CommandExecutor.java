@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 
@@ -18,6 +19,13 @@ import java.util.Stack;
 * rm <file or directory name>
 * rename <filename or directory name>
 *
+*
+* USAGE
+*
+* executeCommand( command )
+*
+* to get the results --> getResultsMap()
+*
  *  */
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
@@ -26,12 +34,16 @@ public class CommandExecutor {
     private CommandCentral commandCentral;
     private StringUtils stringUtils;
     private List<String> result;
+    private Map<String,String> resultMap;
     private static List<String> path;
+
+    //path stack
     private static Stack<String> pathStack;
+
     private List<String> commandList;
     private static String workingDirectory;
 
-    private static final String LS = "ls ";
+    private static final String LS = "ls -al ";
 
     public CommandExecutor() {
         kerberosConnector = new KerberosConnector();
@@ -58,6 +70,7 @@ public class CommandExecutor {
             command = LS + workingDirectory;
             log.info("COMMAND: " + command);
             setResult(commandCentral.executeCommand(session, command));
+            setResultMap(stringUtils.categorizeResult(getResult()));
 
         } else if (commandList.get(0).equals("mkdir")) {
             command = "mkdir " + workingDirectory + "/" + commandList.get(1);
@@ -102,9 +115,16 @@ public class CommandExecutor {
     public void ls() {
         Session session = kerberosConnector.getSession();
         setResult(commandCentral.executeCommand(session, LS + workingDirectory));
-
+        setResultMap(stringUtils.categorizeResult(getResult()));
     }
 
+    public Map<String, String> getResultMap() {
+        return resultMap;
+    }
+
+    public void setResultMap(Map<String, String> resultMap) {
+        this.resultMap = resultMap;
+    }
 
     public List<String> getResult() {
         return result;

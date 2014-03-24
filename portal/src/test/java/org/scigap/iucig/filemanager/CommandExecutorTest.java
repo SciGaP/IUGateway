@@ -54,4 +54,12 @@ public class CommandExecutorTest {
         executor.executeCommand("rm ssd");
         executor.getResult().toString();
     }
+    @Test
+    public void testHashMapResults() {
+        executor.executeCommand("cd temp");
+        System.out.println("PRINTING RESULTS MAP");
+        System.out.println(executor.getResult());
+        System.out.println(executor.getResultMap());
+        System.out.println(executor.getResultMap().size());
+    }
 }

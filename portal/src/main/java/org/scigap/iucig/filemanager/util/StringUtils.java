@@ -1,9 +1,6 @@
 package org.scigap.iucig.filemanager.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by swithana on 3/24/14.
@@ -59,5 +56,33 @@ public class StringUtils {
             path += "/" +item;
         }
         return path;
+    }
+
+    public Map<String, String> categorizeResult(List<String> resultList) {
+        Map<String, String> resultMap = new HashMap<String, String>();
+        List<String> temp =null;
+        String fileOrFolder = null;
+
+        StringTokenizer tokenizer = new StringTokenizer(resultList.toString(),"\n");
+
+        List<String> filteredResults = new ArrayList<String>();
+
+        while (tokenizer.hasMoreTokens()) {
+            filteredResults.add(tokenizer.nextToken());
+        }
+
+
+        for (String line : filteredResults) {
+            temp = new ArrayList<String>();
+            tokenizer = new StringTokenizer(line," ");
+            while (tokenizer.hasMoreTokens()) {
+                temp.add(tokenizer.nextToken());
+            }
+            if (temp.size() > 2) {
+                fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
+                resultMap.put(temp.get(temp.size() - 1),fileOrFolder);
+            }
+        }
+        return resultMap;
     }
 }
