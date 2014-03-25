@@ -44,4 +44,16 @@ public class StringUtilsTester {
         System.out.println(utils.categorizeResult(list));
 
     }
+    @Test
+    public void testGetResultItemList() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("-rw-rw-r-- 1 swithana swithana 214 Feb 24 10:14 HelloWorld.java");
+        list.add("drwxrwxr-x 2 swithana swithana 4096 Mar 24 03:53 ssd");
+        list.add("drwxrwxr-x 2 swithana swithana 4096 Mar 24 03:53 reed");
+        list.add("drwxrwxr-x 2 swithana swithana 4096 Mar 24 03:53 sdsd");
+        list.add("drwxrwxr-x 2 swithana swithana 4096 Mar 24 03:53 blabla");
+
+        System.out.println(utils.getResultsList(list));
+
+    }
 }

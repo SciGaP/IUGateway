@@ -3,9 +3,6 @@ package org.scigap.iucig.filemanager;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Created by swithana on 3/24/14.
- */
 public class CommandExecutorTest {
     private CommandExecutor executor;
 
@@ -17,13 +14,13 @@ public class CommandExecutorTest {
     @Test
     public void testCD() {
         executor.executeCommand("cd temp");
-        executor.getResult().toString();
+        executor.getResultItemList().toString();
         executor.executeCommand("cd ..");
-        executor.getResult().toString();
+        executor.getResultItemList().toString();
         executor.executeCommand("cd temp");
-        executor.getResult().toString();
+        executor.getResultItemList().toString();
         executor.executeCommand("cd test");
-        executor.getResult().toString();
+        executor.getResultItemList().toString();
     }
     @Test
     public void testPWD() {

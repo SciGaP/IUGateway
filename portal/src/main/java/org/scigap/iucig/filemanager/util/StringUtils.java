@@ -2,9 +2,6 @@ package org.scigap.iucig.filemanager.util;
 
 import java.util.*;
 
-/**
- * Created by swithana on 3/24/14.
- */
 public class StringUtils {
     private List<String> pathList;
     private List<String> commandList;
@@ -84,5 +81,59 @@ public class StringUtils {
             }
         }
         return resultMap;
+    }
+    public List<Item> getResultsList(List<String> resultList) {
+
+        //Result Array
+        List<Item> itemList = new ArrayList<Item>();
+        Item item = null;
+        String name;
+        String date;
+        String owner;
+        String group;
+        String permission;
+        String size;
+
+
+
+        List<String> temp =null;
+        boolean isFile = false;
+        StringTokenizer tokenizer = new StringTokenizer(resultList.toString(),"\n");
+
+        List<String> filteredResults = new ArrayList<String>();
+
+        while (tokenizer.hasMoreTokens()) {
+            filteredResults.add(tokenizer.nextToken());
+        }
+
+        for (String line : filteredResults) {
+
+            temp = new ArrayList<String>();
+            tokenizer = new StringTokenizer(line," ");
+            while (tokenizer.hasMoreTokens()) {
+                temp.add(tokenizer.nextToken());
+            }
+            if (temp.size() > 2) {
+                isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
+                owner = temp.get(2);
+                group = temp.get(3);
+                size = temp.get(4);
+                String month = temp.get(5);
+                String day = temp.get(6);
+                String time = temp.get(7);
+                name = temp.get(8);
+                permission = temp.get(0);
+
+                date = month + " " + day + " "+time;
+                item = new Item(name,date, owner, isFile);
+                item.setGroup(group);
+                item.setSize(size);
+                item.setPermission(permission);
+                itemList.add(item);
+            }
+
+
+        }
+        return itemList;
     }
 }

@@ -2,10 +2,12 @@ package org.scigap.iucig.filemanager;
 
 import com.jcraft.jsch.Session;
 import org.scigap.iucig.filemanager.util.CommandCentral;
+import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.filemanager.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -33,6 +35,8 @@ public class CommandExecutor {
     private KerberosConnector kerberosConnector;
     private CommandCentral commandCentral;
     private StringUtils stringUtils;
+
+    private List<Item> resultItemList;
     private List<String> result;
     private Map<String,String> resultMap;
     private static List<String> path;
@@ -49,6 +53,7 @@ public class CommandExecutor {
         kerberosConnector = new KerberosConnector();
         commandCentral = new CommandCentral();
         stringUtils = new StringUtils();
+        resultItemList = new ArrayList<Item>();
 
         //get the current working directory
         pwd();
@@ -71,6 +76,7 @@ public class CommandExecutor {
             log.info("COMMAND: " + command);
             setResult(commandCentral.executeCommand(session, command));
             setResultMap(stringUtils.categorizeResult(getResult()));
+            setResultItemList(stringUtils.getResultsList(getResult()));
 
         } else if (commandList.get(0).equals("mkdir")) {
             command = "mkdir " + workingDirectory + "/" + commandList.get(1);
@@ -123,6 +129,7 @@ public class CommandExecutor {
         Session session = kerberosConnector.getSession();
         setResult(commandCentral.executeCommand(session, LS + workingDirectory));
         setResultMap(stringUtils.categorizeResult(getResult()));
+        setResultItemList(stringUtils.getResultsList(getResult()));
     }
 
     public Map<String, String> getResultMap() {
@@ -147,5 +154,13 @@ public class CommandExecutor {
 
     public void setPath(List<String> path) {
         this.path = path;
+    }
+
+    public List<Item> getResultItemList() {
+        return resultItemList;
+    }
+
+    public void setResultItemList(List<Item> resultItemList) {
+        this.resultItemList = resultItemList;
     }
 }
