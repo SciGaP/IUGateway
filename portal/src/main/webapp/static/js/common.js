@@ -57,39 +57,62 @@ angular.module("user", []).
                 + "success..</div>";
         };
 
-        $scope.getSubDisciplineList = function () {
-            var id = $scope.item.primaryDisc.id;
-            $scope.subdisciplines = getSubdisciplines(id,$scope.disciplines);
+        $scope.getSubDisciplineList1 = function () {
+            var id1 = $scope.item.primaryDisc.id;
+            $scope.subdisciplines1 = getSubdisciplines(id1,$scope.disciplines);
+
+            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
+                + "success..</div>";
+        };
+
+        $scope.getSubDisciplineList2 = function () {
+            var id2 = $scope.item.secondaryDisc.id;
+            $scope.subdisciplines2 = getSubdisciplines(id2,$scope.disciplines);
+
+            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
+                + "success..</div>";
+        };
+
+        $scope.getSubDisciplineList3 = function () {
+            var id3 = $scope.item.tertiaryDisc.id;
+            $scope.subdisciplines3 = getSubdisciplines(id3,$scope.disciplines);
 
             $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
                 + "success..</div>";
         };
 
         $scope.addDiscipline = function (disciplineInfo) {
-            var d = new Date();
-            var month = d.getMonth()+1;
-            var day = d.getDate();
+            if (disciplineInfo == undefined){
+                $scope.submitDisabled = true;
+            } else{
+                console.log("heloooooooooo");
+                var d = new Date();
+                var month = d.getMonth()+1;
+                var day = d.getDate();
 
-            var date = d.getFullYear() + '-' +
-                (month<10 ? '0' : '') + month + '-' +
-                (day<10 ? '0' : '') + day;
-            disciplineInfo.username = $scope.username;
-            disciplineInfo.date = date;
+                var date = d.getFullYear() + '-' +
+                    (month<10 ? '0' : '') + month + '-' +
+                    (day<10 ? '0' : '') + day;
+                disciplineInfo.username = $scope.username;
+                disciplineInfo.date = date;
 //            var url = "https://rtstats-devel.uits.indiana.edu/discipline/";
-            var url = "updateScienceDiscipline";
-            var data = "user=" + $scope.username + "&discipline=" + disciplineInfo.primaryDisc.id
-                + "&sub-" + disciplineInfo.primaryDisc.id + "=" + disciplineInfo.primarySubDisc.id
-                + "&date="+ date + "&source=cybergateway&commit=Add";
-            console.log(disciplineInfo);
-            console.log(data);
+                var url = "updateScienceDiscipline";
+                var data = "user=" + $scope.username + "&discipline=" + disciplineInfo.primaryDisc.id
+                    + "&sub-" + disciplineInfo.primaryDisc.id + "=" + disciplineInfo.primarySubDisc.id
+                    + "&date="+ date + "&source=cybergateway&commit=Add";
+                console.log(disciplineInfo);
+                console.log(data);
 //            $http({method: "POST", url: url, data: data, dataType: "json", cache: false}).
-            $http({method:"POST", url:"updateScienceDiscipline", data:disciplineInfo, dataType:"json", cache:false}).
-                success(function (data, status) {
-                    $scope.item.submitSuccess = true;
-                }).
-                error(function (data, status) {
-                    $scope.item.submitDisabled = true;
-                });
+                $http({method:"POST", url:"updateScienceDiscipline", data:disciplineInfo, dataType:"json", cache:false}).
+                    success(function (data, status) {
+                        $scope.submitSuccess = true;
+//                    $('#myModal').modal('hide');
+                        $scope.item = null;
+                    }).
+                    error(function (data, status) {
+                        $scope.submitDisabled = true;
+                    });
+            }
         };
 
         $scope.logout = function () {
@@ -144,6 +167,10 @@ var FooterCtrl = function ($scope) {
 $(document).ready(function () {
 
     $("[rel=filterTooltip]").tooltip({ placement: "right", title: "To invert filter functionality, use ! before your text"});
+
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
 
 });
 
