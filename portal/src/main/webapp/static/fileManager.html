@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="fileManagerApp" ng-controller="FileManagerCtrl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scholarly Data Archive</title>
+    <link rel="icon" href="https://www.indiana.edu/favicon.ico" />
+    <link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico" />
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="static/js/common.js"></script>
+    <script src="static/js/filemanager.js"></script>
+    <script src="static/js/urlprovider.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="static/css/iu.css" rel="stylesheet">
+</head>
+
+<body>
+<div ng-include src="'static/topbars.html'"></div>
+
+<div class="well container-fluid">
+    <div class="row-fluid">
+        <div class="well-iu span12">
+            <div class="well-heading">Scholarly Data Archive</div>
+            <div>
+                <table class="table table-hover table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Modified</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-show="files.length<1"></tr>
+                    <tr ng-show="files.length<1"><td colspan="7"><div>SDA information is not available !</div></td></tr>
+                    <tr ng-repeat="file in files" >
+                        <td>{{file.select}}</td>
+                        <td>{{file.icon}}</td>
+                        <td>{{file.name}}</td>
+                        <td>{{file.size}}</td>
+                        <td>{{file.modified}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-include src="'static/footer.html'"></div>
+
+</body>
+</html>

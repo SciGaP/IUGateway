@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @Controller
-@RequestMapping(value="/filemanager/")
+@RequestMapping(value="/filemng/")
 public class FileManagerController {
 
     private static CommandExecutor commandExecutor;

@@ -127,4 +127,10 @@ public class PageController {
     	return ViewNames.AMBER_PAGE;
     }
 
+    @RequestMapping(value = "/fileManager", method = RequestMethod.GET)
+    public String getFileManagerPage() {
+        logger.debug("Load File manager page");
+        return ViewNames.FILE_MANAGER_PAGE;
+    }
+
 }
