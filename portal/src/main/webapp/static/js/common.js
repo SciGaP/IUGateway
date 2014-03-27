@@ -53,8 +53,6 @@ angular.module("user", []).
                 error(function (data, status) {
                     console.log("Error getting profile !");
                 });
-            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "success..</div>";
         };
 
         $scope.getSubDisciplineList1 = function () {

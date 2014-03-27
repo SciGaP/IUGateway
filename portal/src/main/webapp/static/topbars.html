@@ -71,7 +71,7 @@
 	      <a id="globusOnlineLink" href="https://iub.globusonline.org/SignIn">File Transfer</a>
 	    </li>
         <li ng-show="authenticated">
-           <a id="fileManagerLink" href="fileManager">File Manager</a>
+           <a id="fileManagerLink" href="sda">SDA</a>
         </li>
 	    <li class="dropdown">
 	      <a class="dropdown-toggle" id="aboutLink" href="#">Contact</a>
@@ -94,7 +94,7 @@
 			  &nbsp;&nbsp;<i class="icon-user icon-white"></i>
 		  </a>
 		  <ul class="dropdown-menu">
-              <li><a ng-click="profile()" href="#myModal" role="button" data-toggle="modal">Profile</a></li>
+              <li><a ng-click="profile()" href="#scienceDisciplineModal" role="button" data-toggle="modal">Profile</a></li>
               <li><a ng-click="logout()">Logout</a></li>
           </ul>
 		</li>
@@ -109,7 +109,7 @@
 	</div>
   </div>
   <br><br><br>
-  <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div id="scienceDisciplineModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 id="myModalLabel">Science Discipline</h3>

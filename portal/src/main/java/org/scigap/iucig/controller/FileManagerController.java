@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping(value="/filemng/")
@@ -24,7 +25,7 @@ public class FileManagerController {
     /** Returns the result of a command using a hash map */
     @ResponseBody
     @RequestMapping(value="/command/{command}", method = RequestMethod.GET)
-    public String executeCommand(@PathVariable(value="command") final String command) {
+    public List<Item> executeCommand(@PathVariable(value="command") final String command) {
         if(commandExecutor == null) {
             commandExecutor = new CommandExecutor();        
         }
@@ -32,7 +33,7 @@ public class FileManagerController {
 /*
         String result = "";
         String jsonArray = JSONArray.toJSONString(Arrays.asList(commandExecutor.getResultMap()));*/
-        return commandExecutor.getResultItemList().toString() ;
+        return commandExecutor.getResultItemList();
     }
 
 }

@@ -47,7 +47,7 @@ public class CommandExecutor {
     private List<String> commandList;
     private static String workingDirectory;
 
-    private static final String LS = "ls -al ";
+    private static final String LS = "ls -ltr ";
 
     public CommandExecutor() {
         kerberosConnector = new KerberosConnector();
