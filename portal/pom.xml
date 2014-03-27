@@ -167,8 +167,8 @@
 
 							<cargo.tomcat.connector.clientAuth>false</cargo.tomcat.connector.clientAuth>
 							<cargo.tomcat.connector.sslProtocol>TLS</cargo.tomcat.connector.sslProtocol>
-							<cargo.tomcat.connector.keystoreFile>/Users/swithana/.keystore</cargo.tomcat.connector.keystoreFile>
-							<cargo.tomcat.connector.keystorePass>cilogon</cargo.tomcat.connector.keystorePass>
+							<cargo.tomcat.connector.keystoreFile>/Users/chathuri/dev/IU_gateway/github_source/IUGateway/keys/keystore</cargo.tomcat.connector.keystoreFile>
+							<cargo.tomcat.connector.keystorePass>iugateway</cargo.tomcat.connector.keystorePass>
 <!--
                             <cargo.tomcat.connector.keystoreFile>/Users/chathuri/dev/IU_gateway/source/gateway-project/gateway-portal/keystore</cargo.tomcat.connector.keystoreFile>
                             <cargo.tomcat.connector.keystorePass>iugateway</cargo.tomcat.connector.keystorePass>

@@ -39,8 +39,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 import java.util.Scanner;
 
 @Controller
@@ -82,47 +87,99 @@ public class ScienceDisciplineController {
     @ResponseBody
     @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
     public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline) {
-//        try {
-//            if (discipline != null) {
-//                int primaryDisId = 0;
-//                int primarySubDisId = 0;
-//                Map<String, String> primaryDisc = discipline.getPrimaryDisc();
-//                for (String key : primaryDisc.keySet()) {
-//                    if (key.equals("id")) {
-//                        primaryDisId = Integer.valueOf(primaryDisc.get(key));
-//                        System.out.println("Id1 : " + primaryDisId);
-//                    }
-//                }
-//                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
-//                for (String key : primarySubDisc.keySet()) {
-//                    if (key.equals("id")) {
-//                        primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
-//                        System.out.println("Id2 : " + primarySubDisId);
-//                    }
-//                }
-//                URL obj = new URL(SCIENCE_DISCIPLINE_URL);
-//                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//                con.setRequestMethod("POST");
-//                con.setDoInput (true);
-//                con.setDoOutput (true);
-//                con.setUseCaches (false);
-//                String urlParameters = "&user" + discipline.getUsername() + "&discipline:" + primaryDisId + "&sub-13:" + primarySubDisId
-//                        + "&source=rtstats&commit=Add";
-//                System.out.println("URL params : " + urlParameters);
-//                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-//                wr.writeBytes(urlParameters);
-//                wr.flush();
-//                wr.close();
-//                int responseCode = con.getResponseCode();
-//                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
-//                System.out.println("Post parameters : " + urlParameters);
-//                System.out.println("Response Code : " + responseCode);
-//            }
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            String subDiscId1 = "sub-";
+            String subDiscId2 = "sub-";
+            String subDiscId3 = "sub-";
+            int primaryDisId = 0;
+            int primarySubDisId = 0;
+            int secondaryDisId = 0;
+            int secondarySubDisId = 0;
+            int tertiaryDisId = 0;
+            int tertiarySubDisId = 0;
+            String urlParameters = "user=" + discipline.getUsername();
+            if (discipline != null) {
+                Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
+                if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
+                    for (String key : primaryDiscipline.keySet()) {
+                        if (key.equals("id")) {
+                            primaryDisId = Integer.valueOf(primaryDiscipline.get(key).toString());
+                            urlParameters += "&discipline=" + primaryDisId;
+                        }
+                    }
+                }
+                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
+                if (primarySubDisc != null && !primarySubDisc.isEmpty()){
+                    for (String key : primarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
+                            subDiscId1 += primaryDisId;
+                            urlParameters += "&" + subDiscId1 + "=" + primarySubDisId;
+                        }
+                    }
+                }
+
+                Map<String, Object> secondaryDisc = discipline.getSecondaryDisc();
+                if (secondaryDisc != null && !secondaryDisc.isEmpty()){
+                    for (String key : secondaryDisc.keySet()) {
+                        if (key.equals("id")) {
+                            secondaryDisId = Integer.valueOf(secondaryDisc.get(key).toString());
+                        }
+                    }
+                }
+
+                Map<String, String> secondarySubDisc = discipline.getSecondarySubDisc();
+                if (secondarySubDisc != null && !secondarySubDisc.isEmpty()){
+                    for (String key : secondarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            secondarySubDisId = Integer.valueOf(secondarySubDisc.get(key));
+                            subDiscId2 += secondaryDisId;
+                            urlParameters += "&" + subDiscId2 + "=" + secondarySubDisId;
+                        }
+                    }
+                }
+
+                Map<String, Object> tertiaryDisc = discipline.getTertiaryDisc();
+                if (tertiaryDisc != null && !tertiaryDisc.isEmpty()){
+                    for (String key : tertiaryDisc.keySet()) {
+                        if (key.equals("id")) {
+                            tertiaryDisId = Integer.valueOf(tertiaryDisc.get(key).toString());
+                        }
+                    }
+                }
+
+                Map<String, String> tertiarySubDisc = discipline.getTertiarySubDisc();
+                if (tertiarySubDisc != null && !tertiarySubDisc.isEmpty()){
+                    for (String key : tertiarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            tertiarySubDisId = Integer.valueOf(tertiarySubDisc.get(key));
+                            subDiscId3 += tertiaryDisId;
+                            urlParameters += "&" + subDiscId3 + "=" + tertiarySubDisId;
+                        }
+                    }
+                }
+
+                URL obj = new URL(SCIENCE_DISCIPLINE_URL);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoInput (true);
+                con.setDoOutput (true);
+                con.setUseCaches (false);
+                urlParameters += "&date=" + discipline.getDate() +  "&source=iugateway&commit=Add";
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
+                System.out.println("Post parameters : " + urlParameters);
+                System.out.println("Response Code : " + responseCode);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

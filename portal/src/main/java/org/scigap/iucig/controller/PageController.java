@@ -127,4 +127,10 @@ public class PageController {
     	return ViewNames.AMBER_PAGE;
     }
 
+    @RequestMapping(value = "/sda", method = RequestMethod.GET)
+    public String getFileManagerPage() {
+        logger.debug("Load IU SDA page");
+        return ViewNames.FILE_MANAGER_PAGE;
+    }
+
 }

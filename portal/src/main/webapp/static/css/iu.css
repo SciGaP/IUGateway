@@ -53,6 +53,9 @@ a.menu:after, .dropdown-toggle:after {
   text-shadow: none;
 }
 
+.underline {
+    text-decoration: underline;
+}
 .navbar .nav .dropdown-toggle .caret {
   margin-top: 8px;
 }

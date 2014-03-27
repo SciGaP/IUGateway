@@ -27,4 +27,5 @@ public final class ViewNames {
 	public static final String NODE_RESERVATIONS_PAGE = "reservations";
 	public static final String HELP_PAGE = "help";
 	public static final String AMBER_PAGE = "amber";
+	public static final String FILE_MANAGER_PAGE = "fileManager";
 }
