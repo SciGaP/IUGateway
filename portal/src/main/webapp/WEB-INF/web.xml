@@ -36,11 +36,4 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/iugateway/*</url-pattern>
 	</filter-mapping>
-
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/cilogon2/*</url-pattern>
-    </filter-mapping>
-
-	
 </web-app>
