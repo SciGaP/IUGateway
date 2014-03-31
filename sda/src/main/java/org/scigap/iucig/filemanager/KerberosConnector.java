@@ -25,7 +25,7 @@ public class KerberosConnector {
         Session session = null;
         try {
             session = jsch.getSession(user, host, 22);
-            Properties config = new java.util.Properties();
+            Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             config.put("PreferredAuthentications",
                     "gssapi-with-mic");
