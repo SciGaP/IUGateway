@@ -15,12 +15,12 @@ public class CommandExecutorTest {
     public void testCD() {
         executor.executeCommand("cd temp");
         executor.getResultItemList().toString();
-        executor.executeCommand("cd ..");
+        /*executor.executeCommand("cd ..");
         executor.getResultItemList().toString();
         executor.executeCommand("cd temp");
         executor.getResultItemList().toString();
         executor.executeCommand("cd test");
-        executor.getResultItemList().toString();
+        executor.getResultItemList().toString();*/
     }
     @Test
     public void testPWD() {
@@ -58,5 +58,13 @@ public class CommandExecutorTest {
         System.out.println(executor.getResult());
         System.out.println(executor.getResultMap());
         System.out.println(executor.getResultMap().size());
+    }
+    @Test
+    public void testSCPFrom() {
+        executor.downloadFile("test.txt");
+        System.out.println("Executing SCP From... file: test.txt");
+//        System.out.println(executor.getResult());
+  //      System.out.println(executor.getResultMap());
+    //    System.out.println(executor.getResultMap().size());
     }
 }
