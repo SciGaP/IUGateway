@@ -17,15 +17,20 @@ public class KerberosController {
     @ResponseBody
     @RequestMapping(value = "/getProperties", method = RequestMethod.GET)
     public Map<String, String> readSystemProperty(){
+        System.out.println("***********get properties**********");
         systemPropertyMap = new HashMap<String, String>();
-        String remoteUser = System.getProperty(REMOTE_USER);
-        String kerbName = System.getProperty(KRB5CCNAME);
+        String remoteUser = System.getenv(REMOTE_USER);
+        System.out.println("REMOTE_USER : " + remoteUser);
+        String kerbName = System.getenv(KRB5CCNAME);
+        System.out.println("KRB5CCNAME : " + kerbName);
         if (remoteUser != null){
             systemPropertyMap.put(REMOTE_USER, remoteUser);
         }
         if (kerbName != null){
             systemPropertyMap.put(KRB5CCNAME, kerbName);
         }
+
+
         return systemPropertyMap;
     }
 }
