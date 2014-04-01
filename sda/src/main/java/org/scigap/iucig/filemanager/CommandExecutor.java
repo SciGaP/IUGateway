@@ -7,6 +7,7 @@ import org.scigap.iucig.filemanager.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,11 @@ import java.util.Stack;
 * rename <filename or directory name>
 *
 *
+*
 * USAGE
 *
 * executeCommand( command )
+* downloadFile(filename)
 *
 * to get the results --> getResultsMap()
 *
@@ -92,6 +95,12 @@ public class CommandExecutor {
         }
     }
 
+    //download a file
+    public InputStream downloadFile(String filename){
+        Session session = kerberosConnector.getSession();
+        log.info("DOWNLOADING FILE: " + filename);
+        return commandCentral.scpFrom(session, filename);
+    }
     //get the home directory
     public void pwd() {
         Session session = kerberosConnector.getSession();
