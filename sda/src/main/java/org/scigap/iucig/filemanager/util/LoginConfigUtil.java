@@ -65,7 +65,7 @@ public class LoginConfigUtil {
 
         for (final File fileEntry : folder.listFiles()) {
             if(fileEntry.getName().contains(username))
-                return fileEntry.getName();
+                return ticketLocation+"/"+fileEntry.getName();
         }
         return null;
     }
