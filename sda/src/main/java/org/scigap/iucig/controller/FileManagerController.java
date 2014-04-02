@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,13 +25,20 @@ public class FileManagerController {
      * Returns the result of a command using a Item list
      */
     @ResponseBody
-    @RequestMapping(value = "/command/{user}/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(@PathVariable(value = "user") final String user, @PathVariable(value = "command") final String command) {
-        if (commandExecutor == null) {
-            commandExecutor = new CommandExecutor(user);
+    @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
+    public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) {
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null){
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+            commandExecutor.executeCommand(command);
+            return commandExecutor.getResultItemList();
         }
-        commandExecutor.executeCommand(command);
-        return commandExecutor.getResultItemList();
+        return null;
     }
 
     /**

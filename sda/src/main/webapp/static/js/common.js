@@ -34,36 +34,6 @@ angular.module("user", []).
 
     });
 
-var getDisciplines = function (data) {
-    var disciplines = [];
-    for (var i in data) {
-        var discipline = {};
-        var subdisciplines = [];
-        discipline.name = data[i].name;
-        discipline.id = data[i].id;
-        subdisciplines = data[i].subdisciplines;
-        for (var j in subdisciplines){
-            var subdiscipline = {};
-            subdiscipline.name = subdisciplines[j].name;
-            subdiscipline.id = subdisciplines[j].id;
-            subdisciplines.push(subdiscipline);
-        }
-        discipline.subdisciplines = subdisciplines;
-        disciplines.push(discipline);
-    }
-    return disciplines;
-}
-
-var getSubdisciplines  = function(id, disciplines){
-    for (var i in disciplines){
-        var id1 = disciplines[i].id;
-        if (id1 == id){
-            return disciplines[i].subdisciplines;
-        }
-    }
-    return null;
-}
-
 var FooterCtrl = function ($scope) {
     $scope.year = new Date().toJSON().substring(0, 4);
 };
