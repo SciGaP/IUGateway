@@ -25,7 +25,7 @@ public class KerberosConnector {
         System.out.println("HOST : " + host);
         String krbLogin = readProperty(KERB_LOGIN_LOCATION);
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
-        String loginFile = loginConfigUtil.createLoginFile(krbLogin, remoteUser);
+        String loginFile = loginConfigUtil.createLoginFile("login2.conf", remoteUser);
         String krbConf = readProperty(KERB_CONF_LOCATION);
 
         JSch jsch = new JSch();

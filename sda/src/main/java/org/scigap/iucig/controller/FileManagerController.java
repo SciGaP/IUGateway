@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -25,8 +24,8 @@ public class FileManagerController {
      * Returns the result of a command using a Item list
      */
     @ResponseBody
-    @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(@PathVariable(value = "command") final String command, @QueryParam("user") String user) {
+    @RequestMapping(value = "/command/{user}/{command}", method = RequestMethod.GET)
+    public List<Item> executeCommand(@PathVariable(value = "user") final String user, @PathVariable(value = "command") final String command) {
         if (commandExecutor == null) {
             commandExecutor = new CommandExecutor(user);
         }
@@ -38,8 +37,8 @@ public class FileManagerController {
      * Download a file
      */
     @ResponseBody
-    @RequestMapping(value = "/download/{filename}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable(value = "filename") final String filename, @QueryParam("user") String user, HttpServletResponse response) {
+    @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
+    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) {
         if (commandExecutor == null) {
             commandExecutor = new CommandExecutor(user);
         }
