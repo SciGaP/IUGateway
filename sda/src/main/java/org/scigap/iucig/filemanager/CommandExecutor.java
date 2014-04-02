@@ -45,8 +45,10 @@ public class CommandExecutor {
     private static Stack<String> pathStack;
     private static String workingDirectory;
     private static final String LS = "ls -ltr ";
+    private String remoteUser;
 
-    public CommandExecutor() {
+    public CommandExecutor(String user) {
+        remoteUser = user;
         kerberosConnector = new KerberosConnector();
         commandCentral = new CommandCentral();
         stringUtils = new StringUtils();
@@ -57,7 +59,7 @@ public class CommandExecutor {
 
     //execute any command
     public void executeCommand(String command) {
-        Session session = kerberosConnector.getSession();
+        Session session = kerberosConnector.getSession(remoteUser);
         List<String> commandList = stringUtils.deconstructCommand(command);
         if (commandList.get(0).equals("cd")) {
             if (commandList.get(1).equals("..")) {
@@ -97,13 +99,13 @@ public class CommandExecutor {
 
     //download a file
     public InputStream downloadFile(String filename){
-        Session session = kerberosConnector.getSession();
+        Session session = kerberosConnector.getSession(remoteUser);
         log.info("DOWNLOADING FILE: " + filename);
         return commandCentral.scpFrom(session, filename);
     }
     //get the home directory
     public void pwd() {
-        Session session = kerberosConnector.getSession();
+        Session session = kerberosConnector.getSession(remoteUser);
         //getting the home directory
         String path = commandCentral.pwd(session);
         //add it to the stack
@@ -115,7 +117,7 @@ public class CommandExecutor {
     }
 
     public void ls() {
-        Session session = kerberosConnector.getSession();
+        Session session = kerberosConnector.getSession(remoteUser);
         setResult(commandCentral.executeCommand(session, LS + workingDirectory));
         setResultMap(stringUtils.categorizeResult(getResult()));
         setResultItemList(stringUtils.getResultsList(getResult()));

@@ -4,27 +4,37 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
-/**
- * Created by swithana on 3/23/14.
- */
 public class KerberosConnector {
-    public Session getSession() {
+    public static final String KERB_PROPERTIES = "kerb.properties";
+    public static final String KERB_HOST = "kerb.host";
+    public static final String  KERB_CONF_LOCATION = "kerb.conf.location";
+    public static final String KERB_LOGIN_LOCATION = "kerb.login.location";
+    public static final String JAVA_SECURITY_KRB5_CONF = "java.security.krb5.conf";
+    public static final String JAVA_SECURITY_AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
+    public static final String JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY = "javax.security.auth.useSubjectCredsOnly";
+    public static final String SUN_SECURITY_KRB5_DEBUG = "sun.security.krb5.debug";
+    private static Properties properties = new Properties();
 
-        String host = "gw110.iu.xsede.org";
-        String user = "cpelikan";
+    public Session getSession(String remoteUser) {
+        String host = readProperty(KERB_HOST);
+        System.out.println("HOST : " + host);
+        String krbConf = readProperty(KERB_CONF_LOCATION);
+        String krbLogin = readProperty(KERB_LOGIN_LOCATION);
         JSch jsch = new JSch();
         JSch.setLogger(new MyLogger());
 
-        System.setProperty("java.security.krb5.conf", "/Users/chathuri/dev/IU_gateway/github_source/fileManager/IUGateway/portal/src/main/resources/krb5.conf");
-        System.setProperty("java.security.auth.login.config", "/Users/chathuri/dev/IU_gateway/github_source/fileManager/IUGateway/portal/src/main/resources/login.conf");
-        System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
-        System.setProperty("sun.security.krb5.debug", "true");
+        System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
+        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, krbLogin);
+        System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
+        System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
 
         Session session = null;
         try {
-            session = jsch.getSession(user, host, 22);
+            session = jsch.getSession(remoteUser, host, 22);
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             config.put("PreferredAuthentications",
@@ -36,6 +46,21 @@ public class KerberosConnector {
         }
         return session;
     }
+
+    public String readProperty (String propertyName){
+        try {
+            URL resource = KerberosConnector.class.getClassLoader().getResource(KERB_PROPERTIES);
+            if (resource != null){
+                properties.load(resource.openStream());
+                return properties.getProperty(propertyName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public static class MyLogger implements com.jcraft.jsch.Logger {
         static java.util.Hashtable name=new java.util.Hashtable();
         static{

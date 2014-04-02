@@ -19,6 +19,8 @@
 	<mvc:annotation-driven />
 	<mvc:view-controller path="/" view-name="fileManager" />
 	<mvc:resources mapping="/static/**" location="/static/" />
+
+    <context:property-placeholder location="classpath:kerb.properties"/>
 	
 	<!-- <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
 		<property name="messageConverters">

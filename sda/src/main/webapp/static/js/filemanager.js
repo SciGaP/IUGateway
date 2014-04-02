@@ -10,12 +10,12 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 //        error(function (data, status) {
 //            console.log("Error getting profile !");
 //        });
-    $http({method: "GET", url: "getProperties" , cache: false}).
+    $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
             $scope.message = "</br></br><div class='alert alert-info'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "property1: " + data.REMOTE_USER + " </br> "  + "property2: "  + data.KRB5CCNAME +  "</div>";
-//            $scope.files = data;
+                + "remoteUser: " + data</div>";
+            $scope.remoteUser = data;
         }).
         error(function (data, status) {
             console.log("Error getting profile !");

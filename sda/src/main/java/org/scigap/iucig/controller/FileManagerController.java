@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.json.simple.JSONArray;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,9 +32,9 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(@PathVariable(value = "command") final String command) {
+    public List<Item> executeCommand(@PathVariable(value = "command") final String command, @QueryParam("user") String user) {
         if (commandExecutor == null) {
-            commandExecutor = new CommandExecutor();
+            commandExecutor = new CommandExecutor(user);
         }
         commandExecutor.executeCommand(command);
         return commandExecutor.getResultItemList();
@@ -43,9 +45,9 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/download/{filename}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable(value = "filename") final String filename, HttpServletResponse response) {
+    public void downloadFile(@PathVariable(value = "filename") final String filename, @QueryParam("user") String user, HttpServletResponse response) {
         if (commandExecutor == null) {
-            commandExecutor = new CommandExecutor();
+            commandExecutor = new CommandExecutor(user);
         }
         InputStream in = commandExecutor.downloadFile(filename);
         try {
