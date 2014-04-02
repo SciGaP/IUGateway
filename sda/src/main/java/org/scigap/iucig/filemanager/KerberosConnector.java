@@ -3,6 +3,7 @@ package org.scigap.iucig.filemanager;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import org.scigap.iucig.filemanager.util.LoginConfigUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,13 +23,16 @@ public class KerberosConnector {
     public Session getSession(String remoteUser) {
         String host = readProperty(KERB_HOST);
         System.out.println("HOST : " + host);
-        String krbConf = readProperty(KERB_CONF_LOCATION);
         String krbLogin = readProperty(KERB_LOGIN_LOCATION);
+        LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
+        String loginFile = loginConfigUtil.createLoginFile(krbLogin, remoteUser);
+        String krbConf = readProperty(KERB_CONF_LOCATION);
+
         JSch jsch = new JSch();
         JSch.setLogger(new MyLogger());
 
         System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
-        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, krbLogin);
+        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
         System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
 

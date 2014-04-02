@@ -1,12 +1,8 @@
 package org.scigap.iucig.controller;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.json.simple.JSONArray;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller

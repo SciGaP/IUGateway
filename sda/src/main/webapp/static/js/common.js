@@ -1,28 +1,15 @@
 var userApp = angular.module("userApp", ["user", "urlprovider"]);
 
-// Enabling CORS in Angular
-userApp.config(['$httpProvider', function ($httpProvider) {
-    $httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-}]);
-
 angular.module("user", []).
     service("UserService",function ($http) {
         function service() {
             this.login = function () {
-                return $http({method: "GET", url: "getUserinfo", cache: false}).
+                return $http({method: "GET", url: "getRemoteUser", cache: false}).
                     success(function (data, status) {
+                        console.log(data);
                     }).
                     error(function (data, status) {
                         console.log("Error getting user information");
-                    });
-            };
-            this.logout = function () {
-                return $http({method: "POST", url: "logout", cache: false}).
-                    success(function (data, status) {
-                    }).
-                    error(function (data, status) {
-                        console.log("Error logging out user !");
                     });
             };
         };
@@ -45,79 +32,6 @@ angular.module("user", []).
                 $scope.$emit("UserLogin", { username: $scope.username, authenticated: $scope.authenticated});
             });
 
-        $scope.profile = function () {
-            $http({method: "GET", url: "getScienceDiscipline", cache: false}).
-                success(function (data, status) {
-                    $scope.disciplines = getDisciplines(data);
-                }).
-                error(function (data, status) {
-                    console.log("Error getting profile !");
-                });
-        };
-
-        $scope.getSubDisciplineList1 = function () {
-            var id1 = $scope.item.primaryDisc.id;
-            $scope.subdisciplines1 = getSubdisciplines(id1,$scope.disciplines);
-
-            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "success..</div>";
-        };
-
-        $scope.getSubDisciplineList2 = function () {
-            var id2 = $scope.item.secondaryDisc.id;
-            $scope.subdisciplines2 = getSubdisciplines(id2,$scope.disciplines);
-
-            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "success..</div>";
-        };
-
-        $scope.getSubDisciplineList3 = function () {
-            var id3 = $scope.item.tertiaryDisc.id;
-            $scope.subdisciplines3 = getSubdisciplines(id3,$scope.disciplines);
-
-            $scope.message = "<div class='alert'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "success..</div>";
-        };
-
-        $scope.addDiscipline = function (disciplineInfo) {
-            if (disciplineInfo == undefined){
-                $scope.submitDisabled = true;
-            } else{
-                var d = new Date();
-                var month = d.getMonth()+1;
-                var day = d.getDate();
-
-                var date = d.getFullYear() + '-' +
-                    (month<10 ? '0' : '') + month + '-' +
-                    (day<10 ? '0' : '') + day;
-                disciplineInfo.username = $scope.username;
-                disciplineInfo.date = date;
-                var url = "updateScienceDiscipline";
-                $http({method:"POST", url:"updateScienceDiscipline", data:disciplineInfo, dataType:"json", cache:false}).
-                    success(function (data, status) {
-                        $scope.submitSuccess = true;
-//                    $('#myModal').modal('hide');
-                        $scope.item = null;
-                    }).
-                    error(function (data, status) {
-                        $scope.submitDisabled = true;
-                    });
-            }
-        };
-
-        $scope.logout = function () {
-            UserService.logout().success(function () {
-                $scope.username = "";
-                $scope.authenticated = false;
-                $scope.$emit("UserLogin", { username: $scope.username, authenticated: $scope.authenticated});
-                $scope.message = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                    + "User Logged out of Science Gateway. To logout of CAS, <a href='https://cas.iu.edu/cas/logout'>Click here</a></div>";
-            }).
-                error(function () {
-                    $scope.message = "<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                        + "Oops. There was a problem logging out. Please try again</div>";
-                });
-        };
     });
 
 var getDisciplines = function (data) {

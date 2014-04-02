@@ -2,24 +2,22 @@ var fileManagerApp = angular.module("fileManagerApp",["user","urlprovider"]);
 
 fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     console.log("*******at controller*****")
-//    $http({method: "GET", url: "filemanager/command/ls" , cache: false}).
-//        success(function (data, status) {
-//            console.log(data);
-//            $scope.files = data;
-//        }).
-//        error(function (data, status) {
-//            console.log("Error getting profile !");
-//        });
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
-            $scope.message = "</br></br><div class='alert alert-info'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                + "remoteUser: " + data</div>";
             $scope.remoteUser = data;
         }).
         error(function (data, status) {
             console.log("Error getting profile !");
         });
+    $http({method: "GET", url: "filemanager/command/ls" , cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.files = data;
+        }).
+        error(function (data, status) {
+            console.log("Error getting profile !");
+    });
 
     $scope.upOneLevel = function(){
         var parent = "...";

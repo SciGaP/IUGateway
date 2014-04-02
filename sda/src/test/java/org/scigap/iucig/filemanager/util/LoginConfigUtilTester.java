@@ -13,7 +13,7 @@ public class LoginConfigUtilTester {
 
     @Test
     public void testCreateLoginFile() {
-        System.out.println(loginConfigUtil.createLoginFile("login2.conf","SimpleEcho"));
+        System.out.println(loginConfigUtil.createLoginFile("login2.conf","launch"));
     }
 
     @Test
