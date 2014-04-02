@@ -42,8 +42,8 @@ public class CommandExecutor {
     private List<String> result;
     private Map<String, String> resultMap;
     //path stack
-    private static Stack<String> pathStack;
-    private static String workingDirectory;
+    private Stack<String> pathStack;
+    private String workingDirectory;
     private static final String LS = "ls -ltr ";
     private String remoteUser;
 
@@ -55,6 +55,10 @@ public class CommandExecutor {
         resultItemList = new ArrayList<Item>();
         //get the current working directory
         pwd();
+    }
+
+    public String getRemoteUser() {
+        return remoteUser;
     }
 
     //execute any command

@@ -24,7 +24,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var parent = "...";
         var url = "filemanager/command/cd " + parent;
         console.log(url);
-        $http({method: "GET", url: "filemanager/command/" + $scope.remoteUser + "cd " + parent, cache: false}).
+        $http({method: "GET", url: "filemanager/command/cd " + parent, cache: false}).
             success(function (data, status) {
                 console.log(data);
                 $scope.files = data;
@@ -37,7 +37,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.goInside = function(file){
         if (!file.file){
             var folderName = file.name;
-            $http({method: "GET", url: "filemanager/command/" + $scope.remoteUser + "cd " + folderName , cache: false}).
+            $http({method: "GET", url: "filemanager/command/cd " + folderName , cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
@@ -49,7 +49,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
     $scope.rename = function (path1, path2) {
         console.log("*******at rename controller*****")
-        $http({method: "GET", url: "filemanager/command/" + $scope.remoteUser + "mv " + path1 +" " + path2, cache: false}).
+        $http({method: "GET", url: "filemanager/command/mv " + path1 +" " + path2, cache: false}).
             success(function (data, status) {
             }).
             error(function (data, status) {
@@ -61,7 +61,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.addFolder = function (folderName) {
         console.log(folderName);
         console.log("*******at mkdir controller*****")
-        $http({method: "GET", url: "filemanager/command/" + $scope.remoteUser + "mkdir " + folderName, cache: false}).
+        $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
             success(function (data, status) {
                 $scope.files = data;
                 $scope.createSuccess = true;
@@ -90,7 +90,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.delete = function () {
         console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/" + $scope.remoteUser + "rm -r", cache: false}).
+        $http({method: "GET", url: "filemanager/command/rm -r", cache: false}).
             success(function (data, status) {
                 $scope.disciplines = getDisciplines(data);
             }).

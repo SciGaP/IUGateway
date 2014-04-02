@@ -13,13 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/filemanager/")
 public class FileManagerController {
 
-    private static CommandExecutor commandExecutor;
+    private CommandExecutor commandExecutor;
+    private Map<String, CommandExecutor> commandExecutorMap = new HashMap<String, CommandExecutor>();
 
     /**
      * Returns the result of a command using a Item list
@@ -32,11 +35,20 @@ public class FileManagerController {
         if (remoteUser != null){
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
             System.out.println("Remote User : " + remoteUser);
-            if (commandExecutor == null) {
+            if (!commandExecutorMap.isEmpty()){
+                commandExecutor = commandExecutorMap.get(remoteUser);
+                if (commandExecutor == null){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                    commandExecutorMap.put(remoteUser, commandExecutor);
+                }
+                commandExecutor.executeCommand(command);
+                return commandExecutor.getResultItemList();
+            }else {
                 commandExecutor = new CommandExecutor(remoteUser);
+                commandExecutorMap.put(remoteUser, commandExecutor);
+                commandExecutor.executeCommand(command);
+                return commandExecutor.getResultItemList();
             }
-            commandExecutor.executeCommand(command);
-            return commandExecutor.getResultItemList();
         }
         return null;
     }
