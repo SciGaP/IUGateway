@@ -30,14 +30,22 @@ public class LoginConfigUtil {
             "\n" +
             "  };";
     private String filePath;
+    private String ticketLocation;
+
 
     public LoginConfigUtil() {
         filePath = readProperty("kerb.conffile.location");
+        ticketLocation = readProperty("kerb.ticket.location");
     }
 
-    public String createLoginFile(String filename, String ticketCache) {
+    public String createLoginFile(String filename, String username) {
         try {
             String filePath = this.filePath + filename;
+            String ticketCache = searchTicket(username);
+            if (ticketCache == null) {
+                return null;
+            }
+
             File file = new File(filePath);
             BufferedWriter output = new BufferedWriter(new FileWriter(file));
             output.write(LOGIN_FILE_FIRST_PART);
@@ -48,6 +56,16 @@ public class LoginConfigUtil {
             return filePath;
         } catch (IOException e) {
             log.error("Error Occurred Creating login.conf file ..." + e.getMessage());
+        }
+        return null;
+    }
+
+    public String searchTicket(final String username) {
+        File folder = new File(ticketLocation);
+
+        for (final File fileEntry : folder.listFiles()) {
+            if(fileEntry.getName().contains(username))
+                return fileEntry.getName();
         }
         return null;
     }

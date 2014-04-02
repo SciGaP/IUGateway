@@ -13,11 +13,19 @@ public class LoginConfigUtilTester {
 
     @Test
     public void testCreateLoginFile() {
-        System.out.println(loginConfigUtil.createLoginFile("login2.conf","/Users/chathuri/krb5cc_swithana_022322"));
+        System.out.println(loginConfigUtil.createLoginFile("login2.conf","SimpleEcho"));
     }
+
+    @Test
+    public void testSearchTicket() {
+        System.out.println(loginConfigUtil.searchTicket("SimpleEcho"));
+    }
+
 
     @Test
     public void testReadProperty() {
         System.out.println(loginConfigUtil.readProperty("kerb.conffile.location"));
     }
+
+
 }
