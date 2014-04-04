@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,8 +87,14 @@ public class ScienceDisciplineController {
 
     @ResponseBody
     @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
-    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline) {
+    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception{
         try {
+            String remoteUser;
+            if (request != null){
+                remoteUser = request.getRemoteUser();
+            } else {
+                throw new Exception("Remote user is null");
+            }
             String subDiscId1 = "sub-";
             String subDiscId2 = "sub-";
             String subDiscId3 = "sub-";
@@ -97,7 +104,7 @@ public class ScienceDisciplineController {
             int secondarySubDisId = 0;
             int tertiaryDisId = 0;
             int tertiarySubDisId = 0;
-            String urlParameters = "user=" + discipline.getUsername();
+            String urlParameters = "user=" + remoteUser;
             if (discipline != null) {
                 Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
                 if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){

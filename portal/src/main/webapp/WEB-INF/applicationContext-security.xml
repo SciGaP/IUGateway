@@ -36,9 +36,9 @@
 		<security:intercept-url pattern="/jobInfo/mason/jobstatus" access="permitAll" />
 		<security:intercept-url pattern="/jobInfo/bigred2/jobstatus" access="permitAll" />
 		<security:intercept-url pattern="/submitFeedback" access="permitAll" />
-		<security:intercept-url pattern="/scienceDiscipline" access="permitAll" />
-		<security:intercept-url pattern="/getScienceDiscipline" access="permitAll" />
-		<security:intercept-url pattern="/updateScienceDiscipline" access="permitAll" />
+		<!--<security:intercept-url pattern="/scienceDiscipline" access="permitAll" />-->
+		<!--<security:intercept-url pattern="/getScienceDiscipline" access="permitAll" />-->
+		<!--<security:intercept-url pattern="/updateScienceDiscipline" access="permitAll" />-->
 		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
         <security:form-login login-page="/../cilogon2/startRequest" default-target-url="/index" authentication-failure-url="/loginFailure" />
 	</security:http>

@@ -35,15 +35,12 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                 var date = d.getFullYear() + '-' +
                     (month<10 ? '0' : '') + month + '-' +
                     (day<10 ? '0' : '') + day;
-                console.log($scope.username);
-                disciplineInfo.username = $scope.username;
                 disciplineInfo.date = date;
                 var url = "updateScienceDiscipline";
                 $http({method:"POST", url:"updateScienceDiscipline", data:disciplineInfo, dataType:"json", cache:false}).
                     success(function (data, status) {
                         $scope.submitSuccess = true;
 //                    $('#myModal').modal('hide');
-                        $scope.username = "";
                         $scope.item = null;
                     }).
                     error(function (data, status) {
@@ -83,5 +80,11 @@ var getSubdisciplines  = function(id, disciplines){
     }
     return null;
 }
+
+$(document).ready(function() {
+    setTimeout(function() {
+        $("#disciplineLink").parent().addClass("active");
+    },50);
+});
 
 
