@@ -19,6 +19,7 @@ public final class ViewNames {
 	public static final String LOGOUT_PAGE = "logout";
 	public static final String MODULES_INFO_PAGE = "modulesInfo";
 	public static final String SEARCH_MODULES_INFO_PAGE = "searchModulesInfo";
+	public static final String SCIENCE_DISCIPLINE_INFO_PAGE = "scienceDiscipline";
 	public static final String CHARTS_PAGE = "charts";
 	public static final String JOBS_PAGE = "jobs";
 	public static final String USER_JOBS_PAGE = "userJobs";

@@ -72,6 +72,13 @@ public class PageController {
 		logger.debug("Redirecting to Search software info page page");
 		return ViewNames.SEARCH_MODULES_INFO_PAGE;
 	}
+
+    @RequestMapping(value = "/scienceDiscipline", method = RequestMethod.GET)
+    public String getScienceDisciplineInfo() {
+        // Temporarily redirecting to search software page before completely removing it.
+        logger.debug("Redirecting to science discipline page");
+        return ViewNames.SCIENCE_DISCIPLINE_INFO_PAGE;
+    }
 	
 	@RequestMapping(value = "/searchModulesInfo", method = RequestMethod.GET)
 	public String getSoftwareSearchInfo() {
