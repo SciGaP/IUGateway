@@ -31,6 +31,7 @@ public class LoginConfigUtil {
             "  };";
     private String filePath;
     private String ticketLocation;
+    private final String TICKET_PREPHRASE = "krb5cc_apache_";
 
 
     public LoginConfigUtil() {
@@ -64,7 +65,7 @@ public class LoginConfigUtil {
         File folder = new File(ticketLocation);
 
         for (final File fileEntry : folder.listFiles()) {
-            if(fileEntry.getName().contains(username))
+            if(fileEntry.getName().contains(TICKET_PREPHRASE+username))
                 return ticketLocation+"/"+fileEntry.getName();
         }
         return null;
