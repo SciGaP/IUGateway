@@ -21,8 +21,8 @@ import java.util.Map;
 @RequestMapping(value = "/filemanager/")
 public class FileManagerController {
 
-    private CommandExecutor commandExecutor;
-    private Map<String, CommandExecutor> commandExecutorMap = new HashMap<String, CommandExecutor>();
+    private static CommandExecutor commandExecutor;
+    private static Map<String, CommandExecutor> commandExecutorMap = new HashMap<String, CommandExecutor>();
 
     /**
      * Returns the result of a command using a Item list
@@ -41,14 +41,12 @@ public class FileManagerController {
                     commandExecutor = new CommandExecutor(remoteUser);
                     commandExecutorMap.put(remoteUser, commandExecutor);
                 }
-                commandExecutor.executeCommand(command);
-                return commandExecutor.getResultItemList();
             }else {
                 commandExecutor = new CommandExecutor(remoteUser);
                 commandExecutorMap.put(remoteUser, commandExecutor);
-                commandExecutor.executeCommand(command);
-                return commandExecutor.getResultItemList();
             }
+            commandExecutor.executeCommand(command);
+            return commandExecutor.getResultItemList();
         }
         return null;
     }
