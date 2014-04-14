@@ -83,7 +83,7 @@ var getUserDisciplines = function (allDisciplines, savedDiscipline) {
     var subdisciplines = [];
     var data1 = [];
     data1 = savedDiscipline.disciplines;
-    for (var i in data1){
+    for (var i = 0; i < data1.length; i++){
         var subdiscipline = {};
         subdiscipline.id = data1[i].id;
         subdiscipline.name = data1[i].name;
@@ -95,11 +95,11 @@ var getUserDisciplines = function (allDisciplines, savedDiscipline) {
 }
 
 var getDisciplineContainsSubDiscipline = function (allDisciplines, id){
-    for (var i in allDisciplines) {
+    for (var i = 0; allDisciplines.length; i++) {
         var discipline = {};
         var subdisciplines = [];
         subdisciplines = allDisciplines[i].subdisciplines;
-        for (var j in subdisciplines){
+        for (var j =0 ; j < subdisciplines.length; j++){
             var obj = subdisciplines[j];
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
