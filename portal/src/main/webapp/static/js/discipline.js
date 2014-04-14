@@ -1,9 +1,12 @@
 var disciplineApp = angular.module("disciplineApp", ["user"]);
 
 disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
-        $http({method: "GET", url: "getScienceDiscipline", cache: false}).
+//        $http({method: "GET", url: "getScienceDiscipline", cache: false}).
+        $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
             success(function (data, status) {
-                $scope.disciplines = getDisciplines(data);
+//                $scope.disciplines = getDisciplines(data);
+                console.log(data);
+
             }).
             error(function (data, status) {
                 console.log("Error getting profile !");

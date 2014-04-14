@@ -5,141 +5,141 @@
         <script src="static/js/common.js"></script>
         <script src="static/js/urlprovider.js"></script>
     </head>
-  <div class="navbar navbar-iu navbar-fixed-top" style="position:fixed">
-	<div>
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-      </a>
-      <span class="nav"><a href="http://www.iu.edu/"><img title="Logo" alt="Indiana University" src="static/images/iu_logo.gif" /></a></span>
-      <span class="brand">Cyberinfrastructure Gateway</span>
-      <div class="nav-collapse">
-	  <ul class="nav">
-		<li>
-			<a id="homeLink" href="index">Home</a>
-		</li>
-		<li>
-	      <a id="newsLink" href="news">News</a>
-	    </li>
-	    <!-- // TODO: Applications should be authenticated! -->
-	    <li class="dropdown">
-	      <a class="dropdown-toggle" id="appsLink" href="#">Applications</a>
-            <ul class="dropdown-menu">
-                <li><a href="amber">Amber</a></li>
-            </ul>
-        </li>
-		<li ng-show="authenticated" class="dropdown">
-	      <a class="dropdown-toggle" id="jobLink" href="#">Computing</a>
-            <ul class="dropdown-menu">
-                <li><a href="userJobs">My Jobs</a></li>
-                <!-- li><a href="submitJobs">Submit Jobs</a></li-->
-                <li class="dropdown-submenu">
-                    <a class="dropdown-toggle" href="#">All Jobs</a>
+    <div class="navbar navbar-iu navbar-fixed-top" style="position:fixed">
+        <div>
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <span class="nav"><a href="http://www.iu.edu/"><img title="Logo" alt="Indiana University" src="static/images/iu_logo.gif" /></a></span>
+            <span class="brand">Cyberinfrastructure Gateway</span>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li>
+                        <a id="homeLink" href="index">Home</a>
+                    </li>
+                    <li>
+                        <a id="newsLink" href="news">News</a>
+                    </li>
+                    <!-- // TODO: Applications should be authenticated! -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="appsLink" href="#">Applications</a>
                         <ul class="dropdown-menu">
-                            <li><a href="jobs?machine=bigred2">Big Red II</a></li>
-                            <li><a href="jobs?machine=mason">Mason</a></li>
-                            <li><a href="jobs?machine=quarry">Quarry</a></li>
+                            <li><a href="amber">Amber</a></li>
                         </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a class="dropdown-toggle" href="#">Node Info</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="nodeManagement?machine=bigred2">Big Red II</a></li>
-                        <li><a href="nodeManagement?machine=mason">Mason</a></li>
-                        <li><a href="nodeManagement?machine=quarry">Quarry</a></li>
-                    </ul>
-                </li>
-                <li class="divider"></li>
-	       	    <li class="dropdown-submenu">
-                       <a class="dropdown-toggle" href="#">Node Reservations</a>
-                       <ul class="dropdown-menu">
-                           <li><a href="reservations?machine=bigred2">Big Red II</a></li>
-                           <li><a href="reservations?machine=mason">Mason</a></li>
-                           <li><a href="reservations?machine=quarry">Quarry</a></li>
-                       </ul>
-                </li>
-            </ul>
-	    </li>
-		<li>
-		  <a id="infoLink" href="searchModulesInfo">Software</a>
-	    </li>
-        <li ng-show="authenticated">
-          <a id="disciplineLink" href="scienceDiscipline">Science Disciplines</a>
-        </li>
-        <li ng-show="authenticated">
-          <a id="authenticated" href="charts">My Usage</a>
-        </li>
-		<li ng-show="authenticated">
-	      <a id="globusOnlineLink" href="https://iub.globusonline.org/SignIn">File Transfer</a>
-	    </li>
-        <li ng-show="authenticated">
-           <a id="fileManagerLink" href="sda">SDA</a>
-        </li>
-	    <li class="dropdown">
-	      <a class="dropdown-toggle" id="aboutLink" href="#">Contact</a>
-	      <ul class="dropdown-menu">
-	        <li><a href="contactus">Contact Info</a></li>
-	        <li><a href="feedback">Support</a></li>
-	      </ul>
-	    </li>
-   	    <li>
-	      <a id="helpLink" href="help">Links</a>
-	    </li>
-	  </ul>
-	  <ul class="nav pull-right">
-	    <li ng-hide="authenticated" id="loginLink">
-	      <a href="../cilogon2/startRequest"><img class="nav" title="Logo" alt="Logo" src="static/images/cilogon-logo-24x24-b.png" />Login</a>
-	    </li>
-	    <li ng-show="authenticated" class="dropdown">
-	      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span id="loggedUser" data-username="{{username}}">{{username}}</span>
-			  &nbsp;&nbsp;<i class="icon-user icon-white"></i>
-		  </a>
-		  <ul class="dropdown-menu">
-              <!--<li><a ng-click="profile()" href="#scienceDisciplineModal" role="button" data-toggle="modal">Profile</a></li>-->
-              <li><a ng-click="logout()">Logout</a></li>
-          </ul>
-		</li>
-	  </ul>
-	  <ul class="nav pull-right">
-	  	<li><form class="navbar-search">
-		  <!-- <input type="text" class="search-query" placeholder="Search"> -->
-		  </form>
-	    </li>
-	  </ul>
-	  </div>
-	</div>
-  </div>
-  <br><br><br>
-  <div id="scienceDisciplineModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel">Science Discipline</h3>
+                    </li>
+                    <li ng-show="authenticated" class="dropdown">
+                        <a class="dropdown-toggle" id="jobLink" href="#">Computing</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="userJobs">My Jobs</a></li>
+                            <!-- li><a href="submitJobs">Submit Jobs</a></li-->
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-toggle" href="#">All Jobs</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="jobs?machine=bigred2">Big Red II</a></li>
+                                    <li><a href="jobs?machine=mason">Mason</a></li>
+                                    <li><a href="jobs?machine=quarry">Quarry</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-toggle" href="#">Node Info</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="nodeManagement?machine=bigred2">Big Red II</a></li>
+                                    <li><a href="nodeManagement?machine=mason">Mason</a></li>
+                                    <li><a href="nodeManagement?machine=quarry">Quarry</a></li>
+                                </ul>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-toggle" href="#">Node Reservations</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="reservations?machine=bigred2">Big Red II</a></li>
+                                    <li><a href="reservations?machine=mason">Mason</a></li>
+                                    <li><a href="reservations?machine=quarry">Quarry</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a id="infoLink" href="searchModulesInfo">Software</a>
+                    </li>
+                    <!--<li ng-show="authenticated">-->
+                    <!--<a id="disciplineLink" href="scienceDiscipline">Science Disciplines</a>-->
+                    <!--</li>-->
+                    <li ng-show="authenticated">
+                        <a id="authenticated" href="charts">My Usage</a>
+                    </li>
+                    <li ng-show="authenticated">
+                        <a id="globusOnlineLink" href="https://iub.globusonline.org/SignIn">File Transfer</a>
+                    </li>
+                    <li ng-show="authenticated">
+                        <a id="fileManagerLink" href="sda">SDA</a>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="aboutLink" href="#">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="contactus">Contact Info</a></li>
+                            <li><a href="feedback">Support</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a id="helpLink" href="help">Links</a>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li ng-hide="authenticated" id="loginLink">
+                        <a href="../cilogon2/startRequest"><img class="nav" title="Logo" alt="Logo" src="static/images/cilogon-logo-24x24-b.png" />Login</a>
+                    </li>
+                    <li ng-show="authenticated" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span id="loggedUser" data-username="{{username}}">{{username}}</span>
+                            &nbsp;&nbsp;<i class="icon-user icon-white"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="scienceDiscipline">Profile</a></li>
+                            <li><a ng-click="logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li><form class="navbar-search">
+                        <!-- <input type="text" class="search-query" placeholder="Search"> -->
+                    </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="modal-body">
-        <!--<div class="row-fluid"><div class="span4"><strong>Country of Citizenship</strong></div><div><input type="text" ng-model="country" /></div></div>-->
-        <div class="row-fluid"><div class="span5"><strong>Primary Discipline</strong></div><div><select name="primaryDisc" ng-model="item.primaryDisc" ng-options="primaryDisc.name for primaryDisc in disciplines" ng-change="getSubDisciplineList1()"><option value="">-Select {{primaryDisc}}-</option></select></div></div>
-        <div class="row-fluid"><div class="span5"><strong>Primary Sub-discipline</strong></div><div><select name="primarySubDisc" ng-model="item.primarySubDisc" ng-options="primarySubDisc.name for primarySubDisc in subdisciplines1"><option value="">-Select-</option></select></div></div>
-        <div class="row-fluid"><div class="span5"><strong>Secondary Discipline</strong></div><div><select name="secondaryDisc" ng-model="item.secondaryDisc" ng-options="secondaryDisc.name for secondaryDisc in disciplines" ng-change="getSubDisciplineList2()"><option value="">-Select-</option></select></div></div>
-        <div class="row-fluid"><div class="span5"><strong>Secondary Sub-discipline</strong></div><div><select name="secondarySubDisc" ng-model="item.secondarySubDisc" ng-options="secondarySubDisc.name for secondarySubDisc in subdisciplines2"><option value="">-Select-</option></select></div></div>
-        <div class="row-fluid"><div class="span5"><strong>Tertiary Discipline</strong></div><div><select name="tertiaryDisc" ng-model="item.tertiaryDisc" ng-options="tertiaryDisc.name for tertiaryDisc in disciplines" ng-change="getSubDisciplineList3()"><option value="">-Select-</option></select></div></div>
-        <div class="row-fluid"><div class="span5"><strong>Tertiary Sub-discipline</strong></div><div><select name="tertiarySubDisc" ng-model="item.tertiarySubDisc" ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines3"><option value="">-Select-</option></select></div></div>
-    </div>
-      <div class="modal-footer">
-          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-          <button ng-click="addDiscipline(item)" class="btn btn-danger pull-left">Submit</button>
-          <div class="alert alert-error" ng-show="submitDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-            Error occurred, please correct and submit
-          </div>
-          <div class="alert alert-success" ng-show="submitSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-              Submitted successfully..
-          </div>
+    <br><br><br>
+    <div id="scienceDisciplineModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 id="myModalLabel">Science Discipline</h3>
+        </div>
+        <div class="modal-body">
+            <!--<div class="row-fluid"><div class="span4"><strong>Country of Citizenship</strong></div><div><input type="text" ng-model="country" /></div></div>-->
+            <div class="row-fluid"><div class="span5"><strong>Primary Discipline</strong></div><div><select name="primaryDisc" ng-model="item.primaryDisc" ng-options="primaryDisc.name for primaryDisc in disciplines" ng-change="getSubDisciplineList1()"><option value="">-Select {{primaryDisc}}-</option></select></div></div>
+            <div class="row-fluid"><div class="span5"><strong>Primary Sub-discipline</strong></div><div><select name="primarySubDisc" ng-model="item.primarySubDisc" ng-options="primarySubDisc.name for primarySubDisc in subdisciplines1"><option value="">-Select-</option></select></div></div>
+            <div class="row-fluid"><div class="span5"><strong>Secondary Discipline</strong></div><div><select name="secondaryDisc" ng-model="item.secondaryDisc" ng-options="secondaryDisc.name for secondaryDisc in disciplines" ng-change="getSubDisciplineList2()"><option value="">-Select-</option></select></div></div>
+            <div class="row-fluid"><div class="span5"><strong>Secondary Sub-discipline</strong></div><div><select name="secondarySubDisc" ng-model="item.secondarySubDisc" ng-options="secondarySubDisc.name for secondarySubDisc in subdisciplines2"><option value="">-Select-</option></select></div></div>
+            <div class="row-fluid"><div class="span5"><strong>Tertiary Discipline</strong></div><div><select name="tertiaryDisc" ng-model="item.tertiaryDisc" ng-options="tertiaryDisc.name for tertiaryDisc in disciplines" ng-change="getSubDisciplineList3()"><option value="">-Select-</option></select></div></div>
+            <div class="row-fluid"><div class="span5"><strong>Tertiary Sub-discipline</strong></div><div><select name="tertiarySubDisc" ng-model="item.tertiarySubDisc" ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines3"><option value="">-Select-</option></select></div></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button ng-click="addDiscipline(item)" class="btn btn-danger pull-left">Submit</button>
+            <div class="alert alert-error" ng-show="submitDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
+                Error occurred, please correct and submit
+            </div>
+            <div class="alert alert-success" ng-show="submitSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>
+                Submitted successfully..
+            </div>
 
-          <!--<button ng-hide="item.submitSuccess" ng-click="addDiscipline(item)" class="btn btn-danger pull-left" ng-disabled="item.submitDisabled" >Submit</button>-->
-          <!--<button ng-show="item.submitSuccess" class="btn btn-success pull-left"  ng-disabled="true">Submit</button>-->
-      </div>
-  </div>
-  <!-- <gcse:search></gcse:search> -->
-  <div ng-bind-html-unsafe="message"></div>
+            <!--<button ng-hide="item.submitSuccess" ng-click="addDiscipline(item)" class="btn btn-danger pull-left" ng-disabled="item.submitDisabled" >Submit</button>-->
+            <!--<button ng-show="item.submitSuccess" class="btn btn-success pull-left"  ng-disabled="true">Submit</button>-->
+        </div>
+    </div>
+    <!-- <gcse:search></gcse:search> -->
+    <div ng-bind-html-unsafe="message"></div>
 </div>

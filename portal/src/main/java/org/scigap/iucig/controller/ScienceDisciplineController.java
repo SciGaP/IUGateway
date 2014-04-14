@@ -60,7 +60,7 @@ public class ScienceDisciplineController {
     public String getScienceDiscipline() {
         String responseJSON = null;
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL +"?format=json");
+        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL +"discipline/?format=json");
         logger.debug("Executing REST GET request" + disciplines.getRequestLine());
 
         try {
@@ -77,6 +77,38 @@ public class ScienceDisciplineController {
             e.printStackTrace();
         }
 
+        return responseJSON;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getUsersScienceDiscipline", method = RequestMethod.GET)
+    public String getUsersScienceDiscipline(HttpServletRequest request) throws Exception{
+        String responseJSON = null;
+        String remoteUser;
+        if (request != null){
+            remoteUser = request.getRemoteUser();
+        } else {
+            throw new Exception("Remote user is null");
+        }
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        String url = SCIENCE_DISCIPLINE_URL + "user/" + remoteUser + "?format=json&fields=disciplines";
+        System.out.println(url);
+        HttpRequestBase disciplines = new HttpGet(url);
+        logger.debug("Executing REST GET request" + disciplines.getRequestLine());
+
+        try {
+            httpClient = (DefaultHttpClient) WebClientDevWrapper.wrapClient(httpClient);
+            HttpResponse response = httpClient.execute(disciplines);
+            HttpEntity entity = response.getEntity();
+            if (entity != null && response.getStatusLine().getStatusCode()== HttpStatus.OK.value()) {
+                responseJSON = convertStreamToString(entity.getContent());
+            }
+            EntityUtils.consume(entity);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return responseJSON;
     }
 
@@ -166,7 +198,7 @@ public class ScienceDisciplineController {
                     }
                 }
 
-                URL obj = new URL(SCIENCE_DISCIPLINE_URL);
+                URL obj = new URL(SCIENCE_DISCIPLINE_URL + "discipline/");
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("POST");
                 con.setDoInput (true);
