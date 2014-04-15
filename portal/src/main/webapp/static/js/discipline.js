@@ -1,16 +1,20 @@
 var disciplineApp = angular.module("disciplineApp", ["user"]);
 
 disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
-        $http({method: "GET", url: "getScienceDiscipline", cache: false}).
-            success(function (data, status) {
+        $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
+            success(function (savedDiscipline, status) {
 //                $scope.disciplines = getDisciplines(data);
-                var savedDiscipline = "{\"disciplines\":[{\"name\":\"Informatics\",\"id\":180},{\"name\":\"Early Childhood Education\",\"id\":107}]}";
-                $scope.disciplines = getUserDisciplines(data, savedDiscipline);
-                console.log($scope.disciplines);
-
+                $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
+                    success(function (allDisciplines, status) {
+                        $scope.disciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                        console.log($scope.disciplines);
+                    }).
+                    error(function (data, status) {
+                        console.log("Error getting user disciplines !");
+                    });
             }).
             error(function (data, status) {
-                console.log("Error getting profile !");
+                console.log("Error getting disciplines !");
             });
 
         $scope.getSubDisciplineList1 = function () {
@@ -77,7 +81,9 @@ var getDisciplines = function (data) {
 
 
 var getUserDisciplines = function (allDisciplines, savedDiscipline) {
-    savedDiscipline = JSON.parse(savedDiscipline);
+    if (!savedDiscipline)   {
+        return getDisciplines(allDisciplines);
+    }
     var disciplines = [];
     var discipline = {};
     var subdisciplines = [];
