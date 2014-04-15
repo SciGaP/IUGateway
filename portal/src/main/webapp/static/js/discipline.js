@@ -3,13 +3,44 @@ var disciplineApp = angular.module("disciplineApp", ["user"]);
 disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
         $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
             success(function (savedDiscipline, status) {
-//                $scope.disciplines = getDisciplines(data);
                 $http({method: "GET", url: "getScienceDiscipline", cache: false}).
                     success(function (allDisciplines, status) {
+                        $scope.item = {};
+//                        $scope.item.primaryDisc = [];
+//                        $scope.item.primarySubDisc = [];
+//                        $scope.item.secondaryDisc = [];
+//                        $scope.item.secondarySubDisc = [];
+//                        $scope.item.tertiaryDisc = [];
+//                        $scope.item.tertiarySubDisc = [];
                         $scope.allDisciplines = getDisciplines(allDisciplines);
                         var selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
-                        $scope.primaryDiscipline1 = allDisciplines[0];
-                        console.log($scope.primaryDiscipline1);
+                        console.log($scope.allDisciplines);
+                        console.log(selectedDisciplines);
+                        if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
+                            $scope.item.primaryDisc = selectedDisciplines[0];
+                            $scope.item.primarySubDisc = selectedDisciplines[0].subdisciplines;
+                            if (selectedDisciplines[1] != undefined){
+                                $scope.item.secondaryDisc = selectedDisciplines[1];
+                                $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
+                            } else {
+                                $scope.item.secondaryDisc.name = "-Select-";
+                                $scope.item.secondarySubDisc.name = "-Select-";
+                            }
+                            if (selectedDisciplines[2] != undefined){
+                                $scope.item.tertiaryDisc = selectedDisciplines[2];
+                                $scope.item.tertiarySubDisc = selectedDisciplines[2].subdisciplines;
+                            }else{
+                                $scope.item.tertiaryDisc.name = "-Select-";
+                                $scope.item.tertiarySubDisc = "-Select-";
+                            }
+                        }else{
+                            $scope.item.primaryDisc.name = "-Select-";
+                            $scope.item.primarySubDisc.name = "-Select-";
+                            $scope.item.secondaryDisc.name = "-Select-";
+                            $scope.item.secondarySubDisc.name = "-Select-";
+                            $scope.item.tertiaryDisc.name = "-Select-";
+                            $scope.item.tertiarySubDisc = "-Select-";
+                        }
                     }).
                     error(function (data, status) {
                         console.log("Error getting user disciplines !");
@@ -21,17 +52,17 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 
         $scope.getSubDisciplineList1 = function () {
             var id1 = $scope.item.primaryDisc.id;
-            $scope.subdisciplines1 = getSubdisciplines(id1,$scope.disciplines);
+            $scope.subdisciplines1 = getSubdisciplines(id1,$scope.allDisciplines);
         };
 
         $scope.getSubDisciplineList2 = function () {
             var id2 = $scope.item.secondaryDisc.id;
-            $scope.subdisciplines2 = getSubdisciplines(id2,$scope.disciplines);
+            $scope.subdisciplines2 = getSubdisciplines(id2,$scope.allDisciplines);
         };
 
         $scope.getSubDisciplineList3 = function () {
             var id3 = $scope.item.tertiaryDisc.id;
-            $scope.subdisciplines3 = getSubdisciplines(id3,$scope.disciplines);
+            $scope.subdisciplines3 = getSubdisciplines(id3,$scope.allDisciplines);
         };
 
         $scope.addDiscipline = function (disciplineInfo) {
@@ -120,7 +151,7 @@ var getDisciplineContainsSubDiscipline = function (allDisciplines, id) {
 }
 
 var getSubdisciplines  = function(id, disciplines){
-    for (var i in disciplines){
+    for (var i = 0 ; i < disciplines.length; i++){
         var id1 = disciplines[i].id;
         if (id1 == id){
             return disciplines[i].subdisciplines;
