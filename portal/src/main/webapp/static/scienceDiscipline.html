@@ -43,7 +43,8 @@
                             <select name="primaryDisc" required
                             ng-options="primaryDisc.name for primaryDisc in allDisciplines"
                             ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">
-                            <option value="">{{item.primaryDisc.name}}</option>
+                            <!--<option value="">{{item.primaryDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select>
                         </div>
                     </div>
@@ -53,7 +54,8 @@
                         <div class="controls">
                             <select name="primarySubDisc" ng-model="item.primarySubDisc"
                                     ng-options="primarySubDisc.name for primarySubDisc in subdisciplines1">
-                                <option value="">{{item.primarySubDisc.name}}</option>
+                                <!--<option value="">{{item.primarySubDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select>
                         </div>
                     </div>
@@ -64,7 +66,8 @@
                             <select name="secondaryDisc" ng-model="item.secondaryDisc"
                                     ng-options="secondaryDisc.name for secondaryDisc in allDisciplines"
                                     ng-change="getSubDisciplineList2()">
-                                <option value="">{{item.secondaryDisc.name}}</option>
+                                <!--<option value="">{{item.secondaryDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select>
                         </div>
                     </div>
@@ -74,7 +77,8 @@
                         <div class="controls">
                             <select name="secondarySubDisc" ng-model="item.secondarySubDisc"
                                     ng-options="secondarySubDisc.name for secondarySubDisc in subdisciplines2">
-                                <option value="">{{item.secondarySubDisc.name}}</option>
+                                <!--<option value="">{{item.secondarySubDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select>
                         </div>
                     </div>
@@ -86,7 +90,8 @@
                             <select name="tertiaryDisc" ng-model="item.tertiaryDisc"
                                     ng-options="tertiaryDisc.name for tertiaryDisc in allDisciplines"
                                     ng-change="getSubDisciplineList3()">
-                                <option value="">{{item.tertiaryDisc.name}}</option>
+                                <!--<option value="">{{item.tertiaryDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select></div>
                     </div>
 
@@ -96,7 +101,8 @@
                         <div class="controls">
                             <select name="tertiarySubDisc" ng-model="item.tertiarySubDisc"
                                     ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines3">
-                                <option value="">{{item.tertiarySubDisc.name}}</option>
+                                <!--<option value="">{{item.tertiarySubDisc.name}}</option>-->
+                                <option value="">--Select--</option>
                             </select>
                         </div>
                     </div>
