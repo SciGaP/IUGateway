@@ -4,7 +4,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
         $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
             success(function (savedDiscipline, status) {
 //                $scope.disciplines = getDisciplines(data);
-                $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
+                $http({method: "GET", url: "getScienceDiscipline", cache: false}).
                     success(function (allDisciplines, status) {
                         $scope.disciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.disciplines);
