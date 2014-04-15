@@ -8,8 +8,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                     success(function (allDisciplines, status) {
                         $scope.allDisciplines = getDisciplines(allDisciplines);
                         var selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
-                        $scope.primaryDiscipline = allDisciplines[0];
-                        console.log($scope.primaryDiscipline);
+                        $scope.primaryDiscipline1 = allDisciplines[0];
+                        console.log($scope.primaryDiscipline1);
                     }).
                     error(function (data, status) {
                         console.log("Error getting user disciplines !");
