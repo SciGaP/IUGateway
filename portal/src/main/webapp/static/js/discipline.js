@@ -7,7 +7,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                 $http({method: "GET", url: "getScienceDiscipline", cache: false}).
                     success(function (allDisciplines, status) {
                         $scope.allDisciplines = getDisciplines(allDisciplines);
-                        $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                        var selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                        $scope.primaryDiscipline = selectedDisciplines[0].name;
                         console.log($scope.disciplines);
                     }).
                     error(function (data, status) {
