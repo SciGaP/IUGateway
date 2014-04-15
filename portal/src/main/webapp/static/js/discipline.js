@@ -84,6 +84,7 @@ var getUserDisciplines = function (allDisciplines, savedDiscipline) {
     if (!savedDiscipline)   {
         return getDisciplines(allDisciplines);
     }
+    savedDiscipline = JSON.parse(savedDiscipline);
     var disciplines = [];
     var discipline = {};
     var subdisciplines = [];
