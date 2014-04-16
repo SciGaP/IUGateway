@@ -17,10 +17,10 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         console.log($scope.allDisciplines);
                         console.log(selectedDisciplines);
                         if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
-//                            $scope.item.primaryDisc = selectedDisciplines[0];
-//                            $scope.item.primarySubDisc = selectedDisciplines[0].subdisciplines;
-                            $scope.item.primaryDisc = allDisciplines[0];
-                            $scope.item.primarySubDisc = allDisciplines[0].subdisciplines;
+                            $scope.item.primaryDisc = selectedDisciplines[0];
+                            $scope.item.primarySubDisc = selectedDisciplines[0].subdisciplines;
+                            //$scope.item.primaryDisc = allDisciplines[0];
+                            //$scope.item.primarySubDisc = allDisciplines[0].subdisciplines;
                             if (selectedDisciplines[1] != undefined){
                                 $scope.item.secondaryDisc = selectedDisciplines[1];
                                 $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
