@@ -42,7 +42,8 @@
                         <div class="controls">
                             <select name="primaryDisc" required
                             ng-options="primaryDisc.name for primaryDisc in allDisciplines"
-                            ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">
+                            ng-model="item.primaryDisc">
+                                <!--ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">-->
                             <!--<option value="">{{item.primaryDisc.name}}</option>-->
                                 <option value="">--Select--</option>
                             </select>

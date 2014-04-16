@@ -25,16 +25,17 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                                 $scope.item.secondaryDisc = selectedDisciplines[1];
                                 $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
                             } else {
-                                $scope.item.secondaryDisc.name = "-Select-";
-                                $scope.item.secondarySubDisc.name = "-Select-";
+                                //$scope.item.secondaryDisc.name = "-Select-";
+                                //$scope.item.secondarySubDisc.name = "-Select-";
                             }
                             if (selectedDisciplines[2] != undefined){
                                 $scope.item.tertiaryDisc = selectedDisciplines[2];
                                 $scope.item.tertiarySubDisc = selectedDisciplines[2].subdisciplines;
-                            }else{
-                                $scope.item.tertiaryDisc.name = "-Select-";
-                                $scope.item.tertiarySubDisc = "-Select-";
                             }
+//                            }else{
+//                                $scope.item.tertiaryDisc.name = "-Select-";
+//                                $scope.item.tertiarySubDisc = "-Select-";
+//                            }
                         }else{
                             $scope.item.primaryDisc.name = "-Select-";
                             $scope.item.primarySubDisc.name = "-Select-";
