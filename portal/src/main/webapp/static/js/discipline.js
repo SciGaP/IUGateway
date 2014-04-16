@@ -17,21 +17,21 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.allDisciplines);
                         console.log(selectedDisciplines);
-                        if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
+                        if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0){
                             $scope.item.primaryDisc = $scope.selectedDisciplines[0];
                             $scope.item.primarySubDisc = $scope.selectedDisciplines[0].subdisciplines;
                             //$scope.item.primaryDisc = $scope.allDisciplines[1];
                             //$scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
-                            if (selectedDisciplines[1] != undefined){
-                                $scope.item.secondaryDisc = selectedDisciplines[1];
-                                $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
+                            if ($scope.selectedDisciplines[1] != undefined){
+                                $scope.item.secondaryDisc = $scope.selectedDisciplines[1];
+                                $scope.item.secondarySubDisc = $scope.selectedDisciplines[1].subdisciplines;
                             } else {
                                 //$scope.item.secondaryDisc.name = "-Select-";
                                 //$scope.item.secondarySubDisc.name = "-Select-";
                             }
-                            if (selectedDisciplines[2] != undefined){
-                                $scope.item.tertiaryDisc = selectedDisciplines[2];
-                                $scope.item.tertiarySubDisc = selectedDisciplines[2].subdisciplines;
+                            if ($scope.selectedDisciplines[2] != undefined){
+                                $scope.item.tertiaryDisc = $scope.selectedDisciplines[2];
+                                $scope.item.tertiarySubDisc = $scope.selectedDisciplines[2].subdisciplines;
                             }
 //                            }else{
 //                                $scope.item.tertiaryDisc.name = "-Select-";
