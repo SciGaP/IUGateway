@@ -54,7 +54,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             });
 
         $scope.getSubDisciplineList1 = function () {
-            var id1 = $scope.item.primaryDisc.id;
+            var id1 = $scope.pDisc.id;
             $scope.subdisciplines1 = getSubdisciplines(id1,$scope.allDisciplines);
         };
 
