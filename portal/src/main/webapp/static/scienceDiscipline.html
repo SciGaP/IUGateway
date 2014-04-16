@@ -41,7 +41,7 @@
 
                         <div class="controls">
                             <select name="pDisc" required
-                            ng-options="pDisc.name for pDisc in allDisciplines"
+                            ng-options="pDisc as pDisc.name for pDisc in allDisciplines"
                             ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">
                                 <!--ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">-->
                             <!--<option value="">{{item.primaryDisc.name}}</option>-->
@@ -54,7 +54,7 @@
 
                         <div class="controls">
                             <select name="pSubDisc" ng-model="item.primarySubDisc"
-                                    ng-options="pSubDisc as primarySubDisc.name for primarySubDisc in subdisciplines1">
+                                    ng-options="pSubDisc as pSubDisc.name for pSubDisc in subdisciplines1">
                                 <!--<option value="">{{item.primarySubDisc.name}}</option>-->
                                 <option value="">--Select--</option>
                             </select>
