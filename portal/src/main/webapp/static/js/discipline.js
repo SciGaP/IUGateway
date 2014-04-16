@@ -7,12 +7,6 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                     success(function (allDisciplines, status) {
                         $scope.item = {};
                         $scope.disciplineForm = {};
-//                        $scope.item.primaryDisc = [];
-//                        $scope.item.primarySubDisc = [];
-//                        $scope.item.secondaryDisc = [];
-//                        $scope.item.secondarySubDisc = [];
-//                        $scope.item.tertiaryDisc = [];
-//                        $scope.item.tertiarySubDisc = [];
                         $scope.allDisciplines = getDisciplines(allDisciplines);
                         $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.allDisciplines);
@@ -21,8 +15,6 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                             $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
                             $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
                             $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
-                            //$scope.item.primaryDisc = $scope.allDisciplines[1];
-                            //$scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
                             if ($scope.selectedDisciplines[1] != undefined){
                                 $scope.item.secondaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index];
                                 $scope.item.secondarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index].subdisciplines[[$scope.selectedDisciplines[1].sindex]];
@@ -119,7 +111,6 @@ var getUserDisciplines = function (allDisciplines, savedDiscipline) {
         subdiscipline.id = data1[i].id;
         subdiscipline.name = data1[i].name;
         discipline = getDisciplineContainsSubDiscipline(allDisciplines, subdiscipline.id);
-        discipline.sindex = i;
         disciplines.push(discipline);
     }
     return disciplines;
@@ -134,6 +125,7 @@ var getDisciplineContainsSubDiscipline = function (allDisciplines, id) {
             var obj = subdisciplines[j];
             if (obj.id == id) {
                 discipline.index = i;
+                discipline.sindex = j;
                 return discipline;
             }
         }
