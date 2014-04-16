@@ -14,37 +14,25 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 //                        $scope.item.tertiaryDisc = [];
 //                        $scope.item.tertiarySubDisc = [];
                         $scope.allDisciplines = getDisciplines(allDisciplines);
-                        var selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                        $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.allDisciplines);
                         console.log(selectedDisciplines);
-                        if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
-                            $scope.item.primaryDisc = $scope.allDisciplines[selectedDisciplines[0].index];
-                            $scope.item.primarySubDisc = $scope.allDisciplines[selectedDisciplines[0].index].subdisciplines[[selectedDisciplines[0].sindex]];
+                        if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0){
+                            $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
+                            $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[selectedDisciplines[0].sindex]];
                             $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
                             //$scope.item.primaryDisc = $scope.allDisciplines[1];
                             //$scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
                             if ($scope.selectedDisciplines[1] != undefined){
-                                $scope.item.secondaryDisc = $scope.selectedDisciplines[1];
-                                $scope.item.secondarySubDisc = $scope.selectedDisciplines[1].subdisciplines;
-                            } else {
-                                //$scope.item.secondaryDisc.name = "-Select-";
-                                //$scope.item.secondarySubDisc.name = "-Select-";
+                                $scope.item.secondaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index];
+                                $scope.item.secondarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index].subdisciplines[[$scope.selectedDisciplines[1].sindex]];
+                                $scope.subdisciplines2 = getSubdisciplines($scope.item.secondaryDisc.id, $scope.allDisciplines);
                             }
                             if ($scope.selectedDisciplines[2] != undefined){
-                                $scope.item.tertiaryDisc = $scope.selectedDisciplines[2];
-                                $scope.item.tertiarySubDisc = $scope.selectedDisciplines[2].subdisciplines;
+                                $scope.item.tertiaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index];
+                                $scope.item.tertiarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index].subdisciplines[[$scope.selectedDisciplines[2].sindex]];
+                                $scope.subdisciplines3 = getSubdisciplines($scope.item.tertiaryDisc.id, $scope.allDisciplines);
                             }
-//                            }else{
-//                                $scope.item.tertiaryDisc.name = "-Select-";
-//                                $scope.item.tertiarySubDisc = "-Select-";
-//                            }
-                        }else{
-                            $scope.item.primaryDisc.name = "-Select-";
-                            $scope.item.primarySubDisc.name = "-Select-";
-                            $scope.item.secondaryDisc.name = "-Select-";
-                            $scope.item.secondarySubDisc.name = "-Select-";
-                            $scope.item.tertiaryDisc.name = "-Select-";
-                            $scope.item.tertiarySubDisc = "-Select-";
                         }
                     }).
                     error(function (data, status) {
