@@ -19,7 +19,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         console.log(selectedDisciplines);
                         if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0){
                             $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
-                            $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[selectedDisciplines[0].sindex]];
+                            $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
                             $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
                             //$scope.item.primaryDisc = $scope.allDisciplines[1];
                             //$scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
