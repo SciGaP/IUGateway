@@ -48,83 +48,125 @@ public class CommandExecutor {
     private String remoteUser;
 
     public CommandExecutor(String user) {
-        remoteUser = user;
-        kerberosConnector = new KerberosConnector();
-        commandCentral = new CommandCentral();
-        stringUtils = new StringUtils();
-        resultItemList = new ArrayList<Item>();
-        //get the current working directory
-        pwd();
-    }
+        try {
+            remoteUser = user;
+            kerberosConnector = new KerberosConnector();
+            commandCentral = new CommandCentral();
+            stringUtils = new StringUtils();
+            resultItemList = new ArrayList<Item>();
+            //get the current working directory
+            pwd();
+        } catch (Exception e) {
+            log.error("Error occured..", e.getMessage());
+        }
 
-    public String getRemoteUser() {
-        return remoteUser;
     }
 
     //execute any command
-    public void executeCommand(String command) {
-        Session session = kerberosConnector.getSession(remoteUser);
-        List<String> commandList = stringUtils.deconstructCommand(command);
-        if (commandList.get(0).equals("cd")) {
-            if (commandList.get(1).equals("..")) {
-                pathStack.pop();
+    public void executeCommand(String command) throws Exception{
+        Session session = null;
+        try {
+            session = kerberosConnector.getSession(remoteUser);
+            List<String> commandList = stringUtils.deconstructCommand(command);
+            if (commandList.get(0).equals("cd")) {
+                if (commandList.get(1).equals("..")) {
+                    pathStack.pop();
+                }
+                else {
+                    pathStack.push(commandList.get(1));
+                }
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+                command = LS + workingDirectory;
+                log.info("COMMAND: " + command);
+                setResult(commandCentral.executeCommand(session, command));
+                setResultMap(stringUtils.categorizeResult(getResult()));
+                setResultItemList(stringUtils.getResultsList(getResult()));
+            } else if (commandList.get(0).equals("mkdir")) {
+                command = "mkdir " + workingDirectory + "/" + commandList.get(1);
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                ls();
+            } else if (commandList.get(0).equals("rm")) {
+                command = "rm -r " + workingDirectory + "/" + commandList.get(1);
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                ls();
+            } else if (commandList.get(0).equals("ls")) {
+                command = LS;
+                log.info("COMMAND: " + command);
+                //commandCentral.executeCommand(session, command);
+                ls();
+            } else if (commandList.get(0).equals("rename")) {
+                command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                ls();
             }
-            else {
-                pathStack.push(commandList.get(1));
+        } catch (Exception e){
+            log.error("Error occured", e.getMessage());
+            throw new Exception(e.getMessage());
+        } finally {
+            if (session != null){
+                session.disconnect();
             }
-            workingDirectory = stringUtils.constructPathFromStack(pathStack);
-            command = LS + workingDirectory;
-            log.info("COMMAND: " + command);
-            setResult(commandCentral.executeCommand(session, command));
-            setResultMap(stringUtils.categorizeResult(getResult()));
-            setResultItemList(stringUtils.getResultsList(getResult()));
-        } else if (commandList.get(0).equals("mkdir")) {
-            command = "mkdir " + workingDirectory + "/" + commandList.get(1);
-            log.info("COMMAND: " + command);
-            commandCentral.executeCommand(session, command);
-            ls();
-        } else if (commandList.get(0).equals("rm")) {
-            command = "rm -r " + workingDirectory + "/" + commandList.get(1);
-            log.info("COMMAND: " + command);
-            commandCentral.executeCommand(session, command);
-            ls();
-        } else if (commandList.get(0).equals("ls")) {
-            command = LS;
-            log.info("COMMAND: " + command);
-            //commandCentral.executeCommand(session, command);
-            ls();
-        } else if (commandList.get(0).equals("rename")) {
-            command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
-            log.info("COMMAND: " + command);
-            commandCentral.executeCommand(session, command);
-            ls();
         }
     }
 
     //download a file
-    public InputStream downloadFile(String filename){
-        Session session = kerberosConnector.getSession(remoteUser);
-        log.info("DOWNLOADING FILE: " + filename);
-        return commandCentral.scpFrom(session, filename);
+    public InputStream downloadFile(String filename) throws Exception{
+        Session session = null;
+        try {
+            session = kerberosConnector.getSession(remoteUser);
+            log.info("DOWNLOADING FILE: " + filename);
+            return commandCentral.scpFrom(session, filename);
+        } catch (Exception e){
+            log.error("Error occured", e.getMessage());
+            throw new Exception(e.getMessage());
+        } finally {
+            if (session != null){
+                session.disconnect();
+            }
+        }
+
     }
     //get the home directory
-    public void pwd() {
-        Session session = kerberosConnector.getSession(remoteUser);
-        //getting the home directory
-        String path = commandCentral.pwd(session);
-        //add it to the stack
-        pathStack = stringUtils.getPathStack(path);
-        //generate the working directory string using the stack
-        workingDirectory = stringUtils.constructPathString(pathStack);
-        log.info("CURRENT WORKING DIR: " + workingDirectory);
-        log.info("CURRENT PATH: " + path);
+    public void pwd() throws Exception{
+        Session session = null;
+        try {
+            session = kerberosConnector.getSession(remoteUser);
+            //getting the home directory
+            String path = commandCentral.pwd(session);
+            //add it to the stack
+            pathStack = stringUtils.getPathStack(path);
+            //generate the working directory string using the stack
+            workingDirectory = stringUtils.constructPathString(pathStack);
+            log.info("CURRENT WORKING DIR: " + workingDirectory);
+            log.info("CURRENT PATH: " + path);
+        }catch (Exception e){
+            log.error("Error occured", e.getMessage());
+            throw new Exception(e.getMessage());
+        } finally {
+            if (session != null){
+                session.disconnect();
+            }
+        }
     }
 
-    public void ls() {
-        Session session = kerberosConnector.getSession(remoteUser);
-        setResult(commandCentral.executeCommand(session, LS + workingDirectory));
-        setResultMap(stringUtils.categorizeResult(getResult()));
-        setResultItemList(stringUtils.getResultsList(getResult()));
+    public void ls() throws Exception{
+        Session session = null;
+        try {
+            session = kerberosConnector.getSession(remoteUser);
+            setResult(commandCentral.executeCommand(session, LS + workingDirectory));
+            setResultMap(stringUtils.categorizeResult(getResult()));
+            setResultItemList(stringUtils.getResultsList(getResult()));
+        }  catch (Exception e){
+            log.error("Error occured", e.getMessage());
+            throw new Exception(e.getMessage());
+        } finally {
+            if (session != null){
+                session.disconnect();
+            }
+        }
     }
 
     public Map<String, String> getResultMap() {

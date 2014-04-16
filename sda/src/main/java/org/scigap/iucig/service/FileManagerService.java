@@ -17,7 +17,7 @@ public class FileManagerService {
 
     @GET
     @Path("/command/{command}")
-    public List<Item> executeCommand(@PathParam("command") final String command, @QueryParam("user") String user) {
+    public List<Item> executeCommand(@PathParam("command") final String command, @QueryParam("user") String user) throws Exception {
         if(commandExecutor == null) {
             commandExecutor = new CommandExecutor(user);
         }

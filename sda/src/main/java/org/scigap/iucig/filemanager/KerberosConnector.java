@@ -47,7 +47,10 @@ public class KerberosConnector {
             session.connect(20000);
         } catch (JSchException e) {
             e.printStackTrace();
-            session.disconnect();
+            if (session != null){
+                session.disconnect();
+            }
+
         }
         return session;
     }

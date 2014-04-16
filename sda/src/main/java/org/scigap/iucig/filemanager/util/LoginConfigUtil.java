@@ -19,19 +19,8 @@ public class LoginConfigUtil {
     private static final Logger log = LoggerFactory.getLogger(LoginConfigUtil.class);
     public static final String KERB_PROPERTIES = "kerb.properties";
 
-    private final String LOGIN_FILE_FIRST_PART = " com.sun.security.jgss.krb5.initiate {\n" +
-            "               com.sun.security.auth.module.Krb5LoginModule required\n" +
-            "                             debug=\"true\"\n" +
-            "                   doNotPrompt=\"true\"\n" +
-            "               useTicketCache=\"true\"\n" +
-            "              ticketCache=\"";
-
-    private final String LOGIN_FILE_SECOND_PART = "\";\n" +
-            "\n" +
-            "  };";
     private String filePath;
     private String ticketLocation;
-    private final String TICKET_PREPHRASE = "krb5cc_apache_";
 
 
     public LoginConfigUtil() {
@@ -49,11 +38,19 @@ public class LoginConfigUtil {
 
             File file = new File(filePath);
             BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            String LOGIN_FILE_FIRST_PART = " com.sun.security.jgss.krb5.initiate {\n" +
+                    "               com.sun.security.auth.module.Krb5LoginModule required\n" +
+                    "                             debug=\"true\"\n" +
+                    "                   doNotPrompt=\"true\"\n" +
+                    "               useTicketCache=\"true\"\n" +
+                    "              ticketCache=\"";
             output.write(LOGIN_FILE_FIRST_PART);
             output.write(ticketCache);
+            String LOGIN_FILE_SECOND_PART = "\";\n" +
+                    "\n" +
+                    "  };";
             output.write(LOGIN_FILE_SECOND_PART);
             output.close();
-
             return filePath;
         } catch (IOException e) {
             log.error("Error Occurred Creating login.conf file ..." + e.getMessage());
@@ -63,9 +60,9 @@ public class LoginConfigUtil {
 
     public String searchTicket(final String username) {
         File folder = new File(ticketLocation);
-
         for (final File fileEntry : folder.listFiles()) {
-            if(fileEntry.getName().contains(TICKET_PREPHRASE+username))
+            String TICKET_PREPHRASE = "krb5cc_apache_";
+            if(fileEntry.getName().contains(TICKET_PREPHRASE +username))
                 return ticketLocation+"/"+fileEntry.getName();
         }
         return null;

@@ -16,14 +16,11 @@ import java.util.List;
  */
 public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
-
-
     private List<String> result;
 
-    public String pwd(Session session) {
+    public String pwd(Session session) throws Exception{
         result = new ArrayList<String>();
         String path = "";
-
         Channel channel = null;
         InputStream in = null;
         try {
@@ -32,9 +29,7 @@ public class CommandCentral {
             ((ChannelExec) channel).setCommand(command);
             channel.setInputStream(null);
             ((ChannelExec) channel).setErrStream(System.err);
-
             in = channel.getInputStream();
-
             channel.connect();
             byte[] tmp = new byte[1024];
             while (true) {
@@ -51,11 +46,14 @@ public class CommandCentral {
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ee) {
+                    log.error("Error occured while channel connect", ee.getMessage());
                 }
             }
         } catch (IOException e) {
+            log.error("Error occured while opening channel", e.getMessage());
             e.printStackTrace();
         } catch (JSchException e) {
+            log.error("Auth failure", e.getMessage());
             e.printStackTrace();
         } finally {
             if (channel == null) {
@@ -63,17 +61,14 @@ public class CommandCentral {
             } else if (!channel.isClosed()) {
                 channel.disconnect();
             }
+            in.close();
             session.disconnect();
-
-            return path;
         }
-
+        return path;
     }
 
-    public List<String> executeCommand(Session session, String command) {
+    public List<String> executeCommand(Session session, String command) throws Exception{
         //FIXME  validate the second part of the command
-
-
         result = new ArrayList<String>();
         log.info("COMMAND: " + command);
 
@@ -84,9 +79,7 @@ public class CommandCentral {
             ((ChannelExec) channel).setCommand(command);
             channel.setInputStream(null);
             ((ChannelExec) channel).setErrStream(System.err);
-
             in = channel.getInputStream();
-
             channel.connect();
             byte[] tmp = new byte[1024];
             while (true) {
@@ -103,12 +96,15 @@ public class CommandCentral {
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ee) {
+                    log.error("Error occured while channel connect", ee.getMessage());
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error occured while opening channel", e.getMessage());
+            throw new Exception(e.getMessage());
         } catch (JSchException e) {
-            e.printStackTrace();
+            log.error("Auth failure", e.getMessage());
+            throw new Exception(e.getMessage());
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -116,44 +112,34 @@ public class CommandCentral {
                 channel.disconnect();
             }
             session.disconnect();
-
-            return result;
+            in.close();
         }
-
+        return result;
     }
 
-    public InputStream scpFrom(Session session, String filename) {
-
+    public InputStream scpFrom(Session session, String filename) throws Exception{
         result = new ArrayList<String>();
         log.info("Downloading file: " + filename);
 
         Channel channel = null;
         InputStream in = null;
         FileOutputStream fos = null;
-
         String lfile = filename;
         String command = "scp -f " + filename;
-
-
         String prefix = null;
         if (new File(lfile).isDirectory()) {
             prefix = lfile + File.separator;
         }
-
         try {
             channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
             channel.setInputStream(null);
             ((ChannelExec) channel).setErrStream(System.err);
-
             // get I/O streams for remote scp
             OutputStream out = channel.getOutputStream();
             in = channel.getInputStream();
-
-
             channel.connect();
             byte[] buf = new byte[1024];
-
             // send '\0'
             buf[0] = 0;
             out.write(buf, 0, 1);
@@ -164,29 +150,24 @@ public class CommandCentral {
                 if (c != 'C') {
                     break;
                 }
-
                 // read '0644 '
-                in.read(buf, 0, 5);
-
+                int read = in.read(buf, 0, 5);
                 long filesize = 0L;
                 while (true) {
                     if (in.read(buf, 0, 1) < 0) {
-                        // error
                         break;
                     }
                     if (buf[0] == ' ') break;
                     filesize = filesize * 10L + (long) (buf[0] - '0');
                 }
-
                 String file = null;
                 for (int i = 0; ; i++) {
-                    in.read(buf, i, 1);
+                    int read1 = in.read(buf, i, 1);
                     if (buf[i] == (byte) 0x0a) {
                         file = new String(buf, 0, i);
                         break;
                     }
                 }
-
                 //System.out.println("filesize="+filesize+", file="+file);
 
               /*  // send '\0'
@@ -223,12 +204,14 @@ public class CommandCentral {
             }
 
         } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+            log.error("Unable to find the file", e1.getMessage());
+            throw new Exception(e1.getMessage());
         } catch (JSchException e1) {
-            e1.printStackTrace();
+            log.error("Auth failure", e1.getMessage());
+            throw new Exception(e1.getMessage());
         } catch (IOException e1) {
-            e1.printStackTrace();
-
+            log.error("Error occured", e1.getMessage());
+            throw new Exception(e1.getMessage());
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -236,9 +219,9 @@ public class CommandCentral {
                 channel.disconnect();
             }
             session.disconnect();
-
-            return in;
+            fos.close();
         }
+        return in;
     }
 
 

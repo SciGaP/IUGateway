@@ -29,7 +29,7 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) {
+    public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) throws Exception {
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null){
@@ -56,7 +56,7 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) {
+    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) throws Exception {
         if (commandExecutor == null) {
             commandExecutor = new CommandExecutor(user);
         }
@@ -66,6 +66,8 @@ public class FileManagerController {
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            in.close();
         }
     }
 
