@@ -20,8 +20,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
 //                            $scope.item.primaryDisc = selectedDisciplines[0];
 //                            $scope.item.primarySubDisc = selectedDisciplines[0].subdisciplines;
-                            $scope.pDisc = allDisciplines[1];
-                            $scope.pSubDisc = allDisciplines[1].subdisciplines;
+                            $scope.item.primaryDisc = allDisciplines[1];
+                            $scope.item.primarySubDisc = allDisciplines[1].subdisciplines;
                             if (selectedDisciplines[1] != undefined){
                                 $scope.item.secondaryDisc = selectedDisciplines[1];
                                 $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
@@ -55,7 +55,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             });
 
         $scope.getSubDisciplineList1 = function () {
-            var id1 = $scope.pDisc.id;
+            var id1 = $scope.item.primaryDisc.id;
             $scope.subdisciplines1 = getSubdisciplines(id1,$scope.allDisciplines);
         };
 
