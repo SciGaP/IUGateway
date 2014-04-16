@@ -65,7 +65,7 @@
 
                         <div class="controls">
                             <select name="secondaryDisc" ng-model="item.secondaryDisc"
-                                    ng-options="item.secondaryDisc as secondaryDisc.name for secondaryDisc in allDisciplines"
+                                    ng-options="secondaryDisc as secondaryDisc.name for secondaryDisc in allDisciplines"
                                     ng-change="getSubDisciplineList2()">
                                 <!--<option value="">{{item.secondaryDisc.name}}</option>-->
                                 <option value="">--Select--</option>
@@ -77,7 +77,7 @@
 
                         <div class="controls">
                             <select name="secondarySubDisc" ng-model="item.secondarySubDisc"
-                                    ng-options="item.secondarySubDisc as secondarySubDisc.name for secondarySubDisc in subdisciplines2">
+                                    ng-options="secondarySubDisc as secondarySubDisc.name for secondarySubDisc in subdisciplines2">
                                 <!--<option value="">{{item.secondarySubDisc.name}}</option>-->
                                 <option value="">--Select--</option>
                             </select>
