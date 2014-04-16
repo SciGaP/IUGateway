@@ -16,7 +16,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         $scope.allDisciplines = getDisciplines(allDisciplines);
                         $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.allDisciplines);
-                        console.log(selectedDisciplines);
+                        console.log($scope.selectedDisciplines);
                         if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0){
                             $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
                             $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
