@@ -14,14 +14,14 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 //                        $scope.item.tertiaryDisc = [];
 //                        $scope.item.tertiarySubDisc = [];
                         $scope.allDisciplines = getDisciplines(allDisciplines);
-                        var selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                        $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                         console.log($scope.allDisciplines);
                         console.log(selectedDisciplines);
                         if (selectedDisciplines != undefined && selectedDisciplines.length > 0){
-//                            $scope.item.primaryDisc = selectedDisciplines[0];
-//                            $scope.item.primarySubDisc = selectedDisciplines[0].subdisciplines;
-                            $scope.item.primaryDisc = $scope.allDisciplines[1];
-                            $scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
+                            $scope.item.primaryDisc = $scope.selectedDisciplines[0];
+                            $scope.item.primarySubDisc = $scope.selectedDisciplines[0].subdisciplines;
+                            //$scope.item.primaryDisc = $scope.allDisciplines[1];
+                            //$scope.item.primarySubDisc = $scope.allDisciplines[1].subdisciplines;
                             if (selectedDisciplines[1] != undefined){
                                 $scope.item.secondaryDisc = selectedDisciplines[1];
                                 $scope.item.secondarySubDisc = selectedDisciplines[1].subdisciplines;
