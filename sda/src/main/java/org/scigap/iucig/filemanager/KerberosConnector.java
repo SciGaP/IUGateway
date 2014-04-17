@@ -18,23 +18,33 @@ public class KerberosConnector {
     public static final String JAVA_SECURITY_AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
     public static final String JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY = "javax.security.auth.useSubjectCredsOnly";
     public static final String SUN_SECURITY_KRB5_DEBUG = "sun.security.krb5.debug";
+    public static final String LOGIN_FILE_LOCATION = "kerb.conffile.location";
+    public static final String LOGIN_FILE_NAME = "login2.conf";
     private static Properties properties = new Properties();
+    private String loginFile;
+    private String host;
 
-    public Session getSession(String remoteUser) {
-        String host = readProperty(KERB_HOST);
+    public KerberosConnector() {
+        loginFile = readProperty(LOGIN_FILE_LOCATION)+LOGIN_FILE_NAME;
+        host = readProperty(KERB_HOST);
         System.out.println("HOST : " + host);
-        String krbLogin = readProperty(KERB_LOGIN_LOCATION);
-        LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
-        String loginFile = loginConfigUtil.createLoginFile("login2.conf", remoteUser);
         String krbConf = readProperty(KERB_CONF_LOCATION);
-
-        JSch jsch = new JSch();
-        JSch.setLogger(new MyLogger());
 
         System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
         System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
         System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
+    }
+
+    public Session getSession(String remoteUser) {
+
+        String krbLogin = readProperty(KERB_LOGIN_LOCATION);
+        LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
+        loginFile = loginConfigUtil.createLoginFile(LOGIN_FILE_NAME, remoteUser);
+
+        JSch jsch = new JSch();
+        JSch.setLogger(new MyLogger());
+
 
         Session session = null;
         try {
