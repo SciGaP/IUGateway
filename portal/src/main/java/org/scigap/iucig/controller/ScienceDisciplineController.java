@@ -117,6 +117,83 @@ public class ScienceDisciplineController {
         return s.hasNext() ? s.next() : "";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
+    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception{
+        try {
+            String remoteUser;
+            if (request != null){
+                remoteUser = request.getRemoteUser();
+            } else {
+                throw new Exception("Remote user is null");
+            }
+            int primarySubDisId = 0;
+            int secondarySubDisId = 0;
+            int tertiarySubDisId = 0;
+            String urlParameters = "user=" + remoteUser;
+            if (discipline != null) {
+//                Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
+//                if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
+//                    for (String key : primaryDiscipline.keySet()) {
+//                        if (key.equals("id")) {
+//                            primaryDisId = Integer.valueOf(primaryDiscipline.get(key).toString());
+//                            urlParameters += "&discipline1=" + primaryDisId;
+//                        }
+//                    }
+//                }
+                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
+                if (primarySubDisc != null && !primarySubDisc.isEmpty()){
+                    for (String key : primarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
+                            urlParameters += "&discipline1=" + primarySubDisId;
+                        }
+                    }
+                }
+
+                Map<String, String> secondarySubDisc = discipline.getSecondarySubDisc();
+                if (secondarySubDisc != null && !secondarySubDisc.isEmpty()){
+                    for (String key : secondarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            secondarySubDisId = Integer.valueOf(secondarySubDisc.get(key));
+                            urlParameters += "&discipline2=" + secondarySubDisId;
+                        }
+                    }
+                }
+
+                Map<String, String> tertiarySubDisc = discipline.getTertiarySubDisc();
+                if (tertiarySubDisc != null && !tertiarySubDisc.isEmpty()){
+                    for (String key : tertiarySubDisc.keySet()) {
+                        if (key.equals("id")) {
+                            tertiarySubDisId = Integer.valueOf(tertiarySubDisc.get(key));
+                            urlParameters += "&discipline3=" + tertiarySubDisId;
+                        }
+                    }
+                }
+
+                URL obj = new URL(SCIENCE_DISCIPLINE_URL + "discipline/");
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoInput (true);
+                con.setDoOutput (true);
+                con.setUseCaches (false);
+                urlParameters += "&date=" + discipline.getDate() +  "&source=iugateway&commit=Update";
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
+                System.out.println("Post parameters : " + urlParameters);
+                System.out.println("Response Code : " + responseCode);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 //    @ResponseBody
 //    @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
 //    public void updateScienceDiscipline1(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception{
@@ -220,88 +297,5 @@ public class ScienceDisciplineController {
 //            e.printStackTrace();
 //        }
 //    }
-
-
-
-    @ResponseBody
-    @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
-    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception{
-        try {
-            String remoteUser;
-            if (request != null){
-                remoteUser = request.getRemoteUser();
-            } else {
-                throw new Exception("Remote user is null");
-            }
-//            int primaryDisId = 0;
-            int primarySubDisId = 0;
-//            int secondaryDisId = 0;
-            int secondarySubDisId = 0;
-//            int tertiaryDisId = 0;
-            int tertiarySubDisId = 0;
-            String urlParameters = "user=" + remoteUser;
-            if (discipline != null) {
-//                Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
-//                if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
-//                    for (String key : primaryDiscipline.keySet()) {
-//                        if (key.equals("id")) {
-//                            primaryDisId = Integer.valueOf(primaryDiscipline.get(key).toString());
-//                            urlParameters += "&discipline1=" + primaryDisId;
-//                        }
-//                    }
-//                }
-                Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
-                if (primarySubDisc != null && !primarySubDisc.isEmpty()){
-                    for (String key : primarySubDisc.keySet()) {
-                        if (key.equals("id")) {
-                            primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
-                            urlParameters += "&discipline1=" + primarySubDisId;
-                        }
-                    }
-                }
-
-                Map<String, String> secondarySubDisc = discipline.getSecondarySubDisc();
-                if (secondarySubDisc != null && !secondarySubDisc.isEmpty()){
-                    for (String key : secondarySubDisc.keySet()) {
-                        if (key.equals("id")) {
-                            secondarySubDisId = Integer.valueOf(secondarySubDisc.get(key));
-                            urlParameters += "&discipline2=" + secondarySubDisId;
-                        }
-                    }
-                }
-
-                Map<String, String> tertiarySubDisc = discipline.getTertiarySubDisc();
-                if (tertiarySubDisc != null && !tertiarySubDisc.isEmpty()){
-                    for (String key : tertiarySubDisc.keySet()) {
-                        if (key.equals("id")) {
-                            tertiarySubDisId = Integer.valueOf(tertiarySubDisc.get(key));
-                            urlParameters += "&discipline3=" + tertiarySubDisId;
-                        }
-                    }
-                }
-
-                URL obj = new URL(SCIENCE_DISCIPLINE_URL + "discipline/");
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoInput (true);
-                con.setDoOutput (true);
-                con.setUseCaches (false);
-                urlParameters += "&date=" + discipline.getDate() +  "&source=iugateway&commit=Update";
-                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.flush();
-                wr.close();
-                int responseCode = con.getResponseCode();
-                System.out.println("\nSending 'POST' request to URL : " + SCIENCE_DISCIPLINE_URL);
-                System.out.println("Post parameters : " + urlParameters);
-                System.out.println("Response Code : " + responseCode);
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
