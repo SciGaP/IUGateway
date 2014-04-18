@@ -150,10 +150,10 @@ public class ScienceDisciplineController {
                                 if (disc instanceof HashMap){
                                     if (((HashMap) disc).get("name").equals("Other / Unspecified")){
                                         primarySubDisId =    Integer.valueOf((((HashMap) disc).get("id")).toString());
-                                        urlParameters += "&discipline1=" + primarySubDisId;
                                     }
                                 }
                             }
+                            urlParameters += "&discipline1=" + primarySubDisId;
                         }
                     }
                 }
