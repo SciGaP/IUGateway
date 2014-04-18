@@ -46,8 +46,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @Controller
 public class ScienceDisciplineController {
@@ -132,21 +131,29 @@ public class ScienceDisciplineController {
             int tertiarySubDisId = 0;
             String urlParameters = "user=" + remoteUser;
             if (discipline != null) {
-//                Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
-//                if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
-//                    for (String key : primaryDiscipline.keySet()) {
-//                        if (key.equals("id")) {
-//                            primaryDisId = Integer.valueOf(primaryDiscipline.get(key).toString());
-//                            urlParameters += "&discipline1=" + primaryDisId;
-//                        }
-//                    }
-//                }
+
                 Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
                 if (primarySubDisc != null && !primarySubDisc.isEmpty()){
                     for (String key : primarySubDisc.keySet()) {
                         if (key.equals("id")) {
                             primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
                             urlParameters += "&discipline1=" + primarySubDisId;
+                        }
+                    }
+                } else {
+                    Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
+                    if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
+                        Object subdisciplines = primaryDiscipline.get("subdisciplines");
+                        if (subdisciplines instanceof ArrayList){
+                            for (int i = 0; i < ((ArrayList) subdisciplines).size(); i++){
+                                Object disc = ((ArrayList) subdisciplines).get(i);
+                                if (disc instanceof HashMap){
+                                    if (((HashMap) disc).get("name").equals("Other / Unspecified")){
+                                        primarySubDisId =    Integer.valueOf((((HashMap) disc).get("id")).toString());
+                                        urlParameters += "&discipline1=" + primarySubDisId;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
