@@ -19,6 +19,10 @@ public class CommandCentral {
     private List<String> result;
 
     public String pwd(Session session) throws Exception{
+
+        if(!session.isConnected()){
+            return null;
+        }
         result = new ArrayList<String>();
         String path = "";
         Channel channel = null;
@@ -71,6 +75,10 @@ public class CommandCentral {
         //FIXME  validate the second part of the command
         result = new ArrayList<String>();
         log.info("COMMAND: " + command);
+
+        if(!session.isConnected()){
+            return null;
+        }
 
         Channel channel = null;
         InputStream in = null;
