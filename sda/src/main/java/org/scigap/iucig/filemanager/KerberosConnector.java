@@ -32,6 +32,7 @@ public class KerberosConnector {
 
         System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
         System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
+        System.out.println("LOGIN FILE: "+loginFile);
         System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
     }
