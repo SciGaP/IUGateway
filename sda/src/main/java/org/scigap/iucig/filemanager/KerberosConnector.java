@@ -43,6 +43,7 @@ public class KerberosConnector {
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
         loginFile = loginConfigUtil.createLoginFile(LOGIN_FILE_NAME, remoteUser);
 
+        System.out.println(" ---------LOGIN FILE SYSTEM PROPERTY BEFORE THE SESSION -------------- : "+System.getProperty("java.security.auth.login.config"));
         JSch jsch = new JSch();
         JSch.setLogger(new MyLogger());
 
