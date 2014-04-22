@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@Scope("session")
+//@Scope("session")
 @RequestMapping(value = "/filemanager/")
 public class FileManagerController {
 
