@@ -42,7 +42,7 @@ public class LoginConfigUtil {
                     "               com.sun.security.auth.module.Krb5LoginModule required\n" +
                     "                             debug=\"true\"\n" +
                     "                   doNotPrompt=\"true\"\n" +
-                    "               useTicketCache=\"true\"\n" +
+                    "               useTicketCache=\"false\"\n" +
                     "              ticketCache=\"";
             output.write(LOGIN_FILE_FIRST_PART);
             output.write(ticketCache);
