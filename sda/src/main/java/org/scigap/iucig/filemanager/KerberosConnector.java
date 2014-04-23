@@ -3,6 +3,7 @@ package org.scigap.iucig.filemanager;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import org.scigap.iucig.filemanager.util.JaaSConfiguration;
 import org.scigap.iucig.filemanager.util.LoginConfigUtil;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ public class KerberosConnector {
         String krbConf = readProperty(KERB_CONF_LOCATION);
 
         System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
-        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
-        System.out.println("LOGIN FILE: "+loginFile);
+//        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
+//        System.out.println("LOGIN FILE: "+loginFile);
         System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
     }
@@ -41,12 +42,11 @@ public class KerberosConnector {
 
         String krbLogin = readProperty(KERB_LOGIN_LOCATION);
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
-        loginFile = loginConfigUtil.createLoginFile(LOGIN_FILE_NAME, remoteUser);
+        String ticketCache = loginConfigUtil.searchTicket(remoteUser);
+        javax.security.auth.login.Configuration.setConfiguration(new JaaSConfiguration(ticketCache));
 
-        System.out.println(" ---------LOGIN FILE SYSTEM PROPERTY BEFORE THE SESSION -------------- : "+System.getProperty("java.security.auth.login.config"));
         JSch jsch = new JSch();
         JSch.setLogger(new MyLogger());
-
 
         Session session = null;
         try {
