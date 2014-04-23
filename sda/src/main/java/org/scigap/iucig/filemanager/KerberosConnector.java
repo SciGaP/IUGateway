@@ -55,8 +55,9 @@ public class KerberosConnector {
             config.put("StrictHostKeyChecking", "no");
             config.put("PreferredAuthentications",
                     "gssapi-with-mic");
+            config.put("MaxAuthTries", "5");
             session.setConfig(config);
-            session.connect(20000);
+            session.connect(5000);
         } catch (JSchException e) {
             e.printStackTrace();
             if (session != null){
