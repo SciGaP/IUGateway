@@ -60,6 +60,10 @@
                         <td></td>
                         <td></td>
                     </tr>
+		            <tr ng-hide="hideLoader"></tr>
+                    <tr ng-show="hideLoader"><td colspan="7"><div class="loading-iu"></div></td></tr>
+                    <tr ng-show="showError"></tr>
+                    <tr ng-show="showError"><td colspan="7"><div class="alert alert-error">There was an error loading the data !</div></td></tr>
                     <tr ng-show="files.length<1"></tr>
                     <tr ng-show="files.length<1"><td colspan="7"><div>SDA information is not available !</div></td></tr>
                     <tr ng-click="goInside(file)" ng-repeat="file in files" >

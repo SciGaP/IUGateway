@@ -1,7 +1,9 @@
 var fileManagerApp = angular.module("fileManagerApp",["user","urlprovider"]);
 
 fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
-    console.log("*******at controller*****")
+    console.log("*******at controller*****");
+    $scope.hideLoader = true;
+    console.log($scope.hideLoader);
 //    console.log($scope.username);
 //    $http({method: "GET", url: "getRemoteUser" , cache: false}).
 //        success(function (data, status) {
@@ -15,9 +17,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         success(function (data, status) {
             console.log(data);
             $scope.files = data;
+            $scope.hideLoader = false;
+            console.log($scope.hideLoader);
         }).
         error(function (data, status) {
             console.log("Error listing the files !");
+            $scope.hideLoader = true;
+            $scope.showError = true;
+            console.log($scope.hideLoader);
     });
 
     $scope.upOneLevel = function(){
