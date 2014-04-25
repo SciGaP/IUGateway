@@ -67,7 +67,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                     success(function (data, status) {
                         $scope.submitSuccess = true;
 //                    $('#myModal').modal('hide');
-                        $scope.item = null;
+                        $scope.item = disciplineInfo;
                     }).
                     error(function (data, status) {
                         $scope.submitDisabled = true;
