@@ -3,11 +3,7 @@ var disciplineApp = angular.module("disciplineApp", ["user"]);
 disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
     $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
         success(function (savedDiscipline, status) {
-	    console.log(savedDiscipline);
-	    var data1 = JSON.parse(savedDiscipline["disciplines"]);
-            if (data1.length == 0){
-                $scope.submitDisabled = true;
-            }
+            $scope.submitDisabled = false;
             $http({method: "GET", url: "getScienceDiscipline", cache: false}).
                 success(function (allDisciplines, status) {
                     $scope.item = {};
@@ -38,8 +34,6 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
                         }
                     } else {
                         $scope.item = null;
-                        //$disciplineForm.$invalid = true;
-                        $scope.submitDisabled = true;
                     }
                 }).
                 error(function (data, status) {
@@ -74,7 +68,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 
     $scope.addDiscipline = function (disciplineInfo) {
         if (disciplineInfo == undefined) {
-//            $scope.submitDisabled = true;
+            $scope.submitDisabled = true;
         } else {
             var d = new Date();
             var month = d.getMonth() + 1;
@@ -118,7 +112,6 @@ var getDisciplines = function (data) {
     }
     return disciplines;
 }
-
 
 var getUserDisciplines = function (allDisciplines, savedDiscipline) {
     if (!savedDiscipline) {
