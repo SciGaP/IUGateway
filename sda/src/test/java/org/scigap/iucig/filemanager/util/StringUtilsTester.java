@@ -18,7 +18,7 @@ public class StringUtilsTester {
 
     @Test
     public void testDeconstructPath() {
-        Assert.assertEquals("[home, swithana]", utils.deconstructPath("/home/swithana").toString());
+        Assert.assertEquals("[home, swithana, sachith withana]", utils.deconstructPath("/home/swithana/sachith withana").toString());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class StringUtilsTester {
 
     @Test
     public void testDeconstructCommand() {
-        Assert.assertEquals("[cd, temp]", utils.deconstructCommand("cd temp").toString());
+        Assert.assertEquals("[cd, temp dir]", utils.deconstructCommand("cd temp dir").toString());
     }
 
 

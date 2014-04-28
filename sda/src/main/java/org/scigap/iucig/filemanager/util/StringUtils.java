@@ -31,9 +31,16 @@ public class StringUtils {
 
         StringTokenizer tokenizer = new StringTokenizer(command);
 
+        commandList.add(tokenizer.nextToken());
+
+        String filename = "";
         while (tokenizer.hasMoreTokens()) {
-            commandList.add(tokenizer.nextToken());
+            filename += tokenizer.nextToken();
+            if(tokenizer.hasMoreTokens())
+                filename += " ";
         }
+        commandList.add(filename);
+
         return commandList;
     }
 
