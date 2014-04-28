@@ -125,8 +125,10 @@ public class CommandExecutor {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session.isConnected()){
-                session.disconnect();
+            if (session != null){
+                if (session.isConnected()){
+                    session.disconnect();
+                }
             }
         }
 
@@ -148,8 +150,10 @@ public class CommandExecutor {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session.isConnected()){
-                session.disconnect();
+            if (session != null){
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
             }
         }
     }
@@ -165,8 +169,10 @@ public class CommandExecutor {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session.isConnected()){
-                session.disconnect();
+            if (session != null){
+                if (session.isConnected()){
+                    session.disconnect();
+                }
             }
         }
     }
