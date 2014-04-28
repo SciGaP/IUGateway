@@ -81,7 +81,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateDeleteModel = function (file) {
         console.log("delete model");
-        $scope.file
         console.log(file);
     }
 

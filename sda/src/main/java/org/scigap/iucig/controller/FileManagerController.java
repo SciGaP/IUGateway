@@ -1,6 +1,5 @@
 package org.scigap.iucig.controller;
 
-import org.apache.commons.io.IOUtils;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.springframework.context.annotation.Scope;
@@ -12,18 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
-//@Scope("session")
+@Scope("session")
 @RequestMapping(value = "/filemanager/")
 public class FileManagerController {
 
-    // private CommandExecutor commandExecutor;
+    private CommandExecutor commandExecutor;
     // private static Map<String, CommandExecutor> commandExecutorMap = new HashMap<String, CommandExecutor>();
 
     /**
@@ -33,15 +28,16 @@ public class FileManagerController {
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
     public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) throws Exception {
         String remoteUser = request.getRemoteUser();
+        System.out.println("Command : " + command);
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
             System.out.println("Remote User : " + remoteUser);
 //            if (!commandExecutorMap.isEmpty()){
 //                commandExecutor = commandExecutorMap.get(remoteUser);
-//            if (commandExecutor == null) {
-            CommandExecutor commandExecutor = new CommandExecutor(remoteUser);
-//            }
+            if (commandExecutor == null) {
+                 commandExecutor = new CommandExecutor(remoteUser);
+            }
 //            }else {
 //                commandExecutor = new CommandExecutor(remoteUser);
 //                commandExecutorMap.put(remoteUser, commandExecutor);
