@@ -29,6 +29,7 @@ public class StringUtilsTester {
     @Test
     public void testDeconstructCommand() {
         Assert.assertEquals("[cd, temp dir]", utils.deconstructCommand("cd temp dir").toString());
+        Assert.assertEquals("[cd, temp_dir]", utils.deconstructCommand("cd temp_dir").toString());
     }
 
 

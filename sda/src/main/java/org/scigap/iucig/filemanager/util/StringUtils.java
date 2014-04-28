@@ -29,7 +29,7 @@ public class StringUtils {
     public List<String> deconstructCommand(String command) {
         commandList = new ArrayList<String>();
 
-        StringTokenizer tokenizer = new StringTokenizer(command);
+        StringTokenizer tokenizer = new StringTokenizer(command," ");
 
         commandList.add(tokenizer.nextToken());
 
