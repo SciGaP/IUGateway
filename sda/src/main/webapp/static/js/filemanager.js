@@ -28,7 +28,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     });
 
     $scope.upOneLevel = function(){
-        var parent = "...";
+        var parent = "..";
         var url = "filemanager/command/cd " + parent;
         console.log(url);
         $http({method: "GET", url: "filemanager/command/cd " + parent, cache: false}).
