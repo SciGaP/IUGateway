@@ -58,6 +58,9 @@
 			</list>
 		</property>
 	</bean> -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="useDefaultSuffixPattern" value="false" />
+    </bean>
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/static/" />
