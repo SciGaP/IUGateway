@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.util.List;
 
 @Controller
@@ -28,7 +29,11 @@ public class FileManagerController {
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
     public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) throws Exception {
         String remoteUser = request.getRemoteUser();
-        System.out.println("Command : " + command);
+        String defaultPath = "sda/filemanager/command/";
+        String requestURI = request.getRequestURI();
+        requestURI = URLDecoder.decode(requestURI, "UTF-8");
+        String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+        System.out.println("Command : " + commandFinal);
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
@@ -42,7 +47,7 @@ public class FileManagerController {
 //                commandExecutor = new CommandExecutor(remoteUser);
 //                commandExecutorMap.put(remoteUser, commandExecutor);
 //            }
-            commandExecutor.executeCommand(command);
+            commandExecutor.executeCommand(commandFinal);
             return commandExecutor.getResultItemList();
         }
         return null;
