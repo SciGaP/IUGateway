@@ -6,6 +6,7 @@ public class StringUtils {
     private List<String> pathList;
     private List<String> commandList;
     private Stack<String> pathStack;
+    private final String ARG_IDENTIFIER = "*";
 
     public List<String> deconstructPath(String path) {
         pathList = new ArrayList<String>();
@@ -26,6 +27,12 @@ public class StringUtils {
         return path;
     }
 
+    /*deconstruct the command
+    * Usage
+    * 1. cd temp -> [cd, temp]
+    * 2. mv tem.txt text.txt --> [mv, tem.txt, text.txt]
+    *
+    * */
     public List<String> deconstructCommand(String command) {
         commandList = new ArrayList<String>();
 
@@ -33,13 +40,24 @@ public class StringUtils {
 
         commandList.add(tokenizer.nextToken());
 
-        String filename = "";
+        String arguments = "";
         while (tokenizer.hasMoreTokens()) {
-            filename += tokenizer.nextToken();
+            arguments += tokenizer.nextToken();
             if(tokenizer.hasMoreTokens())
-                filename += " ";
+                arguments += " ";
         }
-        commandList.add(filename);
+
+        tokenizer = new StringTokenizer(arguments,ARG_IDENTIFIER);
+        String first_argument = tokenizer.nextToken();
+        commandList.add(first_argument);
+
+        //reading the second argument for rename,move ...etc
+        String second_argument = "";
+
+        if (tokenizer.hasMoreTokens()) {
+            second_argument = tokenizer.nextToken();
+            commandList.add(second_argument);
+        }
 
         return commandList;
     }

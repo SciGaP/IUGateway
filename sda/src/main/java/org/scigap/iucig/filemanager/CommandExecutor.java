@@ -20,7 +20,9 @@ import java.util.Stack;
 * cd <directory name>
 * mkdir <directory>
 * rm <file or directory name>
-* rename <filename or directory name>
+*
+* COMMANDS WITH TWO ARGUMENTS SHOULD BE PROVIDED WITH A "*" BETWEEN THE ARGUMENTS
+* mv <firstArgument>*<secondArgument>
 *
 *
 *
@@ -96,7 +98,7 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 //commandCentral.executeCommand(session, command);
                 ls();
-            } else if (commandList.get(0).equals("rename")) {
+            } else if (commandList.get(0).equals("mv")) {
                 command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
