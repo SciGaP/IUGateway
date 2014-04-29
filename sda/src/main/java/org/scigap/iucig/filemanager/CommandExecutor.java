@@ -65,7 +65,7 @@ public class CommandExecutor {
     }
 
     //execute any command
-    public void executeCommand(String command) throws Exception{
+    public void executeCommand(String command) throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
@@ -73,8 +73,7 @@ public class CommandExecutor {
             if (commandList.get(0).equals("cd")) {
                 if (commandList.get(1).equals("..")) {
                     pathStack.pop();
-                }
-                else {
+                } else {
                     pathStack.push(commandList.get(1));
                 }
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
@@ -98,18 +97,32 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 //commandCentral.executeCommand(session, command);
                 ls();
-            } else if (commandList.get(0).equals("mv")) {
+            } else if (commandList.get(0).equals("rename")) {
                 command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();
             }
-        } catch (Exception e){
+            //todo figure out how to provide the second argument
+            //todo whether to provide the absolute path or relative path
+            else if (commandList.get(0).equals("mvr")) {
+                command = "mv -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                ls();
+            }
+            else if (commandList.get(0).equals("cpr")) {
+                command = "cp -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                ls();
+            }
+        } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session != null){
-                if (session.isConnected()){
+            if (session != null) {
+                if (session.isConnected()) {
                     session.disconnect();
                 }
             }
@@ -117,26 +130,27 @@ public class CommandExecutor {
     }
 
     //download a file
-    public InputStream downloadFile(String filename) throws Exception{
+    public InputStream downloadFile(String filename) throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
             return commandCentral.scpFrom(session, filename);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session != null){
-                if (session.isConnected()){
+            if (session != null) {
+                if (session.isConnected()) {
                     session.disconnect();
                 }
             }
         }
 
     }
+
     //get the home directory
-    public void pwd() throws Exception{
+    public void pwd() throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
@@ -148,11 +162,11 @@ public class CommandExecutor {
             workingDirectory = stringUtils.constructPathString(pathStack);
             log.info("CURRENT WORKING DIR: " + workingDirectory);
             log.info("CURRENT PATH: " + path);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session != null){
+            if (session != null) {
                 if (session.isConnected()) {
                     session.disconnect();
                 }
@@ -160,19 +174,19 @@ public class CommandExecutor {
         }
     }
 
-    public void ls() throws Exception{
+    public void ls() throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
             setResult(commandCentral.executeCommand(session, LS + workingDirectory));
             setResultMap(stringUtils.categorizeResult(getResult()));
             setResultItemList(stringUtils.getResultsList(getResult()));
-        }  catch (Exception e){
+        } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
         } finally {
-            if (session != null){
-                if (session.isConnected()){
+            if (session != null) {
+                if (session.isConnected()) {
                     session.disconnect();
                 }
             }
