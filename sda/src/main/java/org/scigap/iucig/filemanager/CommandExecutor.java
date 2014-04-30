@@ -120,6 +120,7 @@ public class CommandExecutor {
                 commandCentral.executeCommand(session, command);
                 ls();
             }
+            //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
                 command = "cp -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
                 log.info("COMMAND: " + command);

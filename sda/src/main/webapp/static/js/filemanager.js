@@ -54,16 +54,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 });
         }
     }
-    $scope.rename = function (path1, path2) {
-        console.log("*******at rename controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + path1 +"*" + path2, cache: false}).
-            success(function (data, status) {
-            }).
-            error(function (data, status) {
-                console.log("Error getting profile !");
-            });
-
-    }
 
     $scope.addFolder = function (folderName) {
         console.log(folderName);
@@ -84,30 +74,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         console.log(file);
     }
 
-    $scope.move = function (path1, path2) {
-        console.log("*******at mv controller*****")
 
-    }
-
-    $scope.copy = function (path1, path2) {
-        console.log("*******at copy controller*****")
-
-    }
-
-    $scope.delete = function () {
-        console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/rmr", cache: false}).
-            success(function (data, status) {
-                $scope.disciplines = getDisciplines(data);
-            }).
-            error(function (data, status) {
-                console.log("Error getting profile !");
-            });
-
-    }
 
     // --------------- newly added capabilities - to be tested
+    //todo: you have to check if the first parameter of a call is a directory or not
+    //reason: for a file it's mv for move, but for a folder it's mv -r
 
+    //getting the free disk space of the current directory
     $scope.freedisk = function () {
         console.log("*******at delete controller*****")
         $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
@@ -119,6 +92,104 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             });
 
     }
+
+    //renaming a file or a folder
+    $scope.rename = function (path1, path2) {
+        console.log("*******at rename controller*****")
+        $http({method: "GET", url: "filemanager/command/mv " + path1 +"*" + path2, cache: false}).
+            success(function (data, status) {
+            }).
+            error(function (data, status) {
+                console.log("Error getting profile !");
+            });
+
+    }
+
+    //todo: if it's a directory, it should be mvr not mv
+    //moving a file
+    $scope.moveFile = function (file, path) {
+        console.log("*******at mvFile controller*****")
+        $http({method: "GET", url: "filemanager/command/mv " + file +"*" + path, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+    //moving a directory
+    $scope.moveFolder = function (folder, path) {
+        console.log("*******at mvFolder controller*****")
+        $http({method: "GET", url: "filemanager/command/mv " + folder +"*" + path, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+
+    //deleting a file
+    $scope.deleteFile = function (file) {
+        console.log("*******at delete controller*****")
+        $http({method: "GET", url: "filemanager/command/rm " + file, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+    //deleting a file
+    $scope.deleteFolder = function (folder) {
+        console.log("*******at delete controller*****")
+        $http({method: "GET", url: "filemanager/command/rmr " + folder, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+
+
+    $scope.copyFile = function (file, path) {
+        console.log("*******at copy controller*****")
+        console.log("*******at mvFolder controller*****")
+        $http({method: "GET", url: "filemanager/command/cp " + file +"*" + path, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+
+    $scope.copyFolder = function (folder, path) {
+        console.log("*******at copy controller*****")
+        console.log("*******at mvFolder controller*****")
+        $http({method: "GET", url: "filemanager/command/mv " + folder +"*" + path, cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.files = data;
+            }).
+            error(function (data, status) {
+                console.log("Error getting files !");
+            });
+
+    }
+
+
 
 });
 
