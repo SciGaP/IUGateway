@@ -46,14 +46,15 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 
     $scope.getSubDisciplineList1 = function () {
         if ($scope.item != undefined) {
+            $scope.item.primarySubDisc = null;
             var id1 = $scope.item.primaryDisc.id;
             $scope.subdisciplines1 = getSubdisciplines(id1, $scope.allDisciplines);
         }
-
     };
 
     $scope.getSubDisciplineList2 = function () {
         if ($scope.item != undefined) {
+            $scope.item.secondarySubDisc = null;
             var id2 = $scope.item.secondaryDisc.id;
             $scope.subdisciplines2 = getSubdisciplines(id2, $scope.allDisciplines);
         }
@@ -61,6 +62,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
 
     $scope.getSubDisciplineList3 = function () {
         if ($scope.item != undefined) {
+            $scope.item.tertiarySubDisc = null;
             var id3 = $scope.item.tertiaryDisc.id;
             $scope.subdisciplines3 = getSubdisciplines(id3, $scope.allDisciplines);
         }
