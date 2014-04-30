@@ -319,3 +319,9 @@ a.circle.active:hover {
 	color: #222222;
 	border: 3px solid #222222;
 }
+
+.required label:after, label.required:after, span.required:after {
+    content: "*";
+    color: #c2002f;
+    margin-left: 5px;
+}

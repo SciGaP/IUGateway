@@ -35,7 +35,7 @@
                 </p><br>
                 <form id="disciplineForm" name="disciplineForm" class="form-horizontal">
                     <div class="control-group" ng-class="{error: disciplineForm.pDisc.$invalid}">
-                        <label class="control-label" for="primaryDiscipline">Primary Discipline *</label>
+                        <label class="control-label required" for="primaryDiscipline">Primary Discipline</label>
                         <div class="controls">
                             <select name="pDisc" required
                             ng-options="pDisc as pDisc.name for pDisc in allDisciplines"
