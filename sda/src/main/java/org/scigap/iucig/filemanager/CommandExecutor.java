@@ -27,6 +27,9 @@ import java.util.Stack;
 * moving a file
 * mv <file>*<location>
 *
+* get free disk space
+* freedisk
+*
 * COMMANDS WITH TWO ARGUMENTS SHOULD BE PROVIDED WITH A "*" BETWEEN THE ARGUMENTS
 * mv <firstArgument>*<secondArgument>
 *
@@ -122,6 +125,11 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();
+            }else if (commandList.get(0).equals("freedisk")) {
+                command = "df -k " + workingDirectory;
+                log.info("COMMAND: " + command);
+                commandCentral.executeCommand(session, command);
+                //ls();
             }
         } catch (Exception e) {
             log.error("Error occured", e.getMessage());

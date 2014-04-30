@@ -96,9 +96,23 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.delete = function () {
         console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/rm -r", cache: false}).
+        $http({method: "GET", url: "filemanager/command/rmr", cache: false}).
             success(function (data, status) {
                 $scope.disciplines = getDisciplines(data);
+            }).
+            error(function (data, status) {
+                console.log("Error getting profile !");
+            });
+
+    }
+
+    // --------------- newly added capabilities - to be tested
+
+    $scope.freedisk = function () {
+        console.log("*******at delete controller*****")
+        $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
+            success(function (data, status) {
+                $scope.freedisk = data.ifree;
             }).
             error(function (data, status) {
                 console.log("Error getting profile !");
