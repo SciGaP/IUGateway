@@ -59,14 +59,14 @@ public class ScienceDisciplineController {
     public String getScienceDiscipline() {
         String responseJSON = null;
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL +"discipline/?format=json");
+        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL + "discipline/?format=json");
         logger.debug("Executing REST GET request" + disciplines.getRequestLine());
 
         try {
             httpClient = (DefaultHttpClient) WebClientDevWrapper.wrapClient(httpClient);
             HttpResponse response = httpClient.execute(disciplines);
             HttpEntity entity = response.getEntity();
-            if (entity != null && response.getStatusLine().getStatusCode()== HttpStatus.OK.value()) {
+            if (entity != null && response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
                 responseJSON = convertStreamToString(entity.getContent());
             }
             EntityUtils.consume(entity);
@@ -81,10 +81,10 @@ public class ScienceDisciplineController {
 
     @ResponseBody
     @RequestMapping(value = "/getUsersScienceDiscipline", method = RequestMethod.GET)
-    public String getUsersScienceDiscipline(HttpServletRequest request) throws Exception{
+    public String getUsersScienceDiscipline(HttpServletRequest request) throws Exception {
         String responseJSON = null;
         String remoteUser;
-        if (request != null){
+        if (request != null) {
             remoteUser = request.getRemoteUser();
         } else {
             throw new Exception("Remote user is null");
@@ -99,7 +99,7 @@ public class ScienceDisciplineController {
             httpClient = (DefaultHttpClient) WebClientDevWrapper.wrapClient(httpClient);
             HttpResponse response = httpClient.execute(disciplines);
             HttpEntity entity = response.getEntity();
-            if (entity != null && response.getStatusLine().getStatusCode()== HttpStatus.OK.value()) {
+            if (entity != null && response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
                 responseJSON = convertStreamToString(entity.getContent());
             }
             EntityUtils.consume(entity);
@@ -118,10 +118,10 @@ public class ScienceDisciplineController {
 
     @ResponseBody
     @RequestMapping(value = "/updateScienceDiscipline", method = RequestMethod.POST)
-    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception{
+    public void updateScienceDiscipline(@RequestBody ScienceDiscipline discipline, HttpServletRequest request) throws Exception {
         try {
             String remoteUser;
-            if (request != null){
+            if (request != null) {
                 remoteUser = request.getRemoteUser();
             } else {
                 throw new Exception("Remote user is null");
@@ -131,9 +131,8 @@ public class ScienceDisciplineController {
             int tertiarySubDisId = 0;
             String urlParameters = "user=" + remoteUser;
             if (discipline != null) {
-
                 Map<String, String> primarySubDisc = discipline.getPrimarySubDisc();
-                if (primarySubDisc != null && !primarySubDisc.isEmpty()){
+                if (primarySubDisc != null && !primarySubDisc.isEmpty()) {
                     for (String key : primarySubDisc.keySet()) {
                         if (key.equals("id")) {
                             primarySubDisId = Integer.valueOf(primarySubDisc.get(key));
@@ -142,14 +141,14 @@ public class ScienceDisciplineController {
                     }
                 } else {
                     Map<String, Object> primaryDiscipline = discipline.getPrimaryDisc();
-                    if (primaryDiscipline != null && !primaryDiscipline.isEmpty()){
+                    if (primaryDiscipline != null && !primaryDiscipline.isEmpty()) {
                         Object subdisciplines = primaryDiscipline.get("subdisciplines");
-                        if (subdisciplines instanceof ArrayList){
-                            for (int i = 0; i < ((ArrayList) subdisciplines).size(); i++){
+                        if (subdisciplines instanceof ArrayList) {
+                            for (int i = 0; i < ((ArrayList) subdisciplines).size(); i++) {
                                 Object disc = ((ArrayList) subdisciplines).get(i);
-                                if (disc instanceof HashMap){
-                                    if (((HashMap) disc).get("name").equals("Other / Unspecified")){
-                                        primarySubDisId =    Integer.valueOf((((HashMap) disc).get("id")).toString());
+                                if (disc instanceof HashMap) {
+                                    if (((HashMap) disc).get("name").equals("Other / Unspecified")) {
+                                        primarySubDisId = Integer.valueOf((((HashMap) disc).get("id")).toString());
                                     }
                                 }
                             }
@@ -157,34 +156,64 @@ public class ScienceDisciplineController {
                         }
                     }
                 }
-
                 Map<String, String> secondarySubDisc = discipline.getSecondarySubDisc();
-                if (secondarySubDisc != null && !secondarySubDisc.isEmpty()){
+                if (secondarySubDisc != null && !secondarySubDisc.isEmpty()) {
                     for (String key : secondarySubDisc.keySet()) {
                         if (key.equals("id")) {
                             secondarySubDisId = Integer.valueOf(secondarySubDisc.get(key));
                             urlParameters += "&discipline2=" + secondarySubDisId;
                         }
                     }
+                } else {
+                    Map<String, Object> secondaryDisc = discipline.getSecondaryDisc();
+                    if (secondaryDisc != null && !secondaryDisc.isEmpty()) {
+                        Object subdisciplines = secondaryDisc.get("subdisciplines");
+                        if (subdisciplines instanceof ArrayList) {
+                            for (int i = 0; i < ((ArrayList) subdisciplines).size(); i++) {
+                                Object disc = ((ArrayList) subdisciplines).get(i);
+                                if (disc instanceof HashMap) {
+                                    if (((HashMap) disc).get("name").equals("Other / Unspecified")) {
+                                        secondarySubDisId = Integer.valueOf((((HashMap) disc).get("id")).toString());
+                                    }
+                                }
+                            }
+                            urlParameters += "&discipline2=" + secondarySubDisId;
+                        }
+                    }
                 }
 
                 Map<String, String> tertiarySubDisc = discipline.getTertiarySubDisc();
-                if (tertiarySubDisc != null && !tertiarySubDisc.isEmpty()){
+                if (tertiarySubDisc != null && !tertiarySubDisc.isEmpty()) {
                     for (String key : tertiarySubDisc.keySet()) {
                         if (key.equals("id")) {
                             tertiarySubDisId = Integer.valueOf(tertiarySubDisc.get(key));
                             urlParameters += "&discipline3=" + tertiarySubDisId;
                         }
                     }
+                }else {
+                    Map<String, Object> tertiaryDisc = discipline.getTertiaryDisc();
+                    if (tertiaryDisc != null && !tertiaryDisc.isEmpty()) {
+                        Object subdisciplines = tertiaryDisc.get("subdisciplines");
+                        if (subdisciplines instanceof ArrayList) {
+                            for (int i = 0; i < ((ArrayList) subdisciplines).size(); i++) {
+                                Object disc = ((ArrayList) subdisciplines).get(i);
+                                if (disc instanceof HashMap) {
+                                    if (((HashMap) disc).get("name").equals("Other / Unspecified")) {
+                                        tertiarySubDisId = Integer.valueOf((((HashMap) disc).get("id")).toString());
+                                    }
+                                }
+                            }
+                            urlParameters += "&discipline1=" + tertiarySubDisId;
+                        }
+                    }
                 }
-
                 URL obj = new URL(SCIENCE_DISCIPLINE_URL + "discipline/");
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("POST");
-                con.setDoInput (true);
-                con.setDoOutput (true);
-                con.setUseCaches (false);
-                urlParameters += "&date=" + discipline.getDate() +  "&source=iugateway&commit=Update";
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                con.setUseCaches(false);
+                urlParameters += "&date=" + discipline.getDate() + "&source=iugateway&commit=Update";
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 wr.writeBytes(urlParameters);
                 wr.flush();
