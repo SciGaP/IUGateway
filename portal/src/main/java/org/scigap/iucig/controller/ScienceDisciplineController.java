@@ -203,7 +203,7 @@ public class ScienceDisciplineController {
                                     }
                                 }
                             }
-                            urlParameters += "&discipline1=" + tertiarySubDisId;
+                            urlParameters += "&discipline3=" + tertiarySubDisId;
                         }
                     }
                 }
