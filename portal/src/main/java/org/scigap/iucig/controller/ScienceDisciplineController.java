@@ -213,7 +213,7 @@ public class ScienceDisciplineController {
                 con.setDoInput(true);
                 con.setDoOutput(true);
                 con.setUseCaches(false);
-                urlParameters += "&date=" + discipline.getDate() + "&source=iugateway&commit=Update";
+                urlParameters += "&date=" + discipline.getDate() + "&source=cybergatewaytest&commit=Update";
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 wr.writeBytes(urlParameters);
                 wr.flush();

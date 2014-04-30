@@ -27,10 +27,15 @@
     <div class="well span12">
         <div class="row-fluid">
             <div class="well-iu span12">
-                <div class="well-heading">Science Disciplines</div>
+                <div class="well-heading">Review and Change Your Academic Disciplines</div>
+                <p>
+                    The academic disciplines that you provided are displayed below. If your
+                    work has changed, please edit the disciplines/sub-disciplines
+                    using the form below.
+                </p><br>
                 <form id="disciplineForm" name="disciplineForm" class="form-horizontal">
                     <div class="control-group" ng-class="{error: disciplineForm.pDisc.$invalid}">
-                        <label class="control-label" for="primaryDiscipline">Primary Discipline</label>
+                        <label class="control-label" for="primaryDiscipline">Primary Discipline *</label>
                         <div class="controls">
                             <select name="pDisc" required
                             ng-options="pDisc as pDisc.name for pDisc in allDisciplines"
@@ -109,6 +114,12 @@
                         </div>
                     </div>
                 </form>
+                <p>
+                    IU cyberinfrastructure supports research, development, scholarship, and
+                    creative activities at IU. So that we may better understand its value to
+                    you, IU, and the State of Indiana, we need to know how you use IU
+                    cyberinfrastructure resources.
+                </p>
             </div>
         </div>
     </div>
