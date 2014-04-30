@@ -56,7 +56,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
     $scope.rename = function (path1, path2) {
         console.log("*******at rename controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + path1 +" " + path2, cache: false}).
+        $http({method: "GET", url: "filemanager/command/mv " + path1 +"*" + path2, cache: false}).
             success(function (data, status) {
             }).
             error(function (data, status) {

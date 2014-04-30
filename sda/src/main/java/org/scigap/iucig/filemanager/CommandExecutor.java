@@ -21,6 +21,12 @@ import java.util.Stack;
 * mkdir <directory>
 * rm <file or directory name>
 *
+* renaming
+* mv <file/dir>*<secondArgument>
+*
+* moving a file
+* mv <file>*<location>
+*
 * COMMANDS WITH TWO ARGUMENTS SHOULD BE PROVIDED WITH A "*" BETWEEN THE ARGUMENTS
 * mv <firstArgument>*<secondArgument>
 *
@@ -97,7 +103,7 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 //commandCentral.executeCommand(session, command);
                 ls();
-            } else if (commandList.get(0).equals("rename")) {
+            } else if (commandList.get(0).equals("mv")) {
                 command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
