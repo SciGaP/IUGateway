@@ -3,14 +3,17 @@ package org.scigap.iucig.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.scigap.iucig.gateway.util.Constants;
@@ -19,6 +22,8 @@ import org.scigap.iucig.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,42 +53,98 @@ public class LoginController {
 	
 	@Autowired
 	private UserService userService;
+
+    @Autowired
+    private AuthenticationSuccessHandler successHandler;
 	
 	@RequestMapping(value = "/caslogin", method = RequestMethod.GET)
-	public String login(HttpServletRequest request) throws IOException {
-		String loginUrl = CAS_LOGIN_URL +	"?cassvc=IU&casurl=" +
-				PORTAL_URL + "iugateway/getTicket";
-		logger.debug("Redirecting to CAS Login URL" + loginUrl);
-        return "redirect:"+loginUrl;
+	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+ 		String loginUrl = CAS_LOGIN_URL +	"?cassvc=IU&casurl=" +
+				PORTAL_URL + "caslogin";
+        String casTicket = request.getParameter("casticket");
+        if (casTicket == null) {
+		    logger.debug("Redirecting to CAS Login URL" + loginUrl);
+            return "redirect:"+loginUrl;
+        } else {
+            logger.info("CAS ticket is "+casTicket);
+            logger.debug("Redirecting to URL " + CAS_VALIDATE_URL +
+                    "?cassvc=IU&" +
+                    "casticket=" + casTicket +
+                    "&casurl="+PORTAL_URL+" to validate the CAS ticket");
+            URL casValidatorURL = null;
+            try {
+                casValidatorURL = new URL(CAS_VALIDATE_URL +
+                        "?cassvc=IU&" +
+                        "casticket=" + casTicket +
+                        "&casurl="+PORTAL_URL);
+            } catch (MalformedURLException e) {
+                logger.error("Malformed URL", e);
+            }
+            try {
+                HttpsURLConnection casConnection = (HttpsURLConnection) casValidatorURL.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(casConnection.getInputStream()));
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    if(inputLine.equalsIgnoreCase(Constants.YES)) {
+                        String username = in.readLine().trim();
+                        Authentication authentication = userService.setAuthenticatedUser(username, null);
+                        successHandler.onAuthenticationSuccess(request, response, authentication);
+                        logger.info("Logged in as "+username);
+                    } else {
+                        logger.debug("CAS Ticket validation failure ! Proceeding to Failure Page");
+                        return ViewNames.LOGIN_FAILURE_PAGE;
+                    }
+                }
+                logger.debug("Login success ! Proceeding to Home Page");
+                in.close();
+            } catch (IOException e) {
+                logger.error("Error contacting CAS", e);
+            } catch (ServletException e) {
+                logger.error("Error contacting CAS", e);
+            }
+            return null;
+        }
 	}
 	
 	@RequestMapping(value = "/getTicket", method = RequestMethod.GET)
-	public String getTicket(HttpServletRequest request, @RequestParam(required = true, value="casticket") String casTicket) throws IOException {
+    public String getTicket(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        String casTicket = request.getParameter("casticket");
 		logger.info("CAS ticket is "+casTicket);
 		logger.debug("Redirecting to URL " + CAS_VALIDATE_URL + 
 				"?cassvc=IU&" +
         		"casticket=" + casTicket +
         		"&casurl="+PORTAL_URL+" to validate the CAS ticket");
-        URL casValidatorURL = new URL(CAS_VALIDATE_URL + 
-        		"?cassvc=IU&" +
-        		"casticket=" + casTicket +
-        		"&casurl="+PORTAL_URL);
-        
-        HttpsURLConnection casConnection = (HttpsURLConnection) casValidatorURL.openConnection();
-        BufferedReader in = new BufferedReader(new InputStreamReader(casConnection.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            if(inputLine.equalsIgnoreCase(Constants.YES)) {
-            	String username = in.readLine().trim();
-            	userService.setAuthenticatedUser(username, null);
-            	logger.info("Logged in as "+username);
-            } else {
-            	logger.debug("CAS Ticket validation failure ! Proceeding to Failure Page");
-            	return ViewNames.LOGIN_FAILURE_PAGE;
-            }
+        URL casValidatorURL = null;
+        try {
+            casValidatorURL = new URL(CAS_VALIDATE_URL +
+                    "?cassvc=IU&" +
+                    "casticket=" + casTicket +
+                    "&casurl="+PORTAL_URL);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL", e);
         }
-        logger.debug("Login success ! Proceeding to Home Page");
-        in.close();
+        try {
+            HttpsURLConnection casConnection = (HttpsURLConnection) casValidatorURL.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(casConnection.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                if(inputLine.equalsIgnoreCase(Constants.YES)) {
+                    String username = in.readLine().trim();
+                    System.out.println("username 1 : " + username);
+                    userService.setAuthenticatedUser(username, null);
+                    logger.info("Logged in as "+username);
+                } else {
+                    logger.debug("CAS Ticket validation failure ! Proceeding to Failure Page");
+                    return ViewNames.LOGIN_FAILURE_PAGE;
+                }
+            }
+            logger.debug("Login success ! Proceeding to Home Page");
+            in.close();
+        } catch (IOException e) {
+            logger.error("Error contacting CAS", e);
+        }
         return ViewNames.INDEX_PAGE;
 	}
 	
@@ -93,9 +154,10 @@ public class LoginController {
 		logger.debug("get user info is called");
 		response.setHeader("Cache-Control", "no-cache, no-store");
 		response.setHeader("Pragma", "no-cache");
-		if(userService.isUserAuthenticated())
-			return userService.getAuthenticatedUser().getUsername();
-		else
+		if(userService.isUserAuthenticated())   {
+            String username = userService.getAuthenticatedUser().getUsername();
+            return username;
+        }else
 			return null;
 	}
 	

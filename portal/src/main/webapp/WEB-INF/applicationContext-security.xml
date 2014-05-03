@@ -9,6 +9,8 @@
            
 	<security:http auto-config="true"  use-expressions="true" >
 		<security:intercept-url pattern="/news" access="permitAll" />
+		<security:intercept-url pattern="/caslogin" access="permitAll" />
+        <security:intercept-url pattern="/getTicket" access="permitAll" />
 		<security:intercept-url pattern="/contactus" access="permitAll" />
 		<security:intercept-url pattern="/about" access="permitAll" />
 		<security:intercept-url pattern="/feedback" access="permitAll" />
@@ -40,9 +42,10 @@
 		<!--<security:intercept-url pattern="/getScienceDiscipline" access="permitAll" />-->
 		<!--<security:intercept-url pattern="/updateScienceDiscipline" access="permitAll" />-->
 		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
-        <security:form-login login-page="/../cilogon2/startRequest" default-target-url="/index" authentication-failure-url="/loginFailure" />
+        <security:form-login login-page="/caslogin" default-target-url="/index" always-use-default-target="false" authentication-failure-url="/loginFailure" />
 	</security:http>
- 
+    <bean id="successHandler"
+          class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"/>
 	<!-- The below section is dummy as of now. It will be needed when we maintain user information in DB -->
 	<security:authentication-manager>
 	  <security:authentication-provider user-service-ref="userService" />

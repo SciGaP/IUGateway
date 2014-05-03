@@ -4,6 +4,7 @@
 package org.scigap.iucig.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.scigap.iucig.model.User;
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService{
 	}
 
     
-    public void setAuthenticatedUser(String username, String certificate) {
+    public Authentication setAuthenticatedUser(String username, String certificate) {
 		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
 		List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
 		authorityList.add(authority);
@@ -44,8 +45,10 @@ public class UserService implements UserDetailsService{
 		if(certificate !=null && !certificate.isEmpty()) {
 			user.setCertificate(certificate);
 		}
-        SecurityContext securityContext = createContext(user);
-        SecurityContextHolder.setContext(securityContext);
+
+        Authentication authentication = new CustomToken(user.getAuthorities(), user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
     
     
@@ -61,7 +64,6 @@ public class UserService implements UserDetailsService{
     
     public boolean isUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             return true;
         } else {
@@ -75,24 +77,31 @@ public class UserService implements UserDetailsService{
 	
     private SecurityContext createContext(final User user) {
         SecurityContext securityContext = new SecurityContextImpl();
-        securityContext.setAuthentication(new AbstractAuthenticationToken(user.getAuthorities()) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Object getCredentials() {
-                return "N/A";
-            }
-
-            @Override
-            public Object getPrincipal() {
-                return user;
-            }
-
-            @Override
-            public boolean isAuthenticated() {
-                return true;
-            }
-        });
+        securityContext.setAuthentication(new CustomToken(user.getAuthorities(), user));
         return securityContext;
+    }
+
+    class CustomToken extends AbstractAuthenticationToken {
+        private static final long serialVersionUID = 1L;
+
+        private User user;
+
+        public CustomToken(Collection<? extends GrantedAuthority> authorities, User user) {
+            super(authorities);
+            this.user = user;
+        }
+
+        public Object getCredentials() {
+            return "N/A";
+        }
+
+        public Object getPrincipal() {
+            return user;
+        }
+
+        @Override
+        public boolean isAuthenticated() {
+            return true;
+        }
     }
 }
