@@ -65,11 +65,11 @@
                     <tr ng-show="showError"></tr>
                     <tr ng-show="showError"><td colspan="7"><div class="alert alert-error">There was an error loading the data !</div></td></tr>
                     <tr ng-show="files.length<1"></tr>
-                    <tr ng-show="files.length<1"><td colspan="7"><div>SDA information is not available !</div></td></tr>
-                    <tr ng-click="goInside(file)" ng-repeat="file in files" >
-                        <td><input type="checkbox" ng-model="file" ng-true-value="file"/></td>
+                    <tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>
+                    <tr ng-repeat="file in files" >
+                        <td><input type="checkbox" name="filename" ng-model="file.checked"/></td>
                         <td><img ng-show="file.file" title="file" src="static/images/file.png" width="22" height="28"/><img ng-show="!file.file" title="folder" src="static/images/folder.png" width="22" height="28"/></td>
-                        <td>{{file.name}}</td>
+                        <td ng-click="goInside(file)">{{file.name}}</td>
                         <td>{{file.size}}</td>
                         <td>{{file.date}}</td>
                     </tr>
