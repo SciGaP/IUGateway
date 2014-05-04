@@ -48,8 +48,10 @@ public class StringUtils {
         }
 
         tokenizer = new StringTokenizer(arguments,ARG_IDENTIFIER);
-        String first_argument = tokenizer.nextToken();
-        commandList.add(first_argument);
+        if (tokenizer.hasMoreTokens()){
+            String first_argument = tokenizer.nextToken();
+            commandList.add(first_argument);
+        }
 
         //reading the second argument for rename,move ...etc
         String second_argument = "";
