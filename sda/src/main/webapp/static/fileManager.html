@@ -33,7 +33,7 @@
                 <button class="btn pull-left" ng-click="">View Used Space</button>
             </div>
             <div class="pull-right span4"><strong >Select File to : </strong>
-                <button class="btn pull-right" ng-click=generateDeleteModel() data-toggle="modal" data-target="#deleteModel">Delete</button>
+                <button class="btn pull-right" data-toggle="modal" data-target="#deleteModel">Delete</button>
                 <button class="btn pull-right" ng-click="">Move</button>
                 <button class="btn pull-right" ng-click="">Copy</button>
                 <button class="btn pull-right" ng-click="">Rename</button>
@@ -124,7 +124,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button ng-click="delete(file)" class="btn btn-danger pull-left">Delete</button>
+                    <button ng-click="deleteFile(file)" class="btn btn-danger pull-left">Delete</button>
                     <div class="alert alert-error" ng-show="createDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
                         Error occurred while deleting. Please try again later
                     </div>

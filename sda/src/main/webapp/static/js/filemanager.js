@@ -130,15 +130,15 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             error(function (data, status) {
                 console.log("Error getting files !");
             });
-
     }
 
     //deleting a file
     $scope.deleteFile = function (file) {
-        console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/rm " + file, cache: false}).
+        console.log("*******at delete controller*****");
+        console.log(file);
+        var fileName = file.name;
+        $http({method: "GET", url: "filemanager/command/rm -rf " + fileName, cache: false}).
             success(function (data, status) {
-                console.log(data);
                 $scope.files = data;
             }).
             error(function (data, status) {
@@ -149,7 +149,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //deleting a file
     $scope.deleteFolder = function (folder) {
         console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/rmr " + folder, cache: false}).
+        $http({method: "GET", url: "filemanager/command/rm -rf " + folder, cache: false}).
             success(function (data, status) {
                 console.log(data);
                 $scope.files = data;
@@ -188,9 +188,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             });
 
     }
-
-
-
 });
 
 
