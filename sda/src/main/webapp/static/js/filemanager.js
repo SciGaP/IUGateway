@@ -133,19 +133,27 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     //deleting a file
-    $scope.deleteFile = function (file) {
+    $scope.deleteFile = function () {
         console.log("*******at delete controller*****");
-        console.log(file);
-        var fileName = file.name;
-        $http({method: "GET", url: "filemanager/command/rm -rf " + fileName, cache: false}).
+        var fileNames = [];
+        var files = $scope.files;
+        for (var i = 0 ; i < files.length; i ++){
+            if (files[i].checked){
+               fileNames.push(files[i].name);
+            }
+        }
+        console.log(fileNames);
+        for (var j = 0; j < fileNames.length ; i ++){
+            $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
             success(function (data, status) {
                 $scope.files = data;
             }).
             error(function (data, status) {
                 console.log("Error getting files !");
             });
-
+        }
     }
+
     //deleting a file
     $scope.deleteFolder = function (folder) {
         console.log("*******at delete controller*****")
