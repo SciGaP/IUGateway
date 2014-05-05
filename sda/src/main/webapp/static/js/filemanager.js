@@ -97,10 +97,12 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var numberOfFiles = $scope.files.length;
         var totalSize = 0;
         for (var i = 0 ; i < numberOfFiles; i ++){
-            totalSize += $scope.files[i].size;
+            totalSize = +totalSize  +  +$scope.files[i].size;
         }
-        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p></br>";
-        content += "<p>Used space for user " + $scope.remoteUser + " : " + totalSize/1000 + "MB</p></br>";
+	console.log(totalSize);
+	var sizeInMb = totalSize / 1000;
+        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p>";
+        content += "<p>Used space for user " + $scope.remoteUser + " : " + sizeInMb.toFixed(2) + "MB</p></br>";
         $('#viewUsedSpaceModel').show();
         $('#fileCount').show().html(content);
     }
