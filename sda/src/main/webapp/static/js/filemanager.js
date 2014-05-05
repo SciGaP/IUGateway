@@ -143,14 +143,16 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             }
         }
         console.log(fileNames);
-        for (var j = 0; j < fileNames.length ; i ++){
+        for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
                 $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
+                        $scope.deleteSuccess = true;
                     }).
                     error(function (data, status) {
                         console.log("Error getting files !");
+                        $scope.deleteDisabled = true;
                     });
             }
         }
