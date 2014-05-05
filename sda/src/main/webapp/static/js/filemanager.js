@@ -144,13 +144,15 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         }
         console.log(fileNames);
         for (var j = 0; j < fileNames.length ; i ++){
-            $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
-            success(function (data, status) {
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
+            if (fileNames[j] != null || fileNames[j] != undefined ){
+                $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
+                    success(function (data, status) {
+                        $scope.files = data;
+                    }).
+                    error(function (data, status) {
+                        console.log("Error getting files !");
+                    });
+            }
         }
     }
 
