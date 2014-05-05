@@ -95,19 +95,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.viewUsedSpace = function () {
         console.log("*******at used space controller*****");
         var numberOfFiles = $scope.files.length;
+        var totalSize = 0;
+        for (var i = 0 ; i < numberOfFiles; i ++){
+            totalSize += $scope.files[i].size;
+        }
         var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p></br>";
+        content += "<p>Used space for user " + $scope.remoteUser + " : " + totalSize/1000 + "MB</p></br>";
         $('#viewUsedSpaceModel').show();
         $('#fileCount').show().html(content);
-        $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
-            success(function (data, status) {
-                $scope.freedisk = data.ifree;
-                console.log($scope.freedisk);
-                var content = "<p>Used space for user " + $scope.remoteUser + " : " + $scope.freedisk + "</p></br>";
-                $('#fileCount').show().html(content);
-            }).
-            error(function (data, status) {
-                console.log("Error getting profile !");
-            });
     }
 
     //renaming a file or a folder
