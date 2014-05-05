@@ -53,6 +53,12 @@ public class FileManagerController {
         return null;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
+    public String getRemoteUser(HttpServletRequest request) throws Exception {
+        return request.getRemoteUser();
+    }
+
     /**
      * Download a file
      */

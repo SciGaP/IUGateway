@@ -4,15 +4,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     console.log("*******at controller*****");
     $scope.hideLoader = true;
     console.log($scope.hideLoader);
-//    console.log($scope.username);
-//    $http({method: "GET", url: "getRemoteUser" , cache: false}).
-//        success(function (data, status) {
-//            console.log(data);
-//            $scope.remoteUser = "cpelikan";
-//        }).
-//        error(function (data, status) {
-//            console.log("Error getting profile !");
-//        });
+    $http({method: "GET", url: "getRemoteUser" , cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.remoteUser = data;
+        }).
+        error(function (data, status) {
+            console.log("Error getting remote user !");
+        });
     $http({method: "GET", url: "filemanager/command/ls", cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -91,6 +90,24 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 console.log("Error getting profile !");
             });
 
+    }
+
+    $scope.viewUsedSpace = function () {
+        console.log("*******at used space controller*****");
+        var numberOfFiles = $scope.files.length;
+        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p></br>";
+        $('#viewUsedSpaceModel').show();
+        $('#fileCount').show().html(content);
+        $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
+            success(function (data, status) {
+                $scope.freedisk = data.ifree;
+                console.log($scope.freedisk);
+                var content = "<p>Used space for user " + $scope.remoteUser + " : " + $scope.freedisk + "</p></br>";
+                $('#fileCount').show().html(content);
+            }).
+            error(function (data, status) {
+                console.log("Error getting profile !");
+            });
     }
 
     //renaming a file or a folder

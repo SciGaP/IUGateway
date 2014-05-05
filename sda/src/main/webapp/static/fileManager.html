@@ -30,13 +30,13 @@
             <div class="pull-left">
                 <button class="btn pull-left" data-toggle="modal" data-target="#newFolderModel">New Folder</button>
                 <button class="btn pull-left" data-toggle="modal" data-target="#uploadFileModel">Upload File</button>
-                <button class="btn pull-left" ng-click="">View Used Space</button>
+                <button class="btn pull-left" ng-click="viewUsedSpace()" data-toggle="modal" data-target="#viewUsedSpaceModel">View Used Space</button>
             </div>
             <div class="pull-right span4"><strong >Select File to : </strong>
                 <button class="btn pull-right" data-toggle="modal" data-target="#deleteModel">Delete</button>
-                <button class="btn pull-right" ng-click="">Move</button>
-                <button class="btn pull-right" ng-click="">Copy</button>
-                <button class="btn pull-right" ng-click="">Rename</button>
+                <button class="btn pull-right" data-toggle="modal" data-target="#mvModel">Move</button>
+                <button class="btn pull-right" data-toggle="modal" data-target="#copyModel">Copy</button>
+                <button class="btn pull-right" data-toggle="modal" data-target="#renameModel">Rename</button>
             </div>
             <br/>
             <br/>
@@ -131,6 +131,17 @@
                     <div class="alert alert-success" ng-show="deleteSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>
                         File / Folder deleted successfully..
                     </div>
+                </div>
+            </div>
+            <div id="viewUsedSpaceModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="usedSpaceLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 id="usedSpaceLabel">Used Space</h3>
+                </div>
+                <div id="fileCount" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </div>
         </div>
