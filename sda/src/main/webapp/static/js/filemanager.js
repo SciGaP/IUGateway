@@ -107,6 +107,16 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $('#fileCount').show().html(content);
     }
 
+    $scope.generateRenameModel = function () {
+        var fileNames = getCheckedFiles($scope.files);
+        var content = "";
+        for (var j = 0; j < fileNames.length ; j++){
+            content += "<div class=\"row-fluid\"><div class=\"span4\"><strong>Rename " + fileNames[j] + " to</strong></div><div><input type=\"text\" name=\"newName\"" + j +  " ng-model=\"newName\"" + j + "/></div></div>";
+        }
+        $('#renameModel').show();
+        $('#renameFile').show().html(content);
+    }
+
     //renaming a file or a folder
     $scope.rename = function (path1, path2) {
         console.log("*******at rename controller*****")
@@ -149,14 +159,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //deleting a file
     $scope.deleteFile = function () {
         console.log("*******at delete controller*****");
-        var fileNames = [];
-        var files = $scope.files;
-        for (var i = 0 ; i < files.length; i ++){
-            if (files[i].checked){
-               fileNames.push(files[i].name);
-            }
-        }
-        console.log(fileNames);
+        var fileNames = getCheckedFiles($scope.files);
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
                 $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
@@ -215,6 +218,17 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     }
 });
+
+var getCheckedFiles = function(files) {
+    var fileNames = [];
+    for (var i = 0; i < files.length; i++) {
+        if (files[i].checked) {
+            fileNames.push(files[i].name);
+        }
+    }
+    console.log(fileNames);
+    return fileNames;
+}
 
 
 
