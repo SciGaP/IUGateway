@@ -71,4 +71,24 @@ public class FileManagerController {
 //        }
     }
 
+    /**
+     * Upload a file
+     */
+    @ResponseBody
+    @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
+    public void uploadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) throws Exception {
+//        if (commandExecutor == null) {
+//            commandExecutor = new CommandExecutor(user);
+//        }
+//        InputStream in = commandExecutor.downloadFile(filename);
+//        try {
+//            IOUtils.copy(in, response.getOutputStream());
+//            response.flushBuffer();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            in.close();
+//        }
+    }
+
 }

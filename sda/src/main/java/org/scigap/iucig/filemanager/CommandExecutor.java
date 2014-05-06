@@ -7,6 +7,7 @@ import org.scigap.iucig.filemanager.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +127,7 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();
-            }else if (commandList.get(0).equals("freedisk")) {
+            } else if (commandList.get(0).equals("freedisk")) {
                 command = "df -k " + workingDirectory;
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
@@ -150,7 +151,8 @@ public class CommandExecutor {
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
-            return commandCentral.scpFrom(session, filename);
+            String filepath = workingDirectory + "/" + filename;
+            return commandCentral.scpFrom(session, filepath);
         } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
@@ -164,6 +166,25 @@ public class CommandExecutor {
 
     }
 
+    //upload a file
+    public void uploadFile(String filename,File uploadedFile) throws Exception {
+        Session session = null;
+        try {
+            session = kerberosConnector.getSession(remoteUser);
+            log.info("DOWNLOADING FILE: " + filename);
+            String filepath = workingDirectory + "/" + filename;
+            commandCentral.scpTo(session, filepath, uploadedFile);
+        } catch (Exception e) {
+            log.error("Error occured", e.getMessage());
+            throw new Exception(e.getMessage());
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
     //get the home directory
     public void pwd() throws Exception {
         Session session = null;

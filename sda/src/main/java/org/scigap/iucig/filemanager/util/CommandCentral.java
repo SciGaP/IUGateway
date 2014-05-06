@@ -18,9 +18,9 @@ public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
     private List<String> result;
 
-    public String pwd(Session session) throws Exception{
+    public String pwd(Session session) throws Exception {
 
-        if(!session.isConnected()){
+        if (!session.isConnected()) {
             return null;
         }
         result = new ArrayList<String>();
@@ -71,12 +71,12 @@ public class CommandCentral {
         return path;
     }
 
-    public List<String> executeCommand(Session session, String command) throws Exception{
+    public List<String> executeCommand(Session session, String command) throws Exception {
         //FIXME  validate the second part of the command
         result = new ArrayList<String>();
         log.info("COMMAND: " + command);
 
-        if(!session.isConnected()){
+        if (!session.isConnected()) {
             return null;
         }
 
@@ -125,7 +125,7 @@ public class CommandCentral {
         return result;
     }
 
-    public InputStream scpFrom(Session session, String filename) throws Exception{
+    public InputStream scpFrom(Session session, String filename) throws Exception {
         result = new ArrayList<String>();
         log.info("Downloading file: " + filename);
 
@@ -232,6 +232,76 @@ public class CommandCentral {
         return in;
     }
 
+    public void scpTo(Session session, String filepath,File uploadedFile) {
+        FileInputStream fis = null;
+        try {
+
+            String lfile = "";
+            String rfile = filepath;
+
+            // exec 'scp -t rfile' remotely
+            String command = "scp " + " -t " + rfile;
+            Channel channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+
+            // get I/O streams for remote scp
+            OutputStream out = channel.getOutputStream();
+            InputStream in = channel.getInputStream();
+
+            channel.connect();
+
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+
+            File _lfile = uploadedFile;
+
+            // send "C0644 filesize filename", where filename should not include '/'
+            long filesize = _lfile.length();
+            command = "C0644 " + filesize + " ";
+            if (lfile.lastIndexOf('/') > 0) {
+                command += lfile.substring(lfile.lastIndexOf('/') + 1);
+            } else {
+                command += lfile;
+            }
+            command += "\n";
+            out.write(command.getBytes());
+            out.flush();
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+
+            // send a content of lfile
+            fis = new FileInputStream(uploadedFile);
+            byte[] buf = new byte[1024];
+            while (true) {
+                int len = fis.read(buf, 0, buf.length);
+                if (len <= 0) break;
+                out.write(buf, 0, len); //out.flush();
+            }
+            fis.close();
+            fis = null;
+            // send '\0'
+            buf[0] = 0;
+            out.write(buf, 0, 1);
+            out.flush();
+            if (checkAck(in) != 0) {
+                System.exit(0);
+            }
+            out.close();
+
+            channel.disconnect();
+            session.disconnect();
+
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
+            try {
+                if (fis != null) fis.close();
+            } catch (Exception ee) {
+            }
+        }
+    }
 
     private int checkAck(InputStream in) throws IOException {
         int b = in.read();
