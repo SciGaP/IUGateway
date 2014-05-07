@@ -69,7 +69,7 @@
                     <tr ng-repeat="file in files" >
                         <td><input type="checkbox" name="filename" ng-model="file.checked"/></td>
                         <td><img ng-show="file.file" title="file" src="static/images/file.png" width="22" height="28"/><img ng-show="!file.file" title="folder" src="static/images/folder.png" width="22" height="28"/></td>
-                        <td ng-click="goInside(file)"><a class="underline" href="#">{{file.name}}</a></td>
+                        <td ng-click="goInside(file)"><a class="underline tdcolor" href="#">{{file.name}}</a></td>
                         <td>{{file.size}}</td>
                         <td>{{file.date}}</td>
                     </tr>

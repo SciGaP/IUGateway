@@ -12,7 +12,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         error(function (data, status) {
             console.log("Error getting remote user !");
         });
-    $http({method: "GET", url: "getPwd" , cache: false}).
+    $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
         success(function (data, status) {
             console.log(data);
             $scope.pwd = data;
@@ -97,18 +97,17 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             error(function (data, status) {
                 console.log("Error getting profile !");
             });
-
     }
 
     $scope.viewUsedSpace = function () {
         console.log("*******at used space controller*****");
         var numberOfFiles = $scope.files.length;
         var totalSize = 0;
-        for (var i = 0 ; i < numberOfFiles; i ++){
-            totalSize = +totalSize  +  +$scope.files[i].size;
+        for (var i = 0; i < numberOfFiles; i++) {
+            totalSize = +totalSize + +$scope.files[i].size;
         }
-	console.log(totalSize);
-	var sizeInMb = totalSize / 1000;
+        console.log(totalSize);
+        var sizeInMb = totalSize / 1000;
         var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p>";
         content += "<p>Used space for user " + $scope.remoteUser + " : " + sizeInMb.toFixed(2) + "MB</p></br>";
         $('#viewUsedSpaceModel').show();
@@ -152,11 +151,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.generateMvModel = function () {
         var fileNames = getCheckedFiles($scope.files);
         if (fileNames.length == 0){
-            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to move...</div>";
             $('#mvModel').show();
             $('#mvfiles').show().html(error);
         } else {
-            var content = "<div class='row-fluid'><div class='span4'><strong>Target folder</strong></div><div><input id='foldername' type='text' value='" + $scope.pwd + "' name='foldername' ng-model='foldername'/></div></div>";
+            var content = "<div class='row-fluid'><div class='span4'><strong>Target folder</strong></div><div><input id='foldername' type='text' value='" + $scope.pwd + "/' name='foldername' ng-model='foldername'/></div></div>";
             $('#mvModel').show();
             $('#mvfiles').show().html(content);
         }
@@ -166,17 +165,19 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //moving a file
     $scope.move = function (targetFolder) {
         var fileNames = getCheckedFiles($scope.files);
-        console.log("*******at mvFile controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + file +"*" + targetFolder, cache: false}).
-            success(function (data, status) {
-                console.log(data);
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
-
+        console.log(targetFolder);
+        for (var i = 0; i < fileNames.length; i++){
+            $http({method: "GET", url: "filemanager/command/mv " + fileNames[i] +"*" + targetFolder, cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.files = data;
+                }).
+                error(function (data, status) {
+                    console.log("Error getting files !");
+                });
+        }
     }
+
     //moving a directory
     $scope.moveFolder = function (folder, path) {
         console.log("*******at mvFolder controller*****")

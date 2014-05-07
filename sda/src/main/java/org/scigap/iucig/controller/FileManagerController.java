@@ -51,7 +51,6 @@ public class FileManagerController {
     @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
     public String getPWD(HttpServletRequest request) throws Exception {
         String remoteUser = request.getRemoteUser();
-        String requestURI = request.getRequestURI();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
