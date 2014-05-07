@@ -75,7 +75,7 @@ public class FileManagerController {
      * Upload a file
      */
     @ResponseBody
-    @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
+    @RequestMapping(value = "/upload/{user}/{filename}", method = RequestMethod.GET)
     public void uploadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) throws Exception {
 //        if (commandExecutor == null) {
 //            commandExecutor = new CommandExecutor(user);
