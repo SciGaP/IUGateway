@@ -186,7 +186,7 @@ public class CommandExecutor {
         }
     }
     //get the home directory
-    public void pwd() throws Exception {
+    public String pwd() throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
@@ -208,6 +208,7 @@ public class CommandExecutor {
                 }
             }
         }
+        return workingDirectory;
     }
 
     public void ls() throws Exception {

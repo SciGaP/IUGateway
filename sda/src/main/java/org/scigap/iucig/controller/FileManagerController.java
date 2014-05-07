@@ -48,6 +48,23 @@ public class FileManagerController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
+    public String getPWD(HttpServletRequest request) throws Exception {
+        String remoteUser = request.getRemoteUser();
+        String requestURI = request.getRequestURI();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+            return commandExecutor.pwd();
+        }
+        return null;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
     public String getRemoteUser(HttpServletRequest request) throws Exception {
         return request.getRemoteUser();

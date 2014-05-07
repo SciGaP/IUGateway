@@ -319,3 +319,7 @@ a.circle.active:hover {
 	color: #222222;
 	border: 3px solid #222222;
 }
+
+.tdcolor {
+    color: #222222;
+}

@@ -12,6 +12,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         error(function (data, status) {
             console.log("Error getting remote user !");
         });
+    $http({method: "GET", url: "getPwd" , cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.pwd = data;
+        }).
+        error(function (data, status) {
+            console.log("Error getting current working directory !");
+        });
     $http({method: "GET", url: "filemanager/command/ls", cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -141,11 +149,25 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         });
     }
 
+    $scope.generateMvModel = function () {
+        var fileNames = getCheckedFiles($scope.files);
+        if (fileNames.length == 0){
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
+            $('#mvModel').show();
+            $('#mvfiles').show().html(error);
+        } else {
+            var content = "<div class='row-fluid'><div class='span4'><strong>Target folder</strong></div><div><input id='foldername' type='text' value='" + $scope.pwd + "' name='foldername' ng-model='foldername'/></div></div>";
+            $('#mvModel').show();
+            $('#mvfiles').show().html(content);
+        }
+    }
+
     //todo: if it's a directory, it should be mvr not mv
     //moving a file
-    $scope.moveFile = function (file, path) {
+    $scope.move = function (targetFolder) {
+        var fileNames = getCheckedFiles($scope.files);
         console.log("*******at mvFile controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + file +"*" + path, cache: false}).
+        $http({method: "GET", url: "filemanager/command/mv " + file +"*" + targetFolder, cache: false}).
             success(function (data, status) {
                 console.log(data);
                 $scope.files = data;
@@ -204,7 +226,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.copyFile = function (file, path) {
         console.log("*******at copy controller*****")
-        console.log("*******at mvFolder controller*****")
         $http({method: "GET", url: "filemanager/command/cp " + file +"*" + path, cache: false}).
             success(function (data, status) {
                 console.log(data);
@@ -218,7 +239,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.copyFolder = function (folder, path) {
         console.log("*******at copy controller*****")
-        console.log("*******at mvFolder controller*****")
         $http({method: "GET", url: "filemanager/command/mv " + folder +"*" + path, cache: false}).
             success(function (data, status) {
                 console.log(data);
