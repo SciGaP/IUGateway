@@ -150,15 +150,20 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateMvModel = function () {
         var fileNames = getCheckedFiles($scope.files);
-        if (fileNames.length == 0){
-            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to move...</div>";
-            $('#mvModel').show();
-            $('#mvfiles').show().html(error);
-        } else {
-            var content = "<div class='row-fluid'><div class='span4'><strong>Target folder</strong></div><div><input id='foldername' type='text' value='" + $scope.pwd + "/' name='foldername' ng-model='foldername'/></div></div>";
-            $('#mvModel').show();
-            $('#mvfiles').show().html(content);
+        $scope.selectedFiles = fileNames;
+        var files =  $scope.files;
+        var folders = [];
+        for (var i=0; i < files.length; i++){
+           if (!files[i].file ){
+               var found  = $.inArray(files[i].name, fileNames);
+               console.log(found);
+               if (found == -1){
+                   folders.push(files[i]);
+               }
+           }
         }
+        $scope.foldername = folders[0];
+        $scope.folders = folders;
     }
 
     //todo: if it's a directory, it should be mvr not mv
@@ -167,13 +172,15 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var fileNames = getCheckedFiles($scope.files);
         console.log(targetFolder);
         for (var i = 0; i < fileNames.length; i++){
-            $http({method: "GET", url: "filemanager/command/mv " + fileNames[i] +"*" + targetFolder, cache: false}).
+            $http({method: "GET", url: "filemanager/command/mv " + fileNames[i] +"*" + targetFolder.name, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
+                    $scope.mvSuccess = true;
                 }).
                 error(function (data, status) {
                     console.log("Error getting files !");
+                    $scope.mvDisabled = true;
                 });
         }
     }

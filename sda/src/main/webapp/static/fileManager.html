@@ -168,6 +168,19 @@
                     <h3 id="mvLabel">Move files and folders</h3>
                 </div>
                 <div id="mvfiles" class="modal-body">
+                    <div class="row-fluid">
+                        <div class="alert alert-error" ng-show="selectedFiles.length<1">
+                                <button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to move...
+                        </div>
+                        <div class="span4" ng-show="selectedFiles.length>0"><strong>Target folder</strong></div>
+                        <div ng-show="selectedFiles.length>0">
+                            <select name="foldername" required
+                                    ng-options="folder as folder.name for folder in folders"
+                                    ng-model="foldername">
+                            </select>
+                            <!--<input id='foldername' type='text' value='{{pwd}}' name='foldername' ng-model='foldername'/>-->
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
