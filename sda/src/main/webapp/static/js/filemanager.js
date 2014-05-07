@@ -109,24 +109,28 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateRenameModel = function () {
         var fileNames = getCheckedFiles($scope.files);
-        var content = "";
+        var content = "<div id='renameDiv'>";
         for (var j = 0; j < fileNames.length ; j++){
-            content += "<div class=\"row-fluid\"><div class=\"span4\"><strong>Rename " + fileNames[j] + " to</strong></div><div><input type=\"text\" name=\"newName\"" + j +  " ng-model=\"newName\"" + j + "/></div></div>";
+            content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value=' "+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
         }
+        content += "</div>";
         $('#renameModel').show();
         $('#renameFile').show().html(content);
     }
 
     //renaming a file or a folder
-    $scope.rename = function (path1, path2) {
-        console.log("*******at rename controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + path1 +"*" + path2, cache: false}).
-            success(function (data, status) {
-            }).
-            error(function (data, status) {
-                console.log("Error getting profile !");
-            });
+    $scope.rename = function () {
+        $('#renameDiv :input').each(function () {
+            console.log(this.value);
+            $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') +"*" + this.value, cache: false}).
+                success(function (data, status) {
+                    $scope.files = data;
+                }).
+                error(function (data, status) {
+                    console.log("Error while renaming object !");
+                });
 
+        });
     }
 
     //todo: if it's a directory, it should be mvr not mv
