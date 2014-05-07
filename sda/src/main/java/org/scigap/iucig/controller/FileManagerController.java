@@ -1,5 +1,6 @@
 package org.scigap.iucig.controller;
 
+import org.apache.commons.io.IOUtils;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.springframework.context.annotation.Scope;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -56,19 +58,32 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response) throws Exception {
-//        if (commandExecutor == null) {
-//            commandExecutor = new CommandExecutor(user);
-//        }
-//        InputStream in = commandExecutor.downloadFile(filename);
-//        try {
-//            IOUtils.copy(in, response.getOutputStream());
-//            response.flushBuffer();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            in.close();
-//        }
+    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response
+    ,HttpServletRequest request) throws Exception {
+        try {
+            String remoteUser = request.getRemoteUser();
+            String defaultPath = "sda/filemanager/command/";
+            String requestURI = request.getRequestURI();
+            requestURI = URLDecoder.decode(requestURI, "UTF-8");
+            String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+            System.out.println("Command : " + commandFinal);
+            String mail = "@ADS.IU.EDU";
+            if (remoteUser != null) {
+                remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+                System.out.println("Remote User : " + remoteUser);
+                if (commandExecutor == null) {
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
+            }
+            // get your file as InputStream
+            InputStream is = commandExecutor.downloadFile(filename);
+            // copy it to response's OutputStream
+            IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            System.out.println("Error writing file to output stream. Filename :'" + filename);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
     }
 
     /**
