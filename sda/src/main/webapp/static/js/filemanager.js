@@ -111,7 +111,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var fileNames = getCheckedFiles($scope.files);
         var content = "<div id='renameDiv'>";
         for (var j = 0; j < fileNames.length ; j++){
-            content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value=' "+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
+            content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value='"+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
         }
         content += "</div>";
         $('#renameModel').show();
