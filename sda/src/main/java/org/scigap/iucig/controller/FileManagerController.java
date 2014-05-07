@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -75,19 +77,37 @@ public class FileManagerController {
     @ResponseBody
     @RequestMapping(value = "/upload/{user}/", method = RequestMethod.POST)
     public void uploadFile(@PathVariable(value = "user") final String user,@RequestParam("filename") String filename,
-                           @RequestParam("file") MultipartFile file){
-//        if (commandExecutor == null) {
-//            commandExecutor = new CommandExecutor(user);
-//        }
-//        InputStream in = commandExecutor.downloadFile(filename);
-//        try {
-//            IOUtils.copy(in, response.getOutputStream());
-//            response.flushBuffer();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            in.close();
-//        }
+                           @RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
+
+        File createdFile = new File(filename);
+        file.transferTo(createdFile);
+
+        if (filename.equals(null)) {
+            filename = file.getName();
+        }
+
+        String remoteUser = request.getRemoteUser();
+        String defaultPath = "sda/filemanager/command/";
+        String requestURI = request.getRequestURI();
+        requestURI = URLDecoder.decode(requestURI, "UTF-8");
+        String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+        System.out.println("Command : " + commandFinal);
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+        }
+
+        try {
+            commandExecutor.uploadFile(filename, createdFile);
+
+        } catch (Exception e) {
+            System.out.println("Error uploading file ....!!");
+            e.printStackTrace();
+        }
     }
 
 }
