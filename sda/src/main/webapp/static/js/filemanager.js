@@ -109,13 +109,19 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateRenameModel = function () {
         var fileNames = getCheckedFiles($scope.files);
-        var content = "<div id='renameDiv'>";
-        for (var j = 0; j < fileNames.length ; j++){
-            content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value='"+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
+        if (fileNames.length == 0){
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
+            $('#renameModel').show();
+            $('#renameFile').show().html(error);
+        } else {
+            var content = "<div id='renameDiv'>";
+            for (var j = 0; j < fileNames.length ; j++){
+                content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value='"+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
+            }
+            content += "</div>";
+            $('#renameModel').show();
+            $('#renameFile').show().html(content);
         }
-        content += "</div>";
-        $('#renameModel').show();
-        $('#renameFile').show().html(content);
     }
 
     //renaming a file or a folder
@@ -125,8 +131,10 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') +"*" + this.value, cache: false}).
                 success(function (data, status) {
                     $scope.files = data;
+                    $scope.renameSuccess = true;
                 }).
                 error(function (data, status) {
+                    $scope.renameDisabled = true;
                     console.log("Error while renaming object !");
                 });
 
