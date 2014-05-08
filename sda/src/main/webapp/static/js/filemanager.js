@@ -239,7 +239,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     });
             }
         }
-    }
+    }});
+
 
 var getCheckedFiles = function(files) {
     var fileNames = [];

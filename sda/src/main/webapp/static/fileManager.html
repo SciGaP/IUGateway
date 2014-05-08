@@ -26,7 +26,7 @@
 <div class="well container-fluid">
     <div class="row-fluid">
         <div class="well-iu span12">
-            <div class="well-heading">Scholarly Data Archive</div>
+            <div class="well-heading">Scholarly Data Archive for {{remoteUser}}</div>
             <div class="pull-left">
                 <button class="btn pull-left" data-toggle="modal" data-target="#newFolderModel">New Folder</button>
                 <button class="btn pull-left" data-toggle="modal" data-target="#uploadFileModel">Upload File</button>
@@ -56,7 +56,7 @@
                     <tr>
                         <td></td>
                         <td><img title="Up one level" src="static/images/up.png" width="22" height="28"/></td>
-                        <td class="tdcolor" ng-click="upOneLevel()">Up One Level</td>
+                        <td class="tdcolor" ng-click="upOneLevel()"><a class="underline tdcolor" href="#">Up One Level</a></td>
                         <td></td>
                         <td></td>
                     </tr>
