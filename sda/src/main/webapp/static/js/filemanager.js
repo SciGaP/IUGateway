@@ -1,16 +1,13 @@
 var fileManagerApp = angular.module("fileManagerApp",["user","urlprovider"]);
 
 fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
-    console.log("*******at controller*****");
     $scope.hideLoader = true;
-    console.log($scope.hideLoader);
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
             $scope.remoteUser = data;
         }).
         error(function (data, status) {
-            console.log("Error getting remote user !");
         });
     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
         success(function (data, status) {
@@ -25,22 +22,17 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             console.log(data);
             $scope.files = data;
             $scope.hideLoader = false;
-            console.log($scope.hideLoader);
         }).
         error(function (data, status) {
-            console.log("Error listing the files !");
-            $scope.hideLoader = true;
+            $scope.hideLoader = false;
             $scope.showError = true;
-            console.log($scope.hideLoader);
     });
 
     $scope.upOneLevel = function(){
         var parent = "..";
         var url = "filemanager/command/cd " + parent;
-        console.log(url);
         $http({method: "GET", url: "filemanager/command/cd " + parent, cache: false}).
             success(function (data, status) {
-                console.log(data);
                 $scope.files = data;
             }).
             error(function (data, status) {
@@ -53,7 +45,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             var folderName = file.name;
             $http({method: "GET", url: "filemanager/command/cd " + folderName , cache: false}).
                 success(function (data, status) {
-                    console.log(data);
                     $scope.files = data;
                 }).
                 error(function (data, status) {
@@ -63,8 +54,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.addFolder = function (folderName) {
-        console.log(folderName);
-        console.log("*******at mkdir controller*****")
         $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
             success(function (data, status) {
                 $scope.files = data;
@@ -76,9 +65,26 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             });
     }
 
-    $scope.generateDeleteModel = function (file) {
-        console.log("delete model");
-        console.log(file);
+    $scope.generateDeleteModel = function () {
+        var selectedFiles = getCheckedFiles($scope.files);
+        $scope.selectedFiles = selectedFiles;
+        if (selectedFiles.length == 0){
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to delete...</div>";
+            $('#deleteModel').show();
+            $('#deletefiles').show().html(error);
+        } else {
+            var content = "<div id='deleteDiv'>";
+            for (var j = 0; j < selectedFiles.length ; j++){
+                if (selectedFiles[j].file){
+                    content += "<p>Will delete file " + selectedFiles[j].name + "</p>";
+                } else{
+                    content += "<p>Will delete folder " + selectedFiles[j].name + "</p>";
+                }
+            }
+            content += "</div>";
+            $('#deleteModel').show();
+            $('#deletefiles').show().html(content);
+        }
     }
 
 
@@ -89,7 +95,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     //getting the free disk space of the current directory
     $scope.freedisk = function () {
-        console.log("*******at delete controller*****")
         $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
             success(function (data, status) {
                 $scope.freedisk = data.ifree;
@@ -100,7 +105,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.viewUsedSpace = function () {
-        console.log("*******at used space controller*****");
         var numberOfFiles = $scope.files.length;
         var totalSize = 0;
         for (var i = 0; i < numberOfFiles; i++) {
@@ -115,15 +119,15 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.generateRenameModel = function () {
-        var fileNames = getCheckedFiles($scope.files);
-        if (fileNames.length == 0){
+        var selectedFiles = getCheckedFiles($scope.files);
+        if (selectedFiles.length == 0){
             var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
             $('#renameModel').show();
             $('#renameFile').show().html(error);
         } else {
             var content = "<div id='renameDiv'>";
-            for (var j = 0; j < fileNames.length ; j++){
-                content += "<div class='row-fluid'><div class='span4'><strong>Rename " + fileNames[j] + " to</strong></div><div><input id='" + fileNames[j] + "' type='text' value='"+ fileNames[j] + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
+            for (var j = 0; j < selectedFiles.length ; j++){
+                content += "<div class='row-fluid'><div class='span4'><strong>Rename " + selectedFiles[j].name + " to</strong></div><div><input id='" + selectedFiles[j].name + "' type='text' value='"+ selectedFiles[j].name + "' name='newName" + j +  "' ng-model='newName" + j + "'/></div></div>";
             }
             content += "</div>";
             $('#renameModel').show();
@@ -149,8 +153,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.generateMvModel = function () {
-        var fileNames = getCheckedFiles($scope.files);
-        $scope.selectedFiles = fileNames;
+        $scope.selectedFiles = getCheckedFiles($scope.files);
+        var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
         var folders = [];
         for (var i=0; i < files.length; i++){
@@ -169,10 +173,10 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //todo: if it's a directory, it should be mvr not mv
     //moving a file
     $scope.move = function (targetFolder) {
-        var fileNames = getCheckedFiles($scope.files);
+        var selectedFiles = getCheckedFiles($scope.files);
         console.log(targetFolder);
-        for (var i = 0; i < fileNames.length; i++){
-            $http({method: "GET", url: "filemanager/command/mv " + fileNames[i] +"*" + targetFolder.name, cache: false}).
+        for (var i = 0; i < selectedFiles.length; i++){
+            $http({method: "GET", url: "filemanager/command/mv " + selectedFiles[i].name +"*" + targetFolder.name, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
@@ -185,88 +189,73 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         }
     }
 
-    //moving a directory
-    $scope.moveFolder = function (folder, path) {
-        console.log("*******at mvFolder controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + folder +"*" + path, cache: false}).
-            success(function (data, status) {
-                console.log(data);
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
+    $scope.generateCpModel = function () {
+        $scope.selectedFiles = getCheckedFiles($scope.files);
+        var fileNames = getCheckedFileNames($scope.selectedFiles);
+        var files =  $scope.files;
+        var folders = [];
+        for (var i=0; i < files.length; i++){
+            if (!files[i].file ){
+                var found  = $.inArray(files[i].name, fileNames);
+                console.log(found);
+                if (found == -1){
+                    folders.push(files[i]);
+                }
+            }
+        }
+        $scope.foldername = folders[0];
+        $scope.folders = folders;
     }
 
+    $scope.copy = function (folder) {
+        var selectedFiles = getCheckedFiles($scope.files);
+        console.log(targetFolder);
+        for (var i = 0; i < selectedFiles.length; i++){
+            $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + targetFolder.name, cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.files = data;
+                    $scope.cpSuccess = true;
+                }).
+                error(function (data, status) {
+                    console.log("Error copying files !");
+                    $scope.cpDisabled = true;
+                });
+        }
+    }
     //deleting a file
     $scope.deleteFile = function () {
         console.log("*******at delete controller*****");
         var fileNames = getCheckedFiles($scope.files);
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
-                $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j], cache: false}).
+                $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j].name, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
                         $scope.deleteSuccess = true;
                     }).
                     error(function (data, status) {
-                        console.log("Error getting files !");
                         $scope.deleteDisabled = true;
                     });
             }
         }
     }
 
-    //deleting a file
-    $scope.deleteFolder = function (folder) {
-        console.log("*******at delete controller*****")
-        $http({method: "GET", url: "filemanager/command/rm -rf " + folder, cache: false}).
-            success(function (data, status) {
-                console.log(data);
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
-
-    }
-
-
-    $scope.copyFile = function (file, path) {
-        console.log("*******at copy controller*****")
-        $http({method: "GET", url: "filemanager/command/cp " + file +"*" + path, cache: false}).
-            success(function (data, status) {
-                console.log(data);
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
-
-    }
-
-    $scope.copyFolder = function (folder, path) {
-        console.log("*******at copy controller*****")
-        $http({method: "GET", url: "filemanager/command/mv " + folder +"*" + path, cache: false}).
-            success(function (data, status) {
-                console.log(data);
-                $scope.files = data;
-            }).
-            error(function (data, status) {
-                console.log("Error getting files !");
-            });
-
-    }
-});
-
 var getCheckedFiles = function(files) {
     var fileNames = [];
     for (var i = 0; i < files.length; i++) {
         if (files[i].checked) {
-            fileNames.push(files[i].name);
+            fileNames.push(files[i]);
         }
     }
-    console.log(fileNames);
+    return fileNames;
+}
+
+var getCheckedFileNames = function(files) {
+    var fileNames = [];
+    for (var i = 0; i < files.length; i++) {
+        fileNames.push(files[i].name);
+    }
     return fileNames;
 }
 
