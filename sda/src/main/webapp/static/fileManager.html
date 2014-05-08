@@ -101,19 +101,22 @@
                     <h3 id="uploadFileLabel">Upload File</h3>
                 </div>
                 <div class="modal-body">
-                    <div class="row-fluid"><div class="span4">File</div><div><input type="file" name="file" ng-model="file"/></div></div>
-                    <div><div class="checkbox inline"><input type="checkbox">Overwrite file if it already exists</div></div>
+                    <form method="post" action="upload" enctype="multipart/form-data">
+                        <div class="row-fluid"><div class="span4">File</div><div><input type="file" name="file" ng-model="file"/></div></div>
+                        <!--<div><div class="checkbox inline"><input type="checkbox">Overwrite file if it already exists</div></div>-->
+                        <input class="btn" type="submit" value="Upload"/>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button ng-click="uploadFile(file)" class="btn btn-danger pull-left">Upload File</button>
-                    <div class="alert alert-error" ng-show="createDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-                        Error occurred while uploading the file. Please try again later
-                    </div>
-                    <div class="alert alert-success" ng-show="createSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-                        File uploaded successfully..
-                    </div>
-                </div>
+                <!--<div class="modal-footer">-->
+                    <!--<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>-->
+                    <!--<button ng-click=uploadFile(file) type="submit" class="btn btn-danger pull-left">Upload File</button>-->
+                    <!--<div class="alert alert-error" ng-show="createDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>-->
+                        <!--Error occurred while uploading the file. Please try again later-->
+                    <!--</div>-->
+                    <!--<div class="alert alert-success" ng-show="createSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>-->
+                        <!--File uploaded successfully..-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
             <div id="deleteModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
                 <div class="modal-header">

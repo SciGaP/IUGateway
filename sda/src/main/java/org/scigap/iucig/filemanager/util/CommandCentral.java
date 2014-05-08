@@ -132,11 +132,10 @@ public class CommandCentral {
         Channel channel = null;
         InputStream in = null;
         FileOutputStream fos = null;
-        String lfile = filename;
         String command = "scp -f " + filename;
         String prefix = null;
-        if (new File(lfile).isDirectory()) {
-            prefix = lfile + File.separator;
+        if (new File(filename).isDirectory()) {
+            prefix = filename + File.separator;
         }
         try {
             channel = session.openChannel("exec");
@@ -232,15 +231,12 @@ public class CommandCentral {
         return in;
     }
 
-    public void scpTo(Session session, String filepath,File uploadedFile) {
+    public void scpTo(Session session, String filepath,File uploadedFile) throws Exception{
         FileInputStream fis = null;
         try {
-
             String lfile = "";
-            String rfile = filepath;
-
             // exec 'scp -t rfile' remotely
-            String command = "scp " + " -t " + rfile;
+            String command = "scp " + " -t " + filepath;
             Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
 
@@ -249,15 +245,12 @@ public class CommandCentral {
             InputStream in = channel.getInputStream();
 
             channel.connect();
-
             if (checkAck(in) != 0) {
                 System.exit(0);
             }
 
-            File _lfile = uploadedFile;
-
             // send "C0644 filesize filename", where filename should not include '/'
-            long filesize = _lfile.length();
+            long filesize = uploadedFile.length();
             command = "C0644 " + filesize + " ";
             if (lfile.lastIndexOf('/') > 0) {
                 command += lfile.substring(lfile.lastIndexOf('/') + 1);
@@ -268,7 +261,8 @@ public class CommandCentral {
             out.write(command.getBytes());
             out.flush();
             if (checkAck(in) != 0) {
-                System.exit(0);
+                throw new Exception("Error occured...");
+//                System.exit(0);
             }
 
             // send a content of lfile
@@ -286,19 +280,18 @@ public class CommandCentral {
             out.write(buf, 0, 1);
             out.flush();
             if (checkAck(in) != 0) {
-                System.exit(0);
+                throw new Exception("Error occured...");
             }
             out.close();
 
             channel.disconnect();
             session.disconnect();
-
-            System.exit(0);
         } catch (Exception e) {
             System.out.println(e);
             try {
                 if (fis != null) fis.close();
             } catch (Exception ee) {
+                throw new Exception("Error occured...", ee);
             }
         }
     }

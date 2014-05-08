@@ -148,7 +148,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $scope.renameDisabled = true;
                     console.log("Error while renaming object !");
                 });
-
         });
     }
 
@@ -239,7 +238,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     });
             }
         }
-    }});
+    }
+
+    $scope.uploadFile = function (file) {
+        console.log("*******at upload controller*****");
+        console.log(file);
+    }
+});
 
 
 var getCheckedFiles = function(files) {

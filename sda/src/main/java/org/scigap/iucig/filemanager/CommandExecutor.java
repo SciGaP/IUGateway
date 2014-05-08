@@ -174,6 +174,7 @@ public class CommandExecutor {
             log.info("DOWNLOADING FILE: " + filename);
             String filepath = workingDirectory + "/" + filename;
             commandCentral.scpTo(session, filepath, uploadedFile);
+//            ls();
         } catch (Exception e) {
             log.error("Error occured", e.getMessage());
             throw new Exception(e.getMessage());
