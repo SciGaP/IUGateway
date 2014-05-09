@@ -9,6 +9,22 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         }).
         error(function (data, status) {
         });
+    $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.totalSize = data;
+
+        }).
+        error(function (data, status) {
+        });
+    $http({method: "GET", url: "filemanager/fileCount", cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.totalfiles = data;
+
+        }).
+        error(function (data, status) {
+        });
     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -95,9 +111,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     //getting the free disk space of the current directory
     $scope.freedisk = function () {
-        $http({method: "GET", url: "filemanager/command/freedisk", cache: false}).
+        $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
             success(function (data, status) {
-                $scope.freedisk = data.ifree;
             }).
             error(function (data, status) {
                 console.log("Error getting profile !");
@@ -105,15 +120,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.viewUsedSpace = function () {
-        var numberOfFiles = $scope.files.length;
-        var totalSize = 0;
-        for (var i = 0; i < numberOfFiles; i++) {
-            totalSize = +totalSize + +$scope.files[i].size;
-        }
-        console.log(totalSize);
-        var sizeInMb = totalSize / 1000;
-        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + numberOfFiles + "</p>";
-        content += "<p>Used space for user " + $scope.remoteUser + " : " + sizeInMb.toFixed(2) + "MB</p></br>";
+        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + $scope.totalfiles + "</p>";
+        content += "<p>Used space for user " + $scope.remoteUser + " : " + $scope.totalSize  + "</p></br>";
         $('#viewUsedSpaceModel').show();
         $('#fileCount').show().html(content);
     }

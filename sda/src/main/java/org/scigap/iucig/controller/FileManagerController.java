@@ -46,6 +46,45 @@ public class FileManagerController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/usedSpace", method = RequestMethod.GET)
+    public String getUsedSpace(HttpServletRequest request) throws Exception {
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+            commandExecutor.executeCommand("freedisk");
+            List<String> list = commandExecutor.getResult();
+            String result = list.get(0);
+            String[] strings = result.split("\\t");
+            System.out.println("**** result **** " + result);
+            return strings[0];
+        }
+        return null;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/fileCount", method = RequestMethod.GET)
+    public String getFileCount(HttpServletRequest request) throws Exception {
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+            commandExecutor.executeCommand("filecount");
+            List<String> list = commandExecutor.getResult();
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
     public String getPWD(HttpServletRequest request) throws Exception {
         String remoteUser = request.getRemoteUser();

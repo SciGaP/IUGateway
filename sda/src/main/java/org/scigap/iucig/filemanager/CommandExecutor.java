@@ -128,10 +128,13 @@ public class CommandExecutor {
                 commandCentral.executeCommand(session, command);
                 ls();
             } else if (commandList.get(0).equals("freedisk")) {
-                command = "df -k " + workingDirectory;
+                command = "du -sh " + workingDirectory;
                 log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                //ls();
+                setResult(commandCentral.executeCommand(session, command));
+            }else if (commandList.get(0).equals("filecount")) {
+                command = "find " + workingDirectory + " -type f | wc -l";
+                log.info("COMMAND: " + command);
+                setResult(commandCentral.executeCommand(session, command));
             }
         } catch (Exception e) {
             log.error("Error occured", e.getMessage());
