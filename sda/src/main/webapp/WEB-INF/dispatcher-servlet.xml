@@ -68,23 +68,22 @@
 	</bean>
     <bean id="multipartResolver"
                 class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-
         <!-- setting maximum upload size -->
         <property name="maxUploadSize" value="200000000" />
 
     </bean>
-    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="mappings">
-            <value>
-                /upload=fileUploadController
-            </value>
-        </property>
-    </bean>
+    <!--<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
+        <!--<property name="mappings">-->
+            <!--<value>-->
+                <!--/uploadFile=fileUploadController-->
+            <!--</value>-->
+        <!--</property>-->
+    <!--</bean>-->
 
-    <bean id="fileUploadController" class="org.scigap.iucig.controller.FileUploadController">
-        <property name="commandClass" value="org.scigap.iucig.util.FileUploadBean"/>
-        <property name="formView" value="fileuploadform"/>
-        <property name="successView" value="confirmation"/>
-    </bean>
+    <!--<bean id="fileUploadController" class="org.scigap.iucig.controller.FileManagerController">-->
+        <!--<property name="commandClass" value="org.scigap.iucig.util.FileUploadBean"/>-->
+        <!--<property name="formView" value="fileuploadform"/>-->
+        <!--<property name="successView" value="confirmation"/>-->
+    <!--</bean>-->
 
 </beans>

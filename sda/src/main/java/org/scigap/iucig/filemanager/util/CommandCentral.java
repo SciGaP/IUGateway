@@ -246,7 +246,7 @@ public class CommandCentral {
 
             channel.connect();
             if (checkAck(in) != 0) {
-                System.exit(0);
+                throw new Exception("Error occured...");
             }
 
             // send "C0644 filesize filename", where filename should not include '/'

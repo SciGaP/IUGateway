@@ -10,9 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -138,6 +136,43 @@ public class FileManagerController {
         } catch (Exception e) {
             System.out.println("Error uploading file ....!!");
             e.printStackTrace();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    public String uploadFileHandler(@RequestParam("file") MultipartFile file,
+                             HttpServletRequest request) throws Exception {
+
+        System.out.println("**********upload file*********");
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+        }
+        String fileName = null;
+        if (!file.isEmpty()) {
+            fileName = file.getOriginalFilename();
+            File createdFile = new File(fileName);
+            file.transferTo(createdFile);
+
+            if (fileName == null) {
+                fileName = file.getName();
+            }
+            try {
+                commandExecutor.uploadFile(fileName, createdFile);
+            } catch (Throwable e) {
+                System.out.println("Error uploading file ....!!");
+                e.printStackTrace();
+            }
+            return "You successfully uploaded file=" + fileName;
+        } else {
+            return "You failed to upload " + fileName
+                    + " because the file was empty.";
         }
     }
 
