@@ -129,10 +129,12 @@ public class StringUtils {
 
         List<String> filteredResults = new ArrayList<String>();
 
+        //get the lines separated
         while (tokenizer.hasMoreTokens()) {
             filteredResults.add(tokenizer.nextToken());
         }
 
+        //read each line and process
         for (String line : filteredResults) {
 
             temp = new ArrayList<String>();
@@ -144,7 +146,7 @@ public class StringUtils {
                 isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
                 owner = temp.get(2);
                 group = temp.get(3);
-                size = temp.get(4);
+                size = processSize(temp.get(4));
                 String month = temp.get(5);
                 String day = temp.get(6);
                 String time = temp.get(7);
@@ -162,5 +164,20 @@ public class StringUtils {
 
         }
         return itemList;
+    }
+
+    //detects and appends whether it's bytes, KB MB or ...etc
+    private String processSize(String input) {
+        int length = input.length();
+        String processedSize = "";
+        if (length<4) {
+            processedSize = input + "B";
+        }else if(length<7) {
+            processedSize = input.substring(0, length-3) + "KB";
+        }else if(length<10) {
+            processedSize = input.substring(0, length-6) + "MB";
+        }else
+            processedSize = input.substring(0, length - 12) + "GB";
+        return processedSize;
     }
 }
