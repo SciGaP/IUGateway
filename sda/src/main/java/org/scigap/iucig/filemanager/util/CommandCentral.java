@@ -89,10 +89,10 @@ public class CommandCentral {
             ((ChannelExec) channel).setErrStream(System.err);
             in = channel.getInputStream();
             channel.connect();
-            byte[] tmp = new byte[1024];
+            byte[] tmp = new byte[4096];
             while (true) {
                 while (in.available() > 0) {
-                    int i = in.read(tmp, 0, 1024);
+                    int i = in.read(tmp, 0, 4096);
                     if (i < 0) break;
                     result.add(new String(tmp, 0, i));
                     System.out.println(new String(tmp, 0, i));
