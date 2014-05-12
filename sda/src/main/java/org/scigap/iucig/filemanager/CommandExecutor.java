@@ -69,7 +69,7 @@ public class CommandExecutor {
             //get the current working directory
             pwd();
         } catch (Exception e) {
-            log.error("Error occured..", e.getMessage());
+            log.error("Error occured..", e);
         }
 
     }
@@ -137,8 +137,8 @@ public class CommandExecutor {
                 setResult(commandCentral.executeCommand(session, command));
             }
         } catch (Exception e) {
-            log.error("Error occured", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occured", e);
+            throw new Exception(e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -157,8 +157,8 @@ public class CommandExecutor {
             String filepath = workingDirectory + "/" + filename;
             return commandCentral.scpFrom(session, filepath);
         } catch (Exception e) {
-            log.error("Error occured", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occured", e);
+            throw new Exception(e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -179,8 +179,8 @@ public class CommandExecutor {
             commandCentral.scpTo(session, filepath, uploadedFile);
 //            ls();
         } catch (Exception e) {
-            log.error("Error occured", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occured", e);
+            throw new Exception(e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -203,8 +203,8 @@ public class CommandExecutor {
             log.info("CURRENT WORKING DIR: " + workingDirectory);
             log.info("CURRENT PATH: " + path);
         } catch (Exception e) {
-            log.error("Error occured", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occured", e);
+            throw new Exception(e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -223,8 +223,8 @@ public class CommandExecutor {
             setResultMap(stringUtils.categorizeResult(getResult()));
             setResultItemList(stringUtils.getResultsList(getResult()));
         } catch (Exception e) {
-            log.error("Error occured", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occured", e);
+            throw new Exception(e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {

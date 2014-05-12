@@ -3,6 +3,7 @@ package org.scigap.iucig.controller;
 import org.apache.commons.io.IOUtils;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
+import org.scigap.iucig.util.ViewNames;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -208,10 +211,10 @@ public class FileManagerController {
                 System.out.println("Error uploading file ....!!");
                 e.printStackTrace();
             }
-            return "You successfully uploaded file=" + fileName;
+            //return "You successfully uploaded file=" + fileName;
+            return ViewNames.SDA_PAGE;
         } else {
-            return "You failed to upload " + fileName
-                    + " because the file was empty.";
+            return ViewNames.SDA_PAGE;
         }
     }
 

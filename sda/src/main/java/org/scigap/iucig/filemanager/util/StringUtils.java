@@ -140,7 +140,7 @@ public class StringUtils {
             while (tokenizer.hasMoreTokens()) {
                 temp.add(tokenizer.nextToken());
             }
-            if (temp.size() > 2) {
+            if (temp.size() > 8) {
                 isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
                 owner = temp.get(2);
                 group = temp.get(3);
