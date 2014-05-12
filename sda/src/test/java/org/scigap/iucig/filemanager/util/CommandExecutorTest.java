@@ -108,4 +108,21 @@ public class CommandExecutorTest {
         }
 
     }
+    @Test
+    public void testLS() {
+        try {
+            executor.ls();
+            System.out.println("PRINTING RESULTS");
+            System.out.println(executor.getResult());
+            
+            System.out.println("PRINTING RESULTS MAP");
+            System.out.println(executor.getResultMap());
+
+            System.out.println("PRINTING RESULTS SIZE");
+            System.out.println(executor.getResultMap().size());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
