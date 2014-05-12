@@ -131,7 +131,6 @@ public class CommandCentral {
 
         Channel channel = null;
         InputStream in = null;
-        FileOutputStream fos = null;
         String command = "scp -f " + filename;
         String prefix = null;
         if (new File(filename).isDirectory()) {
@@ -182,33 +181,6 @@ public class CommandCentral {
                 out.write(buf, 0, 1);
                 out.flush();
 
-
-              /*  // read a content of lfile
-                fos = new FileOutputStream(prefix == null ? filename : prefix + file);
-                int foo;
-                while (true) {
-                    if (buf.length < filesize) foo = buf.length;
-                    else foo = (int) filesize;
-                    foo = in.read(buf, 0, foo);
-                    if (foo < 0) {
-                        // error
-                        break;
-                    }
-                    fos.write(buf, 0, foo);
-                    filesize -= foo;
-                    if (filesize == 0L) break;
-                }
-                fos.close();
-                fos = null;
-
-                if (checkAck(in) != 0) {
-                    System.exit(0);
-                }
-
-                // send '\0'
-                buf[0] = 0;
-                out.write(buf, 0, 1);
-                out.flush(); */
             }
 
         } catch (FileNotFoundException e1) {
@@ -227,7 +199,6 @@ public class CommandCentral {
                 channel.disconnect();
             }
             session.disconnect();
-            fos.close();
         }
         return in;
     }
