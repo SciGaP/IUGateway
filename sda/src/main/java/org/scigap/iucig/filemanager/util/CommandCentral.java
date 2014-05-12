@@ -126,9 +126,6 @@ public class CommandCentral {
     }
 
     public InputStream scpFrom(Session session, String filename) throws Exception {
-        result = new ArrayList<String>();
-        log.info("Downloading file: " + filename);
-
         Channel channel = null;
         InputStream in = null;
         String command = "scp -f " + filename;
@@ -174,7 +171,7 @@ public class CommandCentral {
                         break;
                     }
                 }
-                System.out.println("filesize="+filesize+", filename="+file);
+                log.info("Downloding file: "+file+" filesize= "+filesize);
 
                // send '\0'
                 buf[0] = 0;
@@ -194,7 +191,7 @@ public class CommandCentral {
             throw new Exception(e1.getMessage());
         } finally {
             if (channel == null) {
-                System.out.println("Channel is null ...");
+                log.error("Channel is null ...");
             } else if (!channel.isClosed()) {
                 channel.disconnect();
             }
@@ -259,11 +256,11 @@ public class CommandCentral {
             channel.disconnect();
             session.disconnect();
         } catch (Exception e) {
-            System.out.println(e);
+            log.error("Error occured"+e.getMessage());
             try {
                 if (fis != null) fis.close();
             } catch (Exception ee) {
-                throw new Exception("Error occured...", ee);
+                log.error("File inputstream cannot be closed", ee);
             }
         }
     }
