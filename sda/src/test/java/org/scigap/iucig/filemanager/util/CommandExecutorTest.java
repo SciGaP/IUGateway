@@ -1,8 +1,11 @@
 package org.scigap.iucig.filemanager.util;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.scigap.iucig.filemanager.CommandExecutor;
+
+import java.io.InputStream;
 
 public class CommandExecutorTest {
     private CommandExecutor executor;
@@ -90,10 +93,13 @@ public class CommandExecutorTest {
 
     }
     @Test
-    public void testSCPFrom() {
+    public void testDownloadFile() {
         try {
-            executor.downloadFile("test.txt");
+            InputStream is = executor.downloadFile("test.txt");
             System.out.println("Executing SCP From... file: test.txt");
+
+            String myString = IOUtils.toString(is, "UTF-8");
+            System.out.println(myString);
 //        System.out.println(executor.getResult());
             //      System.out.println(executor.getResultMap());
             //    System.out.println(executor.getResultMap().size());
