@@ -175,14 +175,15 @@ public class CommandCentral {
                         break;
                     }
                 }
-                //System.out.println("filesize="+filesize+", file="+file);
+                System.out.println("filesize="+filesize+", filename="+file);
 
-              /*  // send '\0'
+               // send '\0'
                 buf[0] = 0;
                 out.write(buf, 0, 1);
                 out.flush();
 
-                // read a content of lfile
+
+              /*  // read a content of lfile
                 fos = new FileOutputStream(prefix == null ? filename : prefix + file);
                 int foo;
                 while (true) {
@@ -207,7 +208,7 @@ public class CommandCentral {
                 // send '\0'
                 buf[0] = 0;
                 out.write(buf, 0, 1);
-                out.flush();*/
+                out.flush(); */
             }
 
         } catch (FileNotFoundException e1) {
