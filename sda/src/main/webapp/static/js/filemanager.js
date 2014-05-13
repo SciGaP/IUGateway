@@ -66,6 +66,15 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 error(function (data, status) {
                     console.log("Error while cd ing to folder !");
                 });
+        } else{
+            window.location = "filemanager/download/ " + file.name;
+//            $http({method: "GET", url: "filemanager/download/ " + file.name , cache: false}).
+//                success(function (data, status) {
+//                    $scope.files = data;
+//                }).
+//                error(function (data, status) {
+//                    console.log("Error while cd ing to folder !");
+//                });
         }
     }
 

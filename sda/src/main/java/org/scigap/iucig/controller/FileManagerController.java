@@ -1,6 +1,5 @@
 package org.scigap.iucig.controller;
 
-import org.apache.commons.io.IOUtils;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.util.ViewNames;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -113,16 +111,18 @@ public class FileManagerController {
      * Download a file
      */
     @ResponseBody
-    @RequestMapping(value = "/download/{user}/{filename}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable(value = "user") final String user, @PathVariable(value = "filename") final String filename, HttpServletResponse response
-    ,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/download/{filename}", method = RequestMethod.GET)
+    public void downloadFile(@PathVariable(value = "filename") final String filename,
+                             HttpServletResponse response,
+                             HttpServletRequest request) throws Exception {
+        String fileName = null;
         try {
             String remoteUser = request.getRemoteUser();
-            String defaultPath = "sda/filemanager/command/";
+            String defaultPath = "sda/filemanager/download/";
             String requestURI = request.getRequestURI();
             requestURI = URLDecoder.decode(requestURI, "UTF-8");
-            String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-            System.out.println("Command : " + commandFinal);
+            fileName = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+            System.out.println("filename : " + fileName);
             String mail = "@ADS.IU.EDU";
             if (remoteUser != null) {
                 remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
@@ -131,14 +131,15 @@ public class FileManagerController {
                     commandExecutor = new CommandExecutor(remoteUser);
                 }
             }
+            response.setContentType("application/force-download");
+            response.setHeader( "Content-Disposition", "attachment;filename=" + fileName.trim() );
             // get your file as InputStream
-            InputStream is = commandExecutor.downloadFile(filename);
-            // copy it to response's OutputStream
-            IOUtils.copy(is, response.getOutputStream());
+            commandExecutor.downloadFile(fileName.trim(), response.getOutputStream());
+
             response.flushBuffer();
         } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename :'" + filename);
-            throw new RuntimeException("IOError writing file to output stream");
+            System.out.println("Error writing file to output stream. Filename :'" + fileName);
+            throw new RuntimeException("IOError writing file to output stream", ex);
         }
     }
 
@@ -153,7 +154,7 @@ public class FileManagerController {
         File createdFile = new File(filename);
         file.transferTo(createdFile);
 
-        if (filename.equals(null)) {
+        if (filename == null) {
             filename = file.getName();
         }
 
@@ -181,7 +182,6 @@ public class FileManagerController {
         }
     }
 
-    @ResponseBody
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public String uploadFileHandler(@RequestParam("file") MultipartFile file,
                              HttpServletRequest request) throws Exception {
@@ -212,7 +212,7 @@ public class FileManagerController {
                 e.printStackTrace();
             }
             //return "You successfully uploaded file=" + fileName;
-            return ViewNames.SDA_PAGE;
+            return "redirect:/";
         } else {
             return ViewNames.SDA_PAGE;
         }

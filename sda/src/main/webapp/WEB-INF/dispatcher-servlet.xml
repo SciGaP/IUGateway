@@ -17,7 +17,7 @@
 	<!--<context:component-scan base-package="org.scigap.iucig.repository"/>-->
 
 	<mvc:annotation-driven />
-	<mvc:view-controller path="/" view-name="fileManager" />
+	<mvc:view-controller path="/" view-name="file_manager" />
 	<mvc:resources mapping="/static/**" location="/static/" />
 
     <context:property-placeholder location="classpath:kerb.properties"/>

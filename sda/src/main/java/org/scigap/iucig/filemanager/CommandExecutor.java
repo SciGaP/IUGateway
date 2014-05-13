@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -149,13 +150,13 @@ public class CommandExecutor {
     }
 
     //download a file
-    public InputStream downloadFile(String filename) throws Exception {
+    public void downloadFile(String filename, OutputStream outputStream) throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
             String filepath = workingDirectory + "/" + filename;
-            return commandCentral.scpFrom(session, filepath);
+            commandCentral.scpFrom(session, filepath, outputStream);
         } catch (Exception e) {
             log.error("Error occured", e);
             throw new Exception(e);

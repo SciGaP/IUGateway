@@ -125,7 +125,7 @@ public class CommandCentral {
         return result;
     }
 
-    public InputStream scpFrom(Session session, String filename) throws Exception {
+    public InputStream scpFrom(Session session, String filename, OutputStream outStream) throws Exception {
         Channel channel = null;
         InputStream in = null;
         String command = "scp -f " + filename;
@@ -173,10 +173,36 @@ public class CommandCentral {
                 }
                 log.info("Downloding file: "+file+" filesize= "+filesize);
 
-               // send '\0'
+                // send '\0'
                 buf[0] = 0;
                 out.write(buf, 0, 1);
                 out.flush();
+
+                FileOutputStream fos=new FileOutputStream("/home/cpelikan/software/dist/save");
+
+                int foo;
+                while(true){
+                    if(buf.length<filesize) foo=buf.length;
+                    else foo=(int)filesize;
+                    foo=in.read(buf, 0, foo);
+                    if(foo<0){
+                        // error
+                        break;
+                    }
+                    outStream.write(buf, 0, foo);
+                    fos.write(buf, 0, foo);
+                    filesize-=foo;
+                    if(filesize==0L) break;
+                }
+                fos.close();
+                // outStream.close();
+
+                if(checkAck(in)!=0){
+                    throw new Exception("Error occurred");
+                }
+
+                // send '\0'
+                buf[0]=0; out.write(buf, 0, 1); out.flush();
 
             }
 
@@ -195,7 +221,7 @@ public class CommandCentral {
             } else if (!channel.isClosed()) {
                 channel.disconnect();
             }
-            session.disconnect();
+            // session.disconnect();
         }
         return in;
     }
@@ -283,10 +309,10 @@ public class CommandCentral {
             }
             while (c != '\n');
             if (b == 1) { // error
-                System.out.print(sb.toString());
+                log.error(sb.toString());
             }
             if (b == 2) { // fatal error
-                System.out.print(sb.toString());
+                log.error(sb.toString());
             }
         }
         return b;
