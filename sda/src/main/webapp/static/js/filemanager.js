@@ -68,13 +68,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 });
         } else{
             window.location = "filemanager/download/ " + file.name;
-//            $http({method: "GET", url: "filemanager/download/ " + file.name , cache: false}).
-//                success(function (data, status) {
-//                    $scope.files = data;
-//                }).
-//                error(function (data, status) {
-//                    console.log("Error while cd ing to folder !");
-//                });
         }
     }
 
@@ -137,6 +130,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateRenameModel = function () {
         var selectedFiles = getCheckedFiles($scope.files);
+        $scope.selectedFiles = selectedFiles;
         if (selectedFiles.length == 0){
             var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
             $('#renameModel').show();

@@ -82,11 +82,11 @@
         <h3 id="myModalLabel">Make a New Folder</h3>
     </div>
     <div class="modal-body">
-        <div class="row-fluid"><div class="span4"><strong>Folder Name</strong></div><div><input type="text" name="foldername" ng-model="foldername"/></div></div>
+        <div class="row-fluid"><div class="span4"><strong>Folder Name</strong></div><div><input type="text" name="folder" ng-model="folder"/></div></div>
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="addFolder(foldername)" class="btn btn-danger pull-left">Create Folder</button>
+        <button ng-hide="!folder" ng-click="addFolder(folder)" class="btn btn-danger pull-left" ng-show="folder">Create Folder</button>
         <div class="alert alert-error" ng-show="createDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
             Error occurred while creating the folder. Please try again later
         </div>
@@ -127,7 +127,8 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="deleteFile()" class="btn btn-danger pull-left">Delete</button>
+        <button ng-hide="selectedFiles==0" ng-click="deleteFile()" class="btn btn-danger pull-left" ng-show="selectedFiles>0">Delete</button>
+        <!--<button ng-click="deleteFile()" class="btn btn-danger pull-left">Delete</button>-->
         <div class="alert alert-error" ng-show="deleteDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
             Error occurred while deleting. Please try again later
         </div>
@@ -156,7 +157,8 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="rename(newname)" class="btn btn-danger pull-left">Rename</button>
+        <button ng-hide="selectedFiles.length==0" ng-click="rename(newname)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Rename</button>
+        <!--<button ng-click="rename(newname)" class="btn btn-danger pull-left">Rename</button>-->
         <div class="alert alert-error" ng-show="renameDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
             Error occurred while renaming items. Please try again later
         </div>
@@ -186,7 +188,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="move(foldername)" class="btn btn-danger pull-left">Move</button>
+        <button ng-hide="selectedFiles.length==0" ng-click="move(foldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Move</button>
         <div class="alert alert-error" ng-show="mvDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
             Error occurred while moving to folder. Please try again later
         </div>
@@ -216,7 +218,8 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-click="copy(foldername)" class="btn btn-danger pull-left">Copy</button>
+        <button ng-hide="selectedFiles.length==0" ng-click="copy(foldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Copy</button>
+        <!--<button ng-click="copy(foldername)" class="btn btn-danger pull-left">Copy</button>-->
         <div class="alert alert-error" ng-show="cpDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
             Error occurred while copying to folder. Please try again later
         </div>
