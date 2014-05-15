@@ -7,7 +7,7 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             $http({method: "GET", url: "getScienceDiscipline", cache: false}).
                 success(function (allDisciplines, status) {
                     $scope.item = {};
-                    $scope.disciplineForm = {};
+                   // $scope.disciplineForm = {};
                     $scope.allDisciplines = getDisciplines(allDisciplines);
                     $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
                     console.log($scope.allDisciplines);
@@ -49,6 +49,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             $scope.item.primarySubDisc = null;
             var id1 = $scope.item.primaryDisc.id;
             $scope.subdisciplines1 = getSubdisciplines(id1, $scope.allDisciplines);
+        } else{
+            $scope.item.primarySubDisc = null;
         }
     };
 
@@ -57,6 +59,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             $scope.item.secondarySubDisc = null;
             var id2 = $scope.item.secondaryDisc.id;
             $scope.subdisciplines2 = getSubdisciplines(id2, $scope.allDisciplines);
+        } else{
+            $scope.item.secondarySubDisc = null;
         }
     };
 
@@ -65,6 +69,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
             $scope.item.tertiarySubDisc = null;
             var id3 = $scope.item.tertiaryDisc.id;
             $scope.subdisciplines3 = getSubdisciplines(id3, $scope.allDisciplines);
+        } else {
+            $scope.item.tertiarySubDisc = null;
         }
     };
 
