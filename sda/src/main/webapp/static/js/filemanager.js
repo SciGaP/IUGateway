@@ -94,9 +94,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             var content = "<div id='deleteDiv'>";
             for (var j = 0; j < selectedFiles.length ; j++){
                 if (selectedFiles[j].file){
-                    content += "<p>Will delete file " + selectedFiles[j].name + "</p>";
+                    content += "<p>Will delete the file " + selectedFiles[j].name + "</p>";
                 } else{
-                    content += "<p>Will delete folder " + selectedFiles[j].name + "</p>";
+                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and it's content.</p>";
                 }
             }
             content += "</div>";
@@ -122,10 +122,24 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.viewUsedSpace = function () {
-        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + $scope.totalfiles + "</p>";
-        content += "<p>Used space for user " + $scope.remoteUser + " : " + $scope.totalSize  + "</p></br>";
-        $('#viewUsedSpaceModel').show();
-        $('#fileCount').show().html(content);
+        $http({method: "GET", url: "filemanager/fileCount", cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.totalfiles = data;
+                $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
+                    success(function (data, status) {
+                        console.log(data);
+                        $scope.totalSize = data;
+                        var content = "<p>Number of files for user " + $scope.remoteUser + " : " + $scope.totalfiles + "</p>";
+                        content += "<p>Used space for user " + $scope.remoteUser + " : " + $scope.totalSize  + "</p></br>";
+                        $('#viewUsedSpaceModel').show();
+                        $('#fileCount').show().html(content);
+                    }).
+                    error(function (data, status) {
+                    });
+            }).
+            error(function (data, status) {
+            });
     }
 
     $scope.generateRenameModel = function () {
