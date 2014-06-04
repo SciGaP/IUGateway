@@ -105,13 +105,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         }
     }
 
-
-
-    // --------------- newly added capabilities - to be tested
-    //todo: you have to check if the first parameter of a call is a directory or not
-    //reason: for a file it's mv for move, but for a folder it's mv -r
-
-    //getting the free disk space of the current directory
     $scope.freedisk = function () {
         $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
             success(function (data, status) {
@@ -164,15 +157,23 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.rename = function () {
         $('#renameDiv :input').each(function () {
             console.log(this.value);
-            $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') +"*" + this.value, cache: false}).
-                success(function (data, status) {
-                    $scope.files = data;
-                    $scope.renameSuccess = true;
-                }).
-                error(function (data, status) {
-                    $scope.renameDisabled = true;
-                    console.log("Error while renaming object !");
-                });
+            $scope.found = false;
+            for (var i = 0; i < $scope.files.length; i++) {
+                if (this.value == $scope.files[i].name) {
+                    $scope.found = true;
+                }
+            }
+            if ($scope.found == false){
+                $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') + "*" + this.value, cache: false}).
+                    success(function (data, status) {
+                        $scope.files = data;
+                        $scope.renameSuccess = true;
+                    }).
+                    error(function (data, status) {
+                        $scope.renameDisabled = true;
+                        console.log("Error while renaming object !");
+                    });
+            }
         });
     }
 
