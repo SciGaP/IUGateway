@@ -218,7 +218,10 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
+        var currentFile = {};
+        currentFile.name = "Current Folder";
         var folders = [];
+        folders.push(currentFile);
         for (var i=0; i < files.length; i++){
             if (!files[i].file ){
                 var found  = $.inArray(files[i].name, fileNames);
@@ -228,8 +231,20 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 }
             }
         }
+        var otherFile = {};
+        otherFile.name = "Other";
+        folders.push(otherFile);
         $scope.foldername = folders[0];
         $scope.folders = folders;
+    }
+
+    $scope.populateRest = function(folerName){
+        console.log(folerName.name);
+        $scope.selectOther = false;
+        if (folerName.name == "Other"){
+             $scope.selectOther = true;
+            console.log($scope.selectOther);
+        }
     }
 
     $scope.copy = function (folder) {

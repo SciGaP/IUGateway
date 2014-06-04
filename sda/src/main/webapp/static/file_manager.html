@@ -214,9 +214,11 @@
             <div ng-show="selectedFiles.length>0">
                 <select name="foldername" required
                         ng-options="folder as folder.name for folder in folders"
-                        ng-model="foldername">
+                        ng-model="foldername" ng-change="populateRest(foldername)">
                 </select>
             </div>
+                <div class="span4" ng-show="selectOther"><strong>Folder Name</strong></div>
+                <div><input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/></div>
         </div>
     </div>
     <div class="modal-footer">
