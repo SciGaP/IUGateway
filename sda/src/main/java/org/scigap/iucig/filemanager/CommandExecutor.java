@@ -109,7 +109,10 @@ public class CommandExecutor {
                 //commandCentral.executeCommand(session, command);
                 ls();
             } else if (commandList.get(0).equals("mv")) {
-                command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory;
+                for (int i=2; i < commandList.size(); i++){
+                    command +=  "/" + commandList.get(i);
+                }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();
@@ -117,7 +120,10 @@ public class CommandExecutor {
             //todo figure out how to provide the second argument
             //todo whether to provide the absolute path or relative path
             else if (commandList.get(0).equals("mvr")) {
-                command = "mv -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                command = "mv -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory;
+                for (int i=2; i < commandList.size(); i++){
+                    command +=  "/" + commandList.get(i);
+                }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();

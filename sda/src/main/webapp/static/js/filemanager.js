@@ -178,30 +178,42 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.generateMvModel = function () {
+        $scope.selectOther = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
         var folders = [];
         for (var i=0; i < files.length; i++){
-           if (!files[i].file ){
-               var found  = $.inArray(files[i].name, fileNames);
-               console.log(found);
-               if (found == -1){
-                   folders.push(files[i]);
-               }
-           }
+            if (!files[i].file ){
+                var found  = $.inArray(files[i].name, fileNames);
+                console.log(found);
+                if (found == -1){
+                    folders.push(files[i]);
+                }
+            }
         }
+        var otherFile = {};
+        otherFile.name = "Other";
+        folders.push(otherFile);
         $scope.foldername = folders[0];
         $scope.folders = folders;
     }
 
     //todo: if it's a directory, it should be mvr not mv
     //moving a file
-    $scope.move = function (targetFolder) {
+    $scope.move = function (targetFolder , customFolderName) {
         var selectedFiles = getCheckedFiles($scope.files);
-        console.log(targetFolder);
+        var fileName;
+        if (targetFolder.name == "Other"){
+            if (customFolderName.contains("/")){
+                customFolderName = customFolderName.replace(/\//g, '*');
+                fileName = customFolderName;
+            }
+        } else {
+            fileName = targetFolder.name;
+        }
         for (var i = 0; i < selectedFiles.length; i++){
-            $http({method: "GET", url: "filemanager/command/mv " + selectedFiles[i].name +"*" + targetFolder.name, cache: false}).
+            $http({method: "GET", url: "filemanager/command/mv " + selectedFiles[i].name +"*" + fileName, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
