@@ -48,19 +48,11 @@ public class StringUtils {
         }
 
         tokenizer = new StringTokenizer(arguments,ARG_IDENTIFIER);
-        if (tokenizer.hasMoreTokens()){
-            String first_argument = tokenizer.nextToken();
-            commandList.add(first_argument);
+        while (tokenizer.hasMoreTokens()) {
+            if(tokenizer.hasMoreTokens()){
+               commandList.add(tokenizer.nextToken());
+            }
         }
-
-        //reading the second argument for rename,move ...etc
-        String second_argument = "";
-
-        if (tokenizer.hasMoreTokens()) {
-            second_argument = tokenizer.nextToken();
-            commandList.add(second_argument);
-        }
-
         return commandList;
     }
 

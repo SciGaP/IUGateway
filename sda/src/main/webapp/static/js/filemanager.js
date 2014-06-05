@@ -215,13 +215,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.generateCpModel = function () {
+        $scope.selectOther = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
-        var currentFile = {};
-        currentFile.name = "Current Folder";
         var folders = [];
-        folders.push(currentFile);
         for (var i=0; i < files.length; i++){
             if (!files[i].file ){
                 var found  = $.inArray(files[i].name, fileNames);
@@ -248,17 +246,18 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.copy = function (targetFolder , customFolderName) {
-        console.log(customFolderName);
         var selectedFiles = getCheckedFiles($scope.files);
+        var fileName;
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
-                targetFolder.name = customFolderName;
+                fileName = customFolderName;
             }
+        } else {
+            fileName = targetFolder.name;
         }
-        console.log(targetFolder.name);
         for (var i = 0; i < selectedFiles.length; i++){
-            $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + targetFolder.name, cache: false}).
+            $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + fileName, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
