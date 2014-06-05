@@ -66,11 +66,11 @@ public class StringUtils {
 
     public Stack<String> getPathStack(String path) {
         pathStack = new Stack<String>();
-
-        StringTokenizer tokenizer = new StringTokenizer(path, "/");
-
-        while (tokenizer.hasMoreTokens()) {
-            pathStack.push(tokenizer.nextToken());
+        if (path != null){
+            StringTokenizer tokenizer = new StringTokenizer(path, "/");
+            while (tokenizer.hasMoreTokens()) {
+                pathStack.push(tokenizer.nextToken());
+            }
         }
         return pathStack;
     }
@@ -84,33 +84,31 @@ public class StringUtils {
 
     public Map<String, String> categorizeResult(List<String> resultList) {
         Map<String, String> resultMap = new HashMap<String, String>();
-        List<String> temp =null;
+        List<String> temp = null;
         String fileOrFolder = null;
 
-        StringTokenizer tokenizer = new StringTokenizer(resultList.toString(),"\n");
-
-        List<String> filteredResults = new ArrayList<String>();
-
-        while (tokenizer.hasMoreTokens()) {
-            filteredResults.add(tokenizer.nextToken());
-        }
-
-
-        for (String line : filteredResults) {
-            temp = new ArrayList<String>();
-            tokenizer = new StringTokenizer(line," ");
+        if (resultList != null) {
+            StringTokenizer tokenizer = new StringTokenizer(resultList.toString(), "\n");
+            List<String> filteredResults = new ArrayList<String>();
             while (tokenizer.hasMoreTokens()) {
-                temp.add(tokenizer.nextToken());
+                filteredResults.add(tokenizer.nextToken());
             }
-            if (temp.size() > 2) {
-                fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
-                resultMap.put(temp.get(temp.size() - 1),fileOrFolder);
+
+            for (String line : filteredResults) {
+                temp = new ArrayList<String>();
+                tokenizer = new StringTokenizer(line, " ");
+                while (tokenizer.hasMoreTokens()) {
+                    temp.add(tokenizer.nextToken());
+                }
+                if (temp.size() > 2) {
+                    fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
+                    resultMap.put(temp.get(temp.size() - 1), fileOrFolder);
+                }
             }
         }
         return resultMap;
     }
     public List<Item> getResultsList(List<String> resultList) {
-
         //Result Array
         List<Item> itemList = new ArrayList<Item>();
         Item item = null;
@@ -121,45 +119,40 @@ public class StringUtils {
         String permission;
         String size;
 
-
-
-        List<String> temp =null;
+        List<String> temp = null;
         boolean isFile = false;
-        StringTokenizer tokenizer = new StringTokenizer(resultList.toString(),"\n");
-
-        List<String> filteredResults = new ArrayList<String>();
-
-        while (tokenizer.hasMoreTokens()) {
-            filteredResults.add(tokenizer.nextToken());
-        }
-
-        for (String line : filteredResults) {
-
-            temp = new ArrayList<String>();
-            tokenizer = new StringTokenizer(line," ");
+        if (resultList != null) {
+            StringTokenizer tokenizer = new StringTokenizer(resultList.toString(), "\n");
+            List<String> filteredResults = new ArrayList<String>();
             while (tokenizer.hasMoreTokens()) {
-                temp.add(tokenizer.nextToken());
-            }
-            if (temp.size() > 8) {
-                isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
-                owner = temp.get(2);
-                group = temp.get(3);
-                size = temp.get(4);
-                String month = temp.get(5);
-                String day = temp.get(6);
-                String time = temp.get(7);
-                name = temp.get(8);
-                permission = temp.get(0);
-
-                date = month + " " + day + " "+time;
-                item = new Item(name,date, owner, isFile);
-                item.setGroup(group);
-                item.setSize(size);
-                item.setPermission(permission);
-                itemList.add(item);
+                filteredResults.add(tokenizer.nextToken());
             }
 
+            for (String line : filteredResults) {
+                temp = new ArrayList<String>();
+                tokenizer = new StringTokenizer(line, " ");
+                while (tokenizer.hasMoreTokens()) {
+                    temp.add(tokenizer.nextToken());
+                }
+                if (temp.size() > 8) {
+                    isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
+                    owner = temp.get(2);
+                    group = temp.get(3);
+                    size = temp.get(4);
+                    String month = temp.get(5);
+                    String day = temp.get(6);
+                    String time = temp.get(7);
+                    name = temp.get(8);
+                    permission = temp.get(0);
 
+                    date = month + " " + day + " " + time;
+                    item = new Item(name, date, owner, isFile);
+                    item.setGroup(group);
+                    item.setSize(size);
+                    item.setPermission(permission);
+                    itemList.add(item);
+                }
+            }
         }
         return itemList;
     }

@@ -124,7 +124,11 @@ public class CommandExecutor {
             }
             //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
-                command = "cp -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + commandList.get(2);
+                String targetPath = commandList.get(2);
+                if (targetPath.contains("\\*")){
+                    targetPath = targetPath.replaceAll("\\*", "\\\\/");
+                }
+                command = "cp -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory + "/" + targetPath;
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls();

@@ -223,7 +223,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-hide="selectedFiles.length==0" ng-click="copy(foldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Copy</button>
+        <button ng-hide="selectedFiles.length==0" ng-click="copy(foldername, otherfolder)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Copy</button>
         <!--<button ng-click="copy(foldername)" class="btn btn-danger pull-left">Copy</button>-->
         <div class="alert alert-error" ng-show="cpDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
             Error occurred while copying to folder. Please try again later

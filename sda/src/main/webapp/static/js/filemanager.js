@@ -247,9 +247,16 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         }
     }
 
-    $scope.copy = function (folder) {
+    $scope.copy = function (targetFolder , customFolderName) {
+        console.log(customFolderName);
         var selectedFiles = getCheckedFiles($scope.files);
-        console.log(targetFolder);
+        if (targetFolder.name == "Other"){
+            if (customFolderName.contains("/")){
+                customFolderName = customFolderName.replace(/\//g, '*');
+                targetFolder.name = customFolderName;
+            }
+        }
+        console.log(targetFolder.name);
         for (var i = 0; i < selectedFiles.length; i++){
             $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + targetFolder.name, cache: false}).
                 success(function (data, status) {
@@ -269,7 +276,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var fileNames = getCheckedFiles($scope.files);
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
-                $http({method: "GET", url: "filemanager/command/rm -rf " + fileNames[j].name, cache: false}).
+                $http({method: "GET", url: "filemanager/command/rm " + fileNames[j].name, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
                         $scope.deleteSuccess = true;
