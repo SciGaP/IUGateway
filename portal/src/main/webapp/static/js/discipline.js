@@ -109,12 +109,12 @@ var getDisciplines = function (data) {
         discipline.name = data[i].name;
         discipline.id = data[i].id;
         subdisciplines = data[i].subdisciplines;
-        for (var j in subdisciplines) {
-            var subdiscipline = {};
-            subdiscipline.name = subdisciplines[j].name;
-            subdiscipline.id = subdisciplines[j].id;
-            subdisciplines.push(subdiscipline);
-        }
+//        for (var j in subdisciplines) {
+//            var subdiscipline = {};
+//            subdiscipline.name = subdisciplines[j].name;
+//            subdiscipline.id = subdisciplines[j].id;
+//            subdisciplines.push(subdiscipline);
+//        }
         discipline.subdisciplines = subdisciplines;
         disciplines.push(discipline);
     }
