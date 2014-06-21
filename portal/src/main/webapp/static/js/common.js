@@ -38,6 +38,9 @@ angular.module("user", []).
                 $scope.username = "";
                 $scope.authenticated = false;
             }
+            if($scope.requireAuthentication && !$scope.authenticated) {
+            	$("#loginModal").modal({keyboard:false,backdrop:'static',show:true});
+        	}
             $scope.$emit("UserLogin", { username: $scope.username, authenticated: $scope.authenticated});
         }).
             error(function (data) {
@@ -52,6 +55,9 @@ angular.module("user", []).
                 $scope.$emit("UserLogin", { username: $scope.username, authenticated: $scope.authenticated});
                 $scope.message = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
                     + "User Logged out of Science Gateway. To logout of CAS, <a href='https://cas.iu.edu/cas/logout'>Click here</a></div>";
+                if($scope.requireAuthentication && !$scope.authenticated) {
+                	$("#loginModal").modal({keyboard:false,backdrop:'static',show:true});
+            	}
             }).
                 error(function () {
                     $scope.message = "<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
@@ -68,10 +74,9 @@ $(document).ready(function () {
 
     $("[rel=filterTooltip]").tooltip({ placement: "right", title: "To invert filter functionality, use ! before your text"});
 
-    $('body').on('hidden.bs.modal', '.modal', function () {
+	$('body').on('hidden.bs.modal', '.modal', function () {
         $(this).removeData('bs.modal');
     });
-
 });
 
 navigator.sayswho = (function () {

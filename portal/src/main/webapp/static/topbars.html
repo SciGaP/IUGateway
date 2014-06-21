@@ -1,10 +1,4 @@
-<div ng-app="userApp"  ng-controller="UserCtrl">
-    <head>
-        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
-        <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>-->
-        <script src="static/js/common.js"></script>
-        <script src="static/js/urlprovider.js"></script>
-    </head>
+<div ng-app="userApp" ng-controller="UserCtrl" ng-cloak>
     <div class="navbar navbar-iu navbar-fixed-top" style="position:fixed">
         <div>
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -22,13 +16,13 @@
                     <li>
                         <a id="newsLink" href="news">News</a>
                     </li>
-                    <!-- // TODO: Applications should be authenticated! -->
-                    <li class="dropdown">
+                    <!-- TODO: Applications should be authenticated! -->
+                    <!-- <li class="dropdown">
                         <a class="dropdown-toggle" id="appsLink" href="#">Applications</a>
                         <ul class="dropdown-menu">
                             <li><a href="amber">Amber</a></li>
                         </ul>
-                    </li>
+                    </li> -->
                     <li ng-show="authenticated" class="dropdown">
                         <a class="dropdown-toggle" id="jobLink" href="#">Computing</a>
                         <ul class="dropdown-menu">
@@ -98,7 +92,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="scienceDiscipline">Profile</a></li>
-                            <li><a ng-click="logout()">Logout</a></li>
+                            <li><a href="#" ng-click="logout()">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -114,4 +108,18 @@
     <br><br><br>
     <!-- <gcse:search></gcse:search> -->
     <div ng-bind-html-unsafe="message"></div>
+    
+    <div id="loginModal" class="modal hide fade">
+    	<div class="modal-header">
+    		<h3>Please Login!</h3>
+    	</div>
+	    <div class="modal-body">
+	    	<p>The page you are trying to view requires you to be authenticated.</p>
+	    </div>
+	    <div class="modal-footer">
+	    	<a href="index" class="btn btn-large pull-left">Home</a>
+	    	<a href="caslogin" class="btn btn-large btn-danger">Login</a>
+	    </div>
+	</div>
+    
 </div>
