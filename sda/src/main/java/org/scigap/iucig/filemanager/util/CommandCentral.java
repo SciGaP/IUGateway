@@ -8,15 +8,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by swithana on 3/24/14.
  */
 public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
+    public static final String KERB_PROPERTIES = "kerb.properties";
+    public static final String SDA_FILEDOWNLOAD_LOCATION = "file.download.location";
     private List<String> result;
+    private static Properties properties = new Properties();
 
     public String pwd(Session session) throws Exception {
 
@@ -69,6 +74,19 @@ public class CommandCentral {
             session.disconnect();
         }
         return path;
+    }
+
+    public String readProperty (String propertyName){
+        try {
+            URL resource = CommandCentral.class.getClassLoader().getResource(KERB_PROPERTIES);
+            if (resource != null){
+                properties.load(resource.openStream());
+                return properties.getProperty(propertyName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<String> executeCommand(Session session, String command) throws Exception {
@@ -178,7 +196,9 @@ public class CommandCentral {
                 out.write(buf, 0, 1);
                 out.flush();
 
-                FileOutputStream fos=new FileOutputStream("/home/cpelikan/software/dist/save");
+
+                String fileDownloadLocation = readProperty(SDA_FILEDOWNLOAD_LOCATION);
+                FileOutputStream fos=new FileOutputStream(fileDownloadLocation);
 
                 int foo;
                 while(true){
