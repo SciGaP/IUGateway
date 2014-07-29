@@ -8,12 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 
 /*
@@ -51,16 +47,16 @@ public class CommandExecutor {
     private KerberosConnector kerberosConnector;
     private CommandCentral commandCentral;
     private StringUtils stringUtils;
-    private List<Item> resultItemList;
-    private List<String> result;
-    private Map<String, String> resultMap;
+    private List<Item> resultItemList = new ArrayList<Item>();
+    private List<String> result = new ArrayList<String>();
+    private Map<String, String> resultMap = new HashMap<String, String>();
     //path stack
     private Stack<String> pathStack;
     private String workingDirectory;
     private static final String LS = "ls -ltr ";
     private String remoteUser;
 
-    public CommandExecutor(String user) {
+    public CommandExecutor(String user) throws Exception{
         try {
             remoteUser = user;
             kerberosConnector = new KerberosConnector();
@@ -71,6 +67,7 @@ public class CommandExecutor {
             pwd();
         } catch (Exception e) {
             log.error("Error occured..", e);
+            throw new Exception("Error occured", e);
         }
 
     }
@@ -266,5 +263,16 @@ public class CommandExecutor {
 
     public void setResultItemList(List<Item> resultItemList) {
         this.resultItemList = resultItemList;
+    }
+
+    public String getWorkingDirectory() throws Exception {
+        if (workingDirectory == null ){
+            return pwd();
+        }
+        return workingDirectory;
+    }
+
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 }

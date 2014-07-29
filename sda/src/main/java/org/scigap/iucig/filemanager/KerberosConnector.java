@@ -5,12 +5,15 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import org.scigap.iucig.filemanager.util.JaaSConfiguration;
 import org.scigap.iucig.filemanager.util.LoginConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
 public class KerberosConnector {
+    private static final Logger log = LoggerFactory.getLogger(KerberosConnector.class);
     public static final String KERB_PROPERTIES = "kerb.properties";
     public static final String KERB_HOST = "kerb.host";
     public static final String  KERB_CONF_LOCATION = "kerb.conf.location";
@@ -25,7 +28,7 @@ public class KerberosConnector {
     private String loginFile;
     private String host;
 
-    public KerberosConnector() {
+    public KerberosConnector() throws Exception{
         loginFile = readProperty(LOGIN_FILE_LOCATION)+LOGIN_FILE_NAME;
         host = readProperty(KERB_HOST);
         System.out.println("HOST : " + host);
@@ -38,7 +41,7 @@ public class KerberosConnector {
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
     }
 
-    public Session getSession(String remoteUser) {
+    public Session getSession(String remoteUser) throws Exception{
 
         String krbLogin = readProperty(KERB_LOGIN_LOCATION);
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
@@ -59,16 +62,13 @@ public class KerberosConnector {
             session.setConfig(config);
             session.connect(5000);
         } catch (JSchException e) {
-            e.printStackTrace();
-            if (session != null){
-                session.disconnect();
-            }
-
+            log.error("Authentication fails.." , e);
+            throw new Exception("Authentication fails..", e);
         }
         return session;
     }
 
-    public String readProperty (String propertyName){
+    public String readProperty (String propertyName) throws Exception{
         try {
             URL resource = KerberosConnector.class.getClassLoader().getResource(KERB_PROPERTIES);
             if (resource != null){
@@ -76,7 +76,8 @@ public class KerberosConnector {
                 return properties.getProperty(propertyName);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Unable to read properties..", e);
+            throw new Exception("Unable to read properties.." , e) ;
         }
         return null;
     }

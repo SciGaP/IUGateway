@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html ng-app="fileManagerApp" ng-controller="FileManagerCtrl" xmlns="http://www.w3.org/1999/html">
+<html ng-app="fileManagerApp" ng-controller="FileManagerCtrl" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +28,11 @@
 <div class="row-fluid">
 <div class="well-iu span12">
 <div class="well-heading">Scholarly Data Archive for {{remoteUser}}</div>
+<div class="pull-left">
+    <b>Current Path : {{pwd}}  </b>
+</div>
+<br/>
+<br/>
 <div class="pull-left">
     <button class="btn pull-left" data-toggle="modal" data-target="#newFolderModel">New Folder</button>
     <button class="btn pull-left" data-toggle="modal" data-target="#uploadFileModel">Upload File</button>
@@ -63,7 +69,7 @@
         <tr ng-hide="hideLoader"></tr>
         <tr ng-show="hideLoader"><td colspan="7"><div class="loading-iu"></div></td></tr>
         <tr ng-show="showError"></tr>
-        <tr ng-show="showError"><td colspan="7"><div class="alert alert-error">There was an error loading the data !</div></td></tr>
+        <tr ng-show="showError"><td colspan="7"><div class="alert alert-error">There was an error while loading the data. Your ticket might be expired. Please create a new ticket and try again !</div></td></tr>
         <tr ng-show="files.length<1"></tr>
         <tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>
         <tr ng-repeat="file in files" >

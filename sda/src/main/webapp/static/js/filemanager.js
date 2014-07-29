@@ -38,6 +38,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             console.log(data);
             $scope.files = data;
             $scope.hideLoader = false;
+            $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.pwd = data;
+                }).
+                error(function (data, status) {
+                    console.log("Error getting current working directory !");
+                });
         }).
         error(function (data, status) {
             $scope.hideLoader = false;
@@ -50,6 +58,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $http({method: "GET", url: "filemanager/command/cd " + parent, cache: false}).
             success(function (data, status) {
                 $scope.files = data;
+                $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
+                    success(function (data, status) {
+                        console.log(data);
+                        $scope.pwd = data;
+                    }).
+                    error(function (data, status) {
+                        console.log("Error getting current working directory !");
+                    });
             }).
             error(function (data, status) {
                 console.log("Error getting files !");
@@ -62,6 +78,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             $http({method: "GET", url: "filemanager/command/cd " + folderName , cache: false}).
                 success(function (data, status) {
                     $scope.files = data;
+                    $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
+                        success(function (data, status) {
+                            console.log(data);
+                            $scope.pwd = data;
+                        }).
+                        error(function (data, status) {
+                            console.log("Error getting current working directory !");
+                        });
                 }).
                 error(function (data, status) {
                     console.log("Error while cd ing to folder !");

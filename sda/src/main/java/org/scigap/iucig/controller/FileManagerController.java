@@ -59,10 +59,12 @@ public class FileManagerController {
             }
             commandExecutor.executeCommand("freedisk");
             List<String> list = commandExecutor.getResult();
-            String result = list.get(0);
-            String[] strings = result.split("\\t");
-            System.out.println("**** result **** " + result);
-            return strings[0];
+            if (list != null && !list.isEmpty()){
+                String result = list.get(0);
+                String[] strings = result.split("\\t");
+                System.out.println("**** result **** " + result);
+                return strings[0];
+            }
         }
         return null;
     }
@@ -92,11 +94,14 @@ public class FileManagerController {
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            System.out.println("Remote User : " + remoteUser);
+
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
             }
-            return commandExecutor.pwd();
+            String workingDirectory = commandExecutor.getWorkingDirectory();
+            System.out.println("Working Directory : " + workingDirectory);
+            return workingDirectory;
+
         }
         return null;
     }
@@ -149,7 +154,7 @@ public class FileManagerController {
     @ResponseBody
     @RequestMapping(value = "/upload/{user}/", method = RequestMethod.POST)
     public void uploadFile(@PathVariable(value = "user") final String user,@RequestParam("filename") String filename,
-                           @RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
+                           @RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
 
         File createdFile = new File(filename);
         file.transferTo(createdFile);
