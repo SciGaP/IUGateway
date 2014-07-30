@@ -146,7 +146,8 @@ public class CommandCentral {
     public InputStream scpFrom(Session session, String filename, OutputStream outStream) throws Exception {
         Channel channel = null;
         InputStream in = null;
-        String command = "scp -f " + filename;
+
+        String command = "scp -f " + "\"" + filename +  "\"";
         String prefix = null;
         if (new File(filename).isDirectory()) {
             prefix = filename + File.separator;
@@ -202,8 +203,11 @@ public class CommandCentral {
 
                 int foo;
                 while(true){
-                    if(buf.length<filesize) foo=buf.length;
-                    else foo=(int)filesize;
+                    if(buf.length<filesize){
+                        foo=buf.length;
+                    }else {
+                        foo=(int)filesize;
+                    }
                     foo=in.read(buf, 0, foo);
                     if(foo<0){
                         // error
@@ -329,7 +333,7 @@ public class CommandCentral {
             }
             while (c != '\n');
             if (b == 1) { // error
-                log.error(sb.toString());
+                 log.error(sb.toString());
             }
             if (b == 2) { // fatal error
                 log.error(sb.toString());

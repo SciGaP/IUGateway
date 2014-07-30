@@ -92,9 +92,16 @@ public class StringUtils {
                 while (tokenizer.hasMoreTokens()) {
                     temp.add(tokenizer.nextToken());
                 }
-                if (temp.size() > 2) {
+                if (temp.size() > 3) {
                     fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
-                    resultMap.put(temp.get(temp.size() - 1), fileOrFolder);
+                    String fileName = temp.get(8);
+                    if (temp.size() > 9){
+                        for (int k = 9; k < temp.size(); k++){
+                            fileName = fileName + " " + temp.get(k);
+                        }
+                    }
+                    System.out.println(fileName);
+                    resultMap.put(fileName, fileOrFolder);
                 }
             }
         }
@@ -135,6 +142,11 @@ public class StringUtils {
                     String day = temp.get(6);
                     String time = temp.get(7);
                     name = temp.get(8);
+                    if (temp.size() > 9){
+                        for (int k = 9; k < temp.size(); k++){
+                            name = name + " " + temp.get(k);
+                        }
+                    }
                     permission = temp.get(0);
 
                     date = month + " " + day + " " + time;

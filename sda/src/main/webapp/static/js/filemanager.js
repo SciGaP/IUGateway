@@ -53,11 +53,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     });
 
     $scope.upOneLevel = function(){
+        $scope.hideLoader = true;
         var parent = "..";
         var url = "filemanager/command/cd " + parent;
         $http({method: "GET", url: "filemanager/command/cd " + parent, cache: false}).
             success(function (data, status) {
                 $scope.files = data;
+                $scope.hideLoader = false;
                 $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
                     success(function (data, status) {
                         console.log(data);
@@ -68,15 +70,18 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     });
             }).
             error(function (data, status) {
+                $scope.hideLoader = false;
                 console.log("Error getting files !");
             });
     }
 
     $scope.goInside = function(file){
         if (!file.file){
+            $scope.hideLoader = true;
             var folderName = file.name;
             $http({method: "GET", url: "filemanager/command/cd " + folderName , cache: false}).
                 success(function (data, status) {
+                    $scope.hideLoader = false;
                     $scope.files = data;
                     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
                         success(function (data, status) {
@@ -88,6 +93,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                         });
                 }).
                 error(function (data, status) {
+                    $scope.hideLoader = false;
                     console.log("Error while cd ing to folder !");
                 });
         } else{
