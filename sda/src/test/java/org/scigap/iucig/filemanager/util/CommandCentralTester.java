@@ -18,14 +18,18 @@ public class CommandCentralTester {
 
     @Before
     public void setUp() {
-        commandCentral = new CommandCentral();
-        connector = new KerberosConnector();
+        try {
+            commandCentral = new CommandCentral();
+            connector = new KerberosConnector();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Test
     public void testDownloadFile() throws Exception {
         Session session = connector.getSession(USER);
-        InputStream is = commandCentral.scpFrom(session,"/home/swithana/test.txt");
+        InputStream is = commandCentral.scpFrom(session,"/home/swithana/test.txt", null);
         /*BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line = null;
         while ((line = reader.readLine()) != null) {

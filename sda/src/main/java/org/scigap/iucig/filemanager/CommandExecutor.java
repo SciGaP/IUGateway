@@ -53,6 +53,7 @@ public class CommandExecutor {
     //path stack
     private Stack<String> pathStack;
     private String workingDirectory;
+    private String homePath;
     private static final String LS = "ls -ltr ";
     private String remoteUser;
 
@@ -94,46 +95,47 @@ public class CommandExecutor {
                 command = "mkdir " + workingDirectory + "/" + commandList.get(1);
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
-                ls();
+                ls(workingDirectory);
             } else if (commandList.get(0).equals("rm")) {
                 command = "rm -r " + workingDirectory + "/" + commandList.get(1);
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
-                ls();
+                ls(workingDirectory);
             } else if (commandList.get(0).equals("ls")) {
-                command = LS;
+                String path = workingDirectory;
+                if (commandList.size() > 1){
+                    path = commandList.get(1);
+                }
+                command = LS + path;
                 log.info("COMMAND: " + command);
-                //commandCentral.executeCommand(session, command);
-                ls();
+                ls(path);
             } else if (commandList.get(0).equals("mv")) {
-                command = "mv " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory;
+                command = "mv " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
                 for (int i=2; i < commandList.size(); i++){
-                    command +=  "/" + commandList.get(i);
+                    command += commandList.get(i) + "/";
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
-                ls();
+                ls(getWorkingDirectory());
             }
-            //todo figure out how to provide the second argument
-            //todo whether to provide the absolute path or relative path
             else if (commandList.get(0).equals("mvr")) {
-                command = "mv -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory;
+                command = "mv -r " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
                 for (int i=2; i < commandList.size(); i++){
-                    command +=  "/" + commandList.get(i);
+                    command += commandList.get(i) + "/";
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
-                ls();
+                ls(getWorkingDirectory());
             }
             //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
-                command = "cp -r " + workingDirectory + "/" + commandList.get(1) + " " + workingDirectory;
+                command = "cp -r " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
                 for (int i=2; i < commandList.size(); i++){
-                   command +=  "/" + commandList.get(i);
+                   command += commandList.get(i) + "/";
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
-                ls();
+                ls(getWorkingDirectory());
             } else if (commandList.get(0).equals("freedisk")) {
                 command = "du -sh " + workingDirectory;
                 log.info("COMMAND: " + command);
@@ -203,6 +205,7 @@ public class CommandExecutor {
             session = kerberosConnector.getSession(remoteUser);
             //getting the home directory
             String path = commandCentral.pwd(session);
+            homePath = path;
             //add it to the stack
             pathStack = stringUtils.getPathStack(path);
             //generate the working directory string using the stack
@@ -222,11 +225,11 @@ public class CommandExecutor {
         return workingDirectory;
     }
 
-    public void ls() throws Exception {
+    public void ls(String path) throws Exception {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
-            setResult(commandCentral.executeCommand(session, LS + workingDirectory));
+            setResult(commandCentral.executeCommand(session, LS + path));
             setResultMap(stringUtils.categorizeResult(getResult()));
             setResultItemList(stringUtils.getResultsList(getResult()));
         } catch (Exception e) {
@@ -274,5 +277,18 @@ public class CommandExecutor {
 
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
+    }
+
+    public String getHomePath() throws Exception {
+        if (homePath == null ){
+            String pwd = pwd();
+            System.out.println("***** Home Dir ***** : " + pwd);
+            return pwd;
+        }
+        return homePath;
+    }
+
+    public void setHomePath(String homePath) {
+        this.homePath = homePath;
     }
 }

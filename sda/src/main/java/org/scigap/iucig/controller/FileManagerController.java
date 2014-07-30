@@ -107,6 +107,25 @@ public class FileManagerController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/getHome", method = RequestMethod.GET)
+    public String getHome(HttpServletRequest request) throws Exception {
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+
+            if (commandExecutor == null) {
+                commandExecutor = new CommandExecutor(remoteUser);
+            }
+            String homePath = commandExecutor.getHomePath();
+            System.out.println("Home dir : " + homePath);
+            return homePath;
+
+        }
+        return null;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
     public String getRemoteUser(HttpServletRequest request) throws Exception {
         return request.getRemoteUser();

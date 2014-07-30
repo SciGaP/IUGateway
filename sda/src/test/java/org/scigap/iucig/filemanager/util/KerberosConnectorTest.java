@@ -13,11 +13,19 @@ public class KerberosConnectorTest {
     private KerberosConnector kerberosConnector;
     @Before
     public void setUp() {
-        kerberosConnector = new KerberosConnector();
+        try {
+            kerberosConnector = new KerberosConnector();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Test
     public void testKerberosConnectivity() {
-        kerberosConnector.getSession(remoteUser);
+        try {
+            kerberosConnector.getSession(remoteUser);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

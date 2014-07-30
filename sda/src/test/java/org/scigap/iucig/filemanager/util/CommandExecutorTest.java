@@ -12,7 +12,11 @@ public class CommandExecutorTest {
     private String user = "swithana";
     @Before
     public void setUp() {
-        executor = new CommandExecutor(user);
+        try {
+            executor = new CommandExecutor(user);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Test
@@ -95,11 +99,11 @@ public class CommandExecutorTest {
     @Test
     public void testDownloadFile() {
         try {
-            InputStream is = executor.downloadFile("test.txt");
+            executor.downloadFile("test.txt", null);
             System.out.println("Executing SCP From... file: test.txt");
 
-            String myString = IOUtils.toString(is, "UTF-8");
-            System.out.println(myString);
+//            String myString = IOUtils.toString(is, "UTF-8");
+//            System.out.println(myString);
 //        System.out.println(executor.getResult());
             //      System.out.println(executor.getResultMap());
             //    System.out.println(executor.getResultMap().size());
@@ -108,21 +112,21 @@ public class CommandExecutorTest {
         }
 
     }
-    @Test
-    public void testLS() {
-        try {
-            executor.ls();
-            System.out.println("PRINTING RESULTS");
-            System.out.println(executor.getResult());
-            
-            System.out.println("PRINTING RESULTS MAP");
-            System.out.println(executor.getResultMap());
-
-            System.out.println("PRINTING RESULTS SIZE");
-            System.out.println(executor.getResultMap().size());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
+//    @Test
+//    public void testLS() {
+//        try {
+//            executor.ls();
+//            System.out.println("PRINTING RESULTS");
+//            System.out.println(executor.getResult());
+//
+//            System.out.println("PRINTING RESULTS MAP");
+//            System.out.println(executor.getResultMap());
+//
+//            System.out.println("PRINTING RESULTS SIZE");
+//            System.out.println(executor.getResultMap().size());
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//    }
 }

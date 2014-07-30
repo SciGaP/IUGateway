@@ -33,6 +33,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         error(function (data, status) {
             console.log("Error getting current working directory !");
         });
+    $http({method: "GET", url: "filemanager/getHome" , cache: false}).
+        success(function (data, status) {
+            console.log(data);
+            $scope.home = data;
+        }).
+        error(function (data, status) {
+            console.log("Error getting home directory !");
+        });
     $http({method: "GET", url: "filemanager/command/ls", cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -209,38 +217,68 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateMvModel = function () {
         $scope.selectOther = false;
+        $scope.selectHome = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
+        var homeFolders = [];
         var folders = [];
-        for (var i=0; i < files.length; i++){
-            if (!files[i].file ){
-                var found  = $.inArray(files[i].name, fileNames);
-                console.log(found);
-                if (found == -1){
-                    folders.push(files[i]);
+        $http({method: "GET", url: "filemanager/command/ls ~", cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.homeFiles = data;
+                var homeFiles =  $scope.homeFiles;
+                for (var i=0; i < homeFiles.length; i++){
+                    if (!homeFiles[i].file ){
+                        var found  = $.inArray(homeFiles[i].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            homeFolders.push(homeFiles[i]);
+                        }
+                    }
                 }
-            }
-        }
-        var otherFile = {};
-        otherFile.name = "Other";
-        folders.push(otherFile);
-        $scope.foldername = folders[0];
-        $scope.folders = folders;
+                $scope.homeFoldername = homeFolders[0];
+                $scope.homeFolders = homeFolders;
+                for (var j=0; j < files.length; j++){
+                    if (!files[j].file ){
+                        var found  = $.inArray(files[j].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            folders.push(files[j]);
+                        }
+                    }
+                }
+                var homeFile = {};
+                homeFile.name = "Select from Home";
+                folders.push(homeFile);
+                var otherFile = {};
+                otherFile.name = "Other";
+                folders.push(otherFile);
+//                $scope.foldername = folders[0];
+                $scope.folders = folders;
+            }).
+            error(function (data, status) {
+                $scope.showError = true;
+            });
+
     }
 
     //todo: if it's a directory, it should be mvr not mv
     //moving a file
-    $scope.move = function (targetFolder , customFolderName) {
+    $scope.move = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
         var fileName;
+        var home = $scope.home.replace(/\//g, '*');
+        var pwd = $scope.pwd.replace(/\//g, '*');
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
-                fileName = customFolderName;
+                fileName = home + "*" + customFolderName;
             }
+        }else if (targetFolder.name == "Select from Home"){
+            fileName = home + "*" + homeFolder.name;
         } else {
-            fileName = targetFolder.name;
+            fileName = pwd + "*" + targetFolder.name;
         }
         for (var i = 0; i < selectedFiles.length; i++){
             $http({method: "GET", url: "filemanager/command/mv " + selectedFiles[i].name +"*" + fileName, cache: false}).
@@ -258,45 +296,76 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.generateCpModel = function () {
         $scope.selectOther = false;
+        $scope.selectHome = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files =  $scope.files;
+        var homeFolders = [];
         var folders = [];
-        for (var i=0; i < files.length; i++){
-            if (!files[i].file ){
-                var found  = $.inArray(files[i].name, fileNames);
-                console.log(found);
-                if (found == -1){
-                    folders.push(files[i]);
+        $http({method: "GET", url: "filemanager/command/ls ~", cache: false}).
+            success(function (data, status) {
+                console.log(data);
+                $scope.homeFiles = data;
+                var homeFiles =  $scope.homeFiles;
+                for (var i=0; i < homeFiles.length; i++){
+                    if (!homeFiles[i].file ){
+                        var found  = $.inArray(homeFiles[i].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            homeFolders.push(homeFiles[i]);
+                        }
+                    }
                 }
-            }
-        }
-        var otherFile = {};
-        otherFile.name = "Other";
-        folders.push(otherFile);
-        $scope.foldername = folders[0];
-        $scope.folders = folders;
+                $scope.homeFoldername = homeFolders[0];
+                $scope.homeFolders = homeFolders;
+                for (var j=0; j < files.length; j++){
+                    if (!files[j].file ){
+                        var found  = $.inArray(files[j].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            folders.push(files[j]);
+                        }
+                    }
+                }
+                var homeFile = {};
+                homeFile.name = "Select from Home";
+                folders.push(homeFile);
+                var otherFile = {};
+                otherFile.name = "Other";
+                folders.push(otherFile);
+//                $scope.foldername = folders[0];
+                $scope.folders = folders;
+            }).
+            error(function (data, status) {
+                $scope.showError = true;
+            });
     }
 
     $scope.populateRest = function(folerName){
         console.log(folerName.name);
         $scope.selectOther = false;
+        $scope.selectHome = false;
         if (folerName.name == "Other"){
              $scope.selectOther = true;
-            console.log($scope.selectOther);
+        }else if (folerName.name == "Select from Home"){
+            $scope.selectHome = true;
         }
     }
 
-    $scope.copy = function (targetFolder , customFolderName) {
+    $scope.copy = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
         var fileName;
+        var home = $scope.home.replace(/\//g, '*');
+        var pwd = $scope.pwd.replace(/\//g, '*');
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
-                fileName = customFolderName;
+                fileName = home + "*" +customFolderName;
             }
+        }else if (targetFolder.name == "Select from Home"){
+            fileName = home + "*" + homeFolder.name;
         } else {
-            fileName = targetFolder.name;
+            fileName = pwd + "*" + targetFolder.name;
         }
         for (var i = 0; i < selectedFiles.length; i++){
             $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + fileName, cache: false}).
