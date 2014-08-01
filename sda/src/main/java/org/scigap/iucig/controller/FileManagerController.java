@@ -3,6 +3,8 @@ package org.scigap.iucig.controller;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.util.ViewNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 @Scope("session")
 @RequestMapping(value = "/filemanager/")
 public class FileManagerController {
-
+    private static final Logger log = LoggerFactory.getLogger(FileManagerController.class);
+    public static final String PORTAL_URL = "portal.url";
+    public static final String KERB_PROPERTIES = "kerb.properties";
+    private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
     /**
      * Returns the result of a command using a Item list
@@ -102,6 +109,26 @@ public class FileManagerController {
             System.out.println("Working Directory : " + workingDirectory);
             return workingDirectory;
 
+        }
+        return null;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getPortalUrl", method = RequestMethod.GET)
+    public String getPortalUrl(HttpServletRequest request) throws Exception {
+        return readProperty(PORTAL_URL);
+    }
+
+    public String readProperty (String propertyName) throws Exception{
+        try {
+            URL resource = FileManagerController.class.getClassLoader().getResource(KERB_PROPERTIES);
+            if (resource != null){
+                properties.load(resource.openStream());
+                return properties.getProperty(propertyName);
+            }
+        } catch (IOException e) {
+            log.error("Unable to read properties..", e);
+            throw new Exception("Unable to read properties.." , e) ;
         }
         return null;
     }

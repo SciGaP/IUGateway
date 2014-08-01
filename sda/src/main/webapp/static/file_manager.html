@@ -69,7 +69,12 @@
         <tr ng-hide="hideLoader"></tr>
         <tr ng-show="hideLoader"><td colspan="7"><div class="loading-iu"></div></td></tr>
         <tr ng-show="showError"></tr>
-        <tr ng-show="showError"><td colspan="7"><div class="alert alert-error">There was an error while loading the data. Your ticket might be expired. Please create a new ticket and try again !</div></td></tr>
+        <tr ng-show="showError">
+            <td colspan="7">
+                <div class="alert alert-error">There was an error while loading the data. Your ticket might be expired. Please create a new ticket and try again !
+                To create a ticket, clear your browser cache and go to <a href="{{portalUrl}}"><b>{{portalUrl}}</b></a></div>
+            </td>
+        </tr>
         <tr ng-show="files.length<1"></tr>
         <tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>
         <tr ng-repeat="file in files" >

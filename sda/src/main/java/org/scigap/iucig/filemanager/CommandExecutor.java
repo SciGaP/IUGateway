@@ -54,7 +54,7 @@ public class CommandExecutor {
     private Stack<String> pathStack;
     private String workingDirectory;
     private String homePath;
-    private static final String LS = "ls -ltr ";
+    private static final String LS = "ls -l ";
     private String remoteUser;
 
     public CommandExecutor(String user) throws Exception{
@@ -281,9 +281,7 @@ public class CommandExecutor {
 
     public String getHomePath() throws Exception {
         if (homePath == null ){
-            String pwd = pwd();
-            System.out.println("***** Home Dir ***** : " + pwd);
-            return pwd;
+            return pwd();
         }
         return homePath;
     }
