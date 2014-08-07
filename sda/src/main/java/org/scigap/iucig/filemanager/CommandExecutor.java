@@ -76,14 +76,22 @@ public class CommandExecutor {
     //execute any command
     public void executeCommand(String command) throws Exception {
         Session session = null;
+        String name = "";
         try {
             session = kerberosConnector.getSession(remoteUser);
             List<String> commandList = stringUtils.deconstructCommand(command);
+            if (commandList.size() >1){
+                if (commandList.get(1) != null){
+                    name =  commandList.get(1);
+                    name = name.replaceAll("\\s", "\\\\ ");
+                }
+            }
+
             if (commandList.get(0).equals("cd")) {
                 if (commandList.get(1).equals("..")) {
                     pathStack.pop();
                 } else {
-                    pathStack.push(commandList.get(1));
+                    pathStack.push(name);
                 }
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
                 command = LS + workingDirectory;
@@ -92,36 +100,38 @@ public class CommandExecutor {
                 setResultMap(stringUtils.categorizeResult(getResult()));
                 setResultItemList(stringUtils.getResultsList(getResult()));
             } else if (commandList.get(0).equals("mkdir")) {
-                command = "mkdir " + workingDirectory + "/" + commandList.get(1);
+                command = "mkdir " + workingDirectory + "/" + name;
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls(workingDirectory);
             } else if (commandList.get(0).equals("rm")) {
-                command = "rm -r " + workingDirectory + "/" + commandList.get(1);
+                command = "rm -r " + workingDirectory + "/" + name;
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls(workingDirectory);
             } else if (commandList.get(0).equals("ls")) {
                 String path = workingDirectory;
                 if (commandList.size() > 1){
-                    path = commandList.get(1);
+                    path = name;
                 }
                 command = LS + path;
                 log.info("COMMAND: " + command);
                 ls(path);
             } else if (commandList.get(0).equals("mv")) {
-                command = "mv " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
+                command = "mv " + getWorkingDirectory() + "/" + name + " ";
                 for (int i=2; i < commandList.size(); i++){
-                    command += commandList.get(i) + "/";
+                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    command += "/" + fname ;
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory());
             }
             else if (commandList.get(0).equals("mvr")) {
-                command = "mv -r " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
+                command = "mv -r " + getWorkingDirectory() + "/" + name + " ";
                 for (int i=2; i < commandList.size(); i++){
-                    command += commandList.get(i) + "/";
+                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    command +=  "/" + fname ;
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
@@ -129,9 +139,10 @@ public class CommandExecutor {
             }
             //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
-                command = "cp -r " + getWorkingDirectory() + "/" + commandList.get(1) + " " + "/";
+                command = "cp -r " + getWorkingDirectory() + "/" + name + " ";
                 for (int i=2; i < commandList.size(); i++){
-                   command += commandList.get(i) + "/";
+                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    command +=  "/" + fname ;
                 }
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
@@ -160,6 +171,7 @@ public class CommandExecutor {
     //download a file
     public void downloadFile(String filename, OutputStream outputStream) throws Exception {
         Session session = null;
+//        filename = filename.replaceAll("\\s", "\\\\ ");
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
@@ -181,9 +193,10 @@ public class CommandExecutor {
     //upload a file
     public void uploadFile(String filename,File uploadedFile) throws Exception {
         Session session = null;
+        filename = filename.replaceAll("\\s", "\\\\ ");
         try {
             session = kerberosConnector.getSession(remoteUser);
-            log.info("DOWNLOADING FILE: " + filename);
+            log.info("UPLOADING FILE: " + filename);
             String filepath = workingDirectory + "/" + filename;
             commandCentral.scpTo(session, filepath, uploadedFile);
 //            ls();

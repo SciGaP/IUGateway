@@ -317,29 +317,30 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 var homeFiles =  $scope.homeFiles;
                 for (var i=0; i < homeFiles.length; i++){
                     if (!homeFiles[i].file ){
-                        homeFolders.push(homeFiles[i]);
-//                        var found  = $.inArray(homeFiles[i].name, fileNames);
-//                        console.log(found);
-//                        if (found == -1){
-
-//                        }
+                        var found  = $.inArray(homeFiles[i].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            homeFolders.push(homeFiles[i]);
+                        }
                     }
                 }
                 $scope.homeFoldername = homeFolders[0];
                 $scope.homeFolders = homeFolders;
                 for (var j=0; j < files.length; j++){
                     if (!files[j].file ){
-                        folders.push(files[j]);
-//                        var found  = $.inArray(files[j].name, fileNames);
-//                        console.log(found);
-//                        if (found == -1){
-//                            folders.push(files[j]);
-//                        }
+                        var found  = $.inArray(files[j].name, fileNames);
+                        console.log(found);
+                        if (found == -1){
+                            folders.push(files[j]);
+                        }
                     }
                 }
                 var homeFile = {};
                 homeFile.name = "Select from Home";
                 folders.push(homeFile);
+                var currentFolder = {};
+                currentFolder.name = "To Current Folder";
+                folders.push(currentFolder);
                 var otherFile = {};
                 otherFile.name = "Other";
                 folders.push(otherFile);
@@ -380,6 +381,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         for (var i = 0; i < selectedFiles.length; i++){
             if (selectedFiles[i].name == targetFolder.name){
                 fileName =  pwd + "*" + "Copy_" + targetFolder.name;
+            } else if (targetFolder.name == "To Current Folder"){
+                    fileName = pwd + "*" + "Copy_" + selectedFiles[i].name;
             }
             $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + fileName, cache: false}).
                 success(function (data, status) {
