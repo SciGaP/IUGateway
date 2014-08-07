@@ -142,7 +142,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 if (selectedFiles[j].file){
                     content += "<p>Will delete the file " + selectedFiles[j].name + "</p>";
                 } else{
-                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and it's content.</p>";
+                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and its content.</p>";
                 }
             }
             content += "</div>";
@@ -317,22 +317,24 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 var homeFiles =  $scope.homeFiles;
                 for (var i=0; i < homeFiles.length; i++){
                     if (!homeFiles[i].file ){
-                        var found  = $.inArray(homeFiles[i].name, fileNames);
-                        console.log(found);
-                        if (found == -1){
-                            homeFolders.push(homeFiles[i]);
-                        }
+                        homeFolders.push(homeFiles[i]);
+//                        var found  = $.inArray(homeFiles[i].name, fileNames);
+//                        console.log(found);
+//                        if (found == -1){
+
+//                        }
                     }
                 }
                 $scope.homeFoldername = homeFolders[0];
                 $scope.homeFolders = homeFolders;
                 for (var j=0; j < files.length; j++){
                     if (!files[j].file ){
-                        var found  = $.inArray(files[j].name, fileNames);
-                        console.log(found);
-                        if (found == -1){
-                            folders.push(files[j]);
-                        }
+                        folders.push(files[j]);
+//                        var found  = $.inArray(files[j].name, fileNames);
+//                        console.log(found);
+//                        if (found == -1){
+//                            folders.push(files[j]);
+//                        }
                     }
                 }
                 var homeFile = {};
@@ -376,6 +378,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             fileName = pwd + "*" + targetFolder.name;
         }
         for (var i = 0; i < selectedFiles.length; i++){
+            if (selectedFiles[i].name == targetFolder.name){
+                fileName =  pwd + "*" + "Copy_" + targetFolder.name;
+            }
             $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + fileName, cache: false}).
                 success(function (data, status) {
                     console.log(data);
