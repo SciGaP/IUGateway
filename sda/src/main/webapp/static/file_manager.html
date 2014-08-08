@@ -138,7 +138,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button ng-hide="selectedFiles==0" ng-click="deleteFile()" class="btn btn-danger pull-left" ng-show="selectedFiles>0">Delete</button>
+        <button ng-hide="selectedFiles.length==0" ng-click="deleteFile()" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Delete</button>
         <!--<button ng-click="deleteFile()" class="btn btn-danger pull-left">Delete</button>-->
         <div class="alert alert-error" ng-show="deleteDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
             Error occurred while deleting. Please try again later

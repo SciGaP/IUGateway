@@ -210,7 +210,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 }
             }
             if ($scope.found == false){
-                $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') + "*" + this.value, cache: false}).
+                var pwd = $scope.pwd.replace(/\//g, '*');
+                $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') + "*" + pwd + "*" + this.value, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
                         $scope.renameSuccess = true;
