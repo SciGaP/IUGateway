@@ -247,15 +247,12 @@ public class FileManagerController {
                 commandExecutor = new CommandExecutor(remoteUser);
             }
         }
-        String fileName = null;
+        String fileName;
         if (!file.isEmpty()) {
             fileName = file.getOriginalFilename();
             File createdFile = new File(fileName);
             file.transferTo(createdFile);
 
-            if (fileName == null) {
-                fileName = file.getName();
-            }
             try {
                 commandExecutor.uploadFile(fileName, createdFile);
             } catch (Throwable e) {

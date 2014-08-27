@@ -2,6 +2,18 @@ var fileManagerApp = angular.module("fileManagerApp",["user","urlprovider"]);
 
 fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.hideLoader = true;
+    $scope.addFolderinitial =  [
+        {
+            folderExist : false,
+            createSuccess : false,
+            createDisabled : false,
+            foldername : "",
+            folderExistMsg : "",
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
+    $scope.addFolderdatas = angular.copy($scope.addFolderinitial,$scope.addFolderdatas);
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -118,15 +130,33 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.addFolder = function (folderName) {
-        $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
-            success(function (data, status) {
-                $scope.files = data;
-                $scope.createSuccess = true;
-                $scope.foldername = null;
-            }).
-            error(function (data, status) {
-                $scope.createDisabled = true;
-            });
+        for (var i = 0; i < $scope.files.length; i++) {
+            if (folderName == $scope.files[i].name) {
+                $scope.addFolderdatas.folderExist = true;
+                $scope.addFolderdatas.foldername = "";
+                $scope.addFolderdatas.folderExistMsg = "File / folder already exists. Please provide a different name...";
+            }
+        }
+        if ($scope.addFolderdatas.folderExist == false) {
+            $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
+                success(function (data, status) {
+                    $scope.files = data;
+                    $scope.addFolderdatas.createSuccess = true;
+                    $scope.addFolderdatas.createDisabled = false;
+                    $scope.addFolderdatas.foldername = "";
+                }).
+                error(function (data, status) {
+                    $scope.addFolderdatas.createDisabled = true;
+                    $scope.addFolderdatas.createSuccess = false;
+                    $scope.addFolderdatas.foldername = "";
+                });
+        }
+    }
+
+    $scope.resetAddFolder = function(){
+        console.log($scope.addFolderinitial[0].folderExistMsg);
+        $scope.addFolderdatas = angular.copy($scope.addFolderinitial[0],$scope.addFolderdatas);
+        console.log($scope.addFolderdatas.folderExistMsg);
     }
 
     $scope.generateDeleteModel = function () {
@@ -419,6 +449,14 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         console.log("*******at upload controller*****");
         console.log(file);
     }
+
+    $scope.validateForm = function(){
+        var x = document.forms["fileUploadForm"]["file"].value;
+        if (x==null || x=="") {
+            alert("Please select a file to upload");
+            return false;
+        }
+    }
 });
 
 
@@ -439,6 +477,18 @@ var getCheckedFileNames = function(files) {
     }
     return fileNames;
 }
+
+$(document).ready(function () {
+
+    $('#uploadFileModel').validate({ // initialize the plugin
+        rules: {
+            file: {
+                required: true
+            }
+        }
+    });
+
+});
 
 
 
