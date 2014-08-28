@@ -13,7 +13,18 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             errorMsg : ""
         }
     ];
-    $scope.addFolderdatas = angular.copy($scope.addFolderinitial,$scope.addFolderdatas);
+    $scope.renameinitial =  [
+        {
+            folderExist : false,
+            renameSuccess : false,
+            renameDisabled : false,
+            folderExistMsg : "",
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
+    $scope.addFolderdatas = angular.copy($scope.addFolderinitial);
+    $scope.renamedatas =  angular.copy($scope.renameinitial);
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -130,11 +141,12 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.addFolder = function (folderName) {
+        $scope.addFolderdatas.folderExist = false;
         for (var i = 0; i < $scope.files.length; i++) {
             if (folderName == $scope.files[i].name) {
                 $scope.addFolderdatas.folderExist = true;
                 $scope.addFolderdatas.foldername = "";
-                $scope.addFolderdatas.folderExistMsg = "File / folder already exists. Please provide a different name...";
+                $scope.addFolderdatas.folderExistMsg = folderName + " already exists. Please provide a different name...";
             }
         }
         if ($scope.addFolderdatas.folderExist == false) {
@@ -144,18 +156,20 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $scope.addFolderdatas.createSuccess = true;
                     $scope.addFolderdatas.createDisabled = false;
                     $scope.addFolderdatas.foldername = "";
+                    $scope.addFolderdatas.successMsg = "New folder " + folderName + " created successfully...";
                 }).
                 error(function (data, status) {
                     $scope.addFolderdatas.createDisabled = true;
                     $scope.addFolderdatas.createSuccess = false;
                     $scope.addFolderdatas.foldername = "";
+                    $scope.addFolderdatas.errorMsg = "Error occured while creating folder " + folderName + "...";
                 });
         }
     }
 
     $scope.resetAddFolder = function(){
         console.log($scope.addFolderinitial[0].folderExistMsg);
-        $scope.addFolderdatas = angular.copy($scope.addFolderinitial[0],$scope.addFolderdatas);
+        $scope.addFolderdatas = angular.copy($scope.addFolderinitial);
         console.log($scope.addFolderdatas.folderExistMsg);
     }
 
@@ -215,7 +229,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var selectedFiles = getCheckedFiles($scope.files);
         $scope.selectedFiles = selectedFiles;
         if (selectedFiles.length == 0){
-            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to rename...</div>";
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files/folders to rename...</div>";
             $('#renameModel').show();
             $('#renameFile').show().html(error);
         } else {
@@ -232,26 +246,45 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //renaming a file or a folder
     $scope.rename = function () {
         $('#renameDiv :input').each(function () {
-            console.log(this.value);
-            $scope.found = false;
+            $scope.renamedatas.folderExist = false;
             for (var i = 0; i < $scope.files.length; i++) {
                 if (this.value == $scope.files[i].name) {
-                    $scope.found = true;
+                    $scope.renamedatas.folderExist = true;
+                    $scope.renamedatas.folderExistMsg = this.value + " already exists. Please provide a different name...";
+                    console.log($scope.renamedatas.folderExistMsg);
+                    console.log($scope.renamedatas.folderExist);
                 }
             }
-            if ($scope.found == false){
-                var pwd = $scope.pwd.replace(/\//g, '*');
-                $http({method: "GET", url: "filemanager/command/mv " + $(this).attr('id') + "*" + pwd + "*" + this.value, cache: false}).
-                    success(function (data, status) {
-                        $scope.files = data;
-                        $scope.renameSuccess = true;
-                    }).
-                    error(function (data, status) {
-                        $scope.renameDisabled = true;
-                        console.log("Error while renaming object !");
-                    });
+            if ($scope.renamedatas.folderExist == false){
+                var name = jQuery.trim(this.value);
+                if (name == "" || name == "null" || name == "NULL" || name == null ){
+                    $scope.renamedatas.renameDisabled = true;
+                    $scope.renamedatas.errorMsg = "Cannot rename file/folder without a name or name with only spaces. Please rename with  valid name."
+                }else {
+                    var pwd = $scope.pwd.replace(/\//g, '*');
+                    var source = $(this).attr('id');
+                    var dest = this.value;
+                    $http({method: "GET", url: "filemanager/command/mv " + source + "*" + pwd + "*" + dest, cache: false}).
+                        success(function (data, status) {
+                            $scope.files = data;
+                            $scope.renamedatas.renameSuccess = true;
+                            $scope.renamedatas.successMsg = source + " successfully renamed to " + dest;
+                        }).
+                        error(function (data, status) {
+                            $scope.renamedatas.errorMsg = "Error occurred while renaming " + source + ". Please try again later.";
+                            $scope.renamedatas.renameDisabled = true;
+                        });
+                }
             }
         });
+    }
+
+    $scope.resetRenameFolder = function(){
+        console.log($scope.renamedatas.folderExistMsg);
+        console.log($scope.renamedatas.folderExist);
+        $scope.renamedatas = angular.copy($scope.renameinitial);
+        console.log($scope.renamedatas.folderExistMsg);
+        console.log($scope.renamedatas.folderExist);
     }
 
     $scope.generateMvModel = function () {
