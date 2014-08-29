@@ -214,7 +214,10 @@
                 </select>
             </div>
             <div class="span4" ng-show="selectOther"><strong>Folder Name</strong></div>
-            <div><input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/></div>
+            <div>
+                <input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/>
+                <div ng-show="selectOther">Type the custom folder relative to your home as a/b/c</div>
+            </div>
             <div class="span4" ng-show="selectHome"><strong>Home Folders</strong></div>
             <div><select ng-show="selectHome" name="homeFoldername" required
                          ng-options="folder as folder.name for folder in homeFolders"
@@ -256,7 +259,10 @@
                 </select>
             </div>
                 <div class="span4" ng-show="selectOther"><strong>Folder Name</strong></div>
-                <div><input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/></div>
+                <div>
+                    <input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/>
+                    <div ng-show="selectOther">Type the custom folder relative to your home as a/b/c</div>
+                </div>
                 <div class="span4" ng-show="selectHome"><strong>Home Folders</strong></div>
                 <div><select ng-show="selectHome" name="homeFoldername" required
                          ng-options="folder as folder.name for folder in homeFolders"

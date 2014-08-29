@@ -372,6 +372,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 customFolderName = customFolderName.replace(/\//g, '*');
                 fileNameFullPath = home + "*" + customFolderName;
                 fileName = customFolderName;
+            }else if (customFolderName == "Home"){
+                fileNameFullPath = home;
+                fileName = home;
             }
         }else if (targetFolder.name == "Select from Home"){
             fileNameFullPath = home + "*" + homeFolder.name;
@@ -458,7 +461,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $scope.selectOther = false;
         $scope.selectHome = false;
         if (folerName.name == "Other"){
-             $scope.selectOther = true;
+            $scope.selectOther = true;
+            $scope.otherfolder = "Home";
+
         }else if (folerName.name == "Select from Home"){
             $scope.selectHome = true;
         }
@@ -475,6 +480,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 customFolderName = customFolderName.replace(/\//g, '*');
                 fileNameFullPath = home + "*" +customFolderName;
                 fileName = customFolderName;
+            }else if (customFolderName == "Home"){
+                fileNameFullPath = home;
+                fileName = home;
             }
         }else if (targetFolder.name == "Select from Home"){
             fileNameFullPath = home + "*" + homeFolder.name;
