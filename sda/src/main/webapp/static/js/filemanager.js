@@ -204,7 +204,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var selectedFiles = getCheckedFiles($scope.files);
         $scope.selectedFiles = selectedFiles;
         if (selectedFiles.length == 0){
-            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to delete...</div>";
+            var error = "<div class='alert alert-error' ng-show='true'><button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files / folders to delete...</div>";
             $('#deleteModel').show();
             $('#deletefiles').show().html(error);
         } else {
@@ -213,7 +213,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 if (selectedFiles[j].file){
                     content += "<p>Will delete the file " + selectedFiles[j].name + "</p>";
                 } else{
-                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and its content.</p>";
+                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and any of its available content.</p>";
                 }
             }
             content += "</div>";
@@ -363,10 +363,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //moving a file
     $scope.move = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
-        var fileNameFullPath;
-        var fileName;
         var home = $scope.home.replace(/\//g, '*');
         var pwd = $scope.pwd.replace(/\//g, '*');
+        var fileNameFullPath = home;
+        var fileName;
+
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
@@ -375,6 +376,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             }else if (customFolderName == "Home"){
                 fileNameFullPath = home;
                 fileName = home;
+            }else {
+                fileNameFullPath =  home + "*" + customFolderName;
+                fileName = home + "/" + customFolderName;
             }
         }else if (targetFolder.name == "Select from Home"){
             fileNameFullPath = home + "*" + homeFolder.name;

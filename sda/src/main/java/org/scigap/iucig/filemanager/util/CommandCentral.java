@@ -97,34 +97,62 @@ public class CommandCentral {
         if (!session.isConnected()) {
             return null;
         }
-
-        Channel channel = null;
+        ChannelExec channel = null;
         InputStream in = null;
         try {
-            channel = session.openChannel("exec");
-            ((ChannelExec) channel).setCommand(command);
+            channel = (ChannelExec)session.openChannel("exec");
+            channel.setCommand(command);
             channel.setInputStream(null);
-            ((ChannelExec) channel).setErrStream(System.err);
+            channel.setErrStream(System.err);
             in = channel.getInputStream();
             channel.connect();
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception ee) {
+                log.error("Error occured while channel connect", ee.getMessage());
+            }
             byte[] tmp = new byte[4096];
-            while (true) {
-                while (in.available() > 0) {
-                    int i = in.read(tmp, 0, 4096);
-                    if (i < 0) break;
-                    result.add(new String(tmp, 0, i));
-                    System.out.println(new String(tmp, 0, i));
+            if (channel.getExitStatus() != 0) {
+                while (true) {
+                    while (in.available() > 0) {
+                        int i = in.read(tmp, 0, 4096);
+                        if (i < 0) break;
+                        result.add(new String(tmp, 0, i));
+                    }
+                    throw new Exception(result.toString());
                 }
-                if (channel.isClosed()) {
-                    System.out.println("exit-status: " + channel.getExitStatus());
-                    break;
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception ee) {
-                    log.error("Error occured while channel connect", ee.getMessage());
+            }else {
+                while (true) {
+                    while (in.available() > 0) {
+                        int i = in.read(tmp, 0, 4096);
+                        if (i < 0) break;
+                        result.add(new String(tmp, 0, i));
+                    }
+                    if (channel.isClosed()) {
+                        System.out.println("exit-status: " + channel.getExitStatus());
+                        break;
+                    }
                 }
             }
+
+//            while (true) {
+//                while (in.available() > 0) {
+//                    int i = in.read(tmp, 0, 4096);
+//                    if (i < 0) break;
+//                    result.add(new String(tmp, 0, i));
+//                    System.out.println(new String(tmp, 0, i));
+//                }
+//                if (channel.isClosed()) {
+//                    System.out.println("exit-status: " + channel.getExitStatus());
+//                    break;
+//                }
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (Exception ee) {
+//                    log.error("Error occured while channel connect", ee.getMessage());
+//                }
+//            }
         } catch (IOException e) {
             log.error("Error occured while opening channel", e.getMessage());
             throw new Exception(e.getMessage());
@@ -141,6 +169,20 @@ public class CommandCentral {
             in.close();
         }
         return result;
+    }
+
+    public StringBuffer readAll(BufferedReader bufferedReader,StringBuffer buffer) throws Exception{
+        try {
+            String value;
+            while((value = bufferedReader.readLine()) != null)
+            {
+                result.add(value);
+                buffer.append(value);
+            }
+        } catch (Exception e){
+            throw new Exception(e);
+        }
+        return buffer;
     }
 
     public InputStream scpFrom(Session session, String filename, OutputStream outStream) throws Exception {

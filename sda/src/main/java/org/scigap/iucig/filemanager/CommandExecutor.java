@@ -123,6 +123,7 @@ public class CommandExecutor {
                     String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
                     command += "/" + fname ;
                 }
+                command += "/";
                 log.info("COMMAND: " + command);
                 commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory());
