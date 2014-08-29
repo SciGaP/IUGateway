@@ -23,8 +23,35 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             errorMsg : ""
         }
     ];
+    $scope.deleteinitial =  [
+        {
+            deleteSuccess : false,
+            deleteDisabled : false,
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
+    $scope.mvinitial =  [
+        {
+            moveSuccess : false,
+            moveDisabled : false,
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
+    $scope.cpinitial =  [
+        {
+            copySuccess : false,
+            copyDisabled : false,
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
     $scope.addFolderdatas = angular.copy($scope.addFolderinitial);
     $scope.renamedatas =  angular.copy($scope.renameinitial);
+    $scope.deletedatas =  angular.copy($scope.deleteinitial);
+    $scope.mvdatas =  angular.copy($scope.mvinitial);
+    $scope.cpdatas =  angular.copy($scope.cpinitial);
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -162,7 +189,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $scope.addFolderdatas.createDisabled = true;
                     $scope.addFolderdatas.createSuccess = false;
                     $scope.addFolderdatas.foldername = "";
-                    $scope.addFolderdatas.errorMsg = "Error occured while creating folder " + folderName + "...";
+                    $scope.addFolderdatas.errorMsg = "Error occured while creating folder " + folderName + ".Please try again later...";
                 });
         }
     }
@@ -245,6 +272,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     //renaming a file or a folder
     $scope.rename = function () {
+        $scope.renamedatas.successMsg = "";
+        $scope.renamedatas.errorMsg = "";
         $('#renameDiv :input').each(function () {
             $scope.renamedatas.folderExist = false;
             for (var i = 0; i < $scope.files.length; i++) {
@@ -258,7 +287,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 var name = jQuery.trim(this.value);
                 if (name == "" || name == "null" || name == "NULL" || name == null ){
                     $scope.renamedatas.renameDisabled = true;
-                    $scope.renamedatas.errorMsg = "";
                     $scope.renamedatas.errorMsg += "Cannot rename file/folder without a name or name with only spaces. Please rename with  valid name... "
                 }else {
                     var pwd = $scope.pwd.replace(/\//g, '*');
@@ -267,12 +295,10 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $http({method: "GET", url: "filemanager/command/mv " + source + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;
-                            $scope.renamedatas.successMsg = "";
                             $scope.renamedatas.renameSuccess = true;
                             $scope.renamedatas.successMsg += source + " successfully renamed to " + dest + "... ";
                         }).
                         error(function (data, status) {
-                            $scope.renamedatas.errorMsg = "";
                             $scope.renamedatas.errorMsg += "Error occurred while renaming " + source + ". Please try again later... ";
                             $scope.renamedatas.renameDisabled = true;
                         });
@@ -337,31 +363,44 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //moving a file
     $scope.move = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
+        var fileNameFullPath;
         var fileName;
         var home = $scope.home.replace(/\//g, '*');
         var pwd = $scope.pwd.replace(/\//g, '*');
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
-                fileName = home + "*" + customFolderName;
+                fileNameFullPath = home + "*" + customFolderName;
+                fileName = customFolderName;
             }
         }else if (targetFolder.name == "Select from Home"){
-            fileName = home + "*" + homeFolder.name;
+            fileNameFullPath = home + "*" + homeFolder.name;
+            fileName = homeFolder.name;
         } else {
-            fileName = pwd + "*" + targetFolder.name;
+            fileNameFullPath = pwd + "*" + targetFolder.name;
+            fileName = targetFolder.name;
         }
+        $scope.mvdatas.successMsg = "";
+        $scope.mvdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++){
-            $http({method: "GET", url: "filemanager/command/mv " + selectedFiles[i].name +"*" + fileName, cache: false}).
+            var mvSelectedFile = selectedFiles[i].name;
+            $http({method: "GET", url: "filemanager/command/mv " + mvSelectedFile +"*" + fileNameFullPath, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
-                    $scope.mvSuccess = true;
+                    $scope.mvdatas.moveSuccess = true;
+                    $scope.mvdatas.successMsg += mvSelectedFile + " moved to " + fileName + " successfully... ";
                 }).
                 error(function (data, status) {
                     console.log("Error getting files !");
-                    $scope.mvDisabled = true;
+                    $scope.mvdatas.moveDisabled = true;
+                    $scope.mvdatas.errorMsg += "Error occured while moving " + mvSelectedFile + " to " + fileName + " .Please try again later...  ";
                 });
         }
+    }
+
+    $scope.resetMv = function(){
+        $scope.mvdatas = angular.copy($scope.mvinitial);
     }
 
     $scope.generateCpModel = function () {
@@ -427,53 +466,76 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.copy = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
+        var fileNameFullPath;
         var fileName;
         var home = $scope.home.replace(/\//g, '*');
         var pwd = $scope.pwd.replace(/\//g, '*');
         if (targetFolder.name == "Other"){
             if (customFolderName.contains("/")){
                 customFolderName = customFolderName.replace(/\//g, '*');
-                fileName = home + "*" +customFolderName;
+                fileNameFullPath = home + "*" +customFolderName;
+                fileName = customFolderName;
             }
         }else if (targetFolder.name == "Select from Home"){
-            fileName = home + "*" + homeFolder.name;
+            fileNameFullPath = home + "*" + homeFolder.name;
+            fileName = homeFolder.name;
         } else {
-            fileName = pwd + "*" + targetFolder.name;
+            fileNameFullPath = pwd + "*" + targetFolder.name;
+            fileName = targetFolder.name;
         }
+        $scope.cpdatas.successMsg = "";
+        $scope.cpdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++){
-            if (selectedFiles[i].name == targetFolder.name){
-                fileName =  pwd + "*" + "Copy_" + targetFolder.name;
+            var selectedCPFile = selectedFiles[i].name;
+            if (selectedCPFile == targetFolder.name){
+                fileNameFullPath =  pwd + "*" + "Copy_" + targetFolder.name;
+                fileName =  "Copy_" + targetFolder.name;
             } else if (targetFolder.name == "To Current Folder"){
-                    fileName = pwd + "*" + "Copy_" + selectedFiles[i].name;
+                    fileNameFullPath = pwd + "*" + "Copy_" + selectedCPFile;
+                    fileName = "Copy_" + selectedCPFile;
             }
-            $http({method: "GET", url: "filemanager/command/cpr " + selectedFiles[i].name +"*" + fileName, cache: false}).
+            $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile +"*" + fileNameFullPath, cache: false}).
                 success(function (data, status) {
-                    console.log(data);
                     $scope.files = data;
-                    $scope.cpSuccess = true;
+                    $scope.cpdatas.copySuccess = true;
+                    $scope.cpdatas.successMsg += selectedCPFile + " copied to " + fileName + " successfully... " ;
                 }).
                 error(function (data, status) {
                     console.log("Error copying files !");
-                    $scope.cpDisabled = true;
+                    $scope.cpdatas.copyDisabled = true;
+                    $scope.cpdatas.errorMsg += "Error occured while copying " + selectedCPFile + " to " + fileName + " . Please try again later... " ;
                 });
         }
     }
+
+    $scope.resetCp = function(){
+        $scope.cpdatas = angular.copy($scope.cpinitial);
+    }
+
     //deleting a file
     $scope.deleteFile = function () {
-        console.log("*******at delete controller*****");
         var fileNames = getCheckedFiles($scope.files);
+        $scope.deletedatas.successMsg = "";
+        $scope.deletedatas.errorMsg = "";
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
-                $http({method: "GET", url: "filemanager/command/rm " + fileNames[j].name, cache: false}).
+                var deleteFilename = fileNames[j].name;
+                $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
-                        $scope.deleteSuccess = true;
+                        $scope.deletedatas.deleteSuccess = true;
+                        $scope.deletedatas.successMsg += deleteFilename + " deleted successfully... ";
                     }).
                     error(function (data, status) {
-                        $scope.deleteDisabled = true;
+                        $scope.deletedatas.deleteDisabled = true;
+                        $scope.deletedatas.errorMsg += "Unable to delete " + deleteFilename + " ... ";
                     });
             }
         }
+    }
+
+    $scope.resetDelete = function(){
+        $scope.deletedatas = angular.copy($scope.deleteinitial);
     }
 
     $scope.uploadFile = function (file) {
@@ -508,18 +570,3 @@ var getCheckedFileNames = function(files) {
     }
     return fileNames;
 }
-
-$(document).ready(function () {
-
-    $('#uploadFileModel').validate({ // initialize the plugin
-        rules: {
-            file: {
-                required: true
-            }
-        }
-    });
-
-});
-
-
-

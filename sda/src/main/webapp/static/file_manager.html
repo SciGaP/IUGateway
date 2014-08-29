@@ -12,7 +12,6 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="static/js/common.js"></script>
-    <script src="static/js/library/jquery-validate.js"></script>
     <script src="static/js/filemanager.js"></script>
     <script src="static/js/urlprovider.js"></script>
 
@@ -102,15 +101,15 @@
         <button class="btn" ng-click="resetAddFolder()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="!addFolderdatas.foldername" ng-click="addFolder(addFolderdatas.foldername)" class="btn btn-danger pull-left" ng-show="addFolderdatas.foldername">Create Folder</button>
         <div class="alert alert-error" ng-hide="!addFolderdatas.createDisabled" ng-show="addFolderdatas.createDisabled">
-            <button type='button' ng-click="resetAddFolder()" class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>
+            <!--<button type='button' ng-click="resetAddFolder()" class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>-->
             {{addFolderdatas.errorMsg}}
         </div>
         <div class="alert alert-error" ng-hide="!addFolderdatas.folderExist" ng-show="addFolderdatas.folderExist">
-            <button type='button' class='close' ng-click="resetAddFolder()"  data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>
+            <!--<button type='button' class='close' ng-click="resetAddFolder()"  data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>-->
             {{addFolderdatas.folderExistMsg}}
         </div>
         <div class="alert alert-success" ng-hide="!addFolderdatas.createSuccess" ng-show="addFolderdatas.createSuccess">
-            <button type='button' ng-click="resetAddFolder()" class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>
+            <!--<button type='button' ng-click="resetAddFolder()" class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>-->
             {{addFolderdatas.successMsg}}
         </div>
     </div>
@@ -146,14 +145,17 @@
     <div id="deletefiles" class="modal-body">
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" ng-show="true" ng-click="resetDelete()">Reset</button>
+        <button class="btn" ng-click="resetDelete()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="deleteFile()" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Delete</button>
         <!--<button ng-click="deleteFile()" class="btn btn-danger pull-left">Delete</button>-->
-        <div class="alert alert-error" ng-show="deleteDisabled"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-            Error occurred while deleting. Please try again later
+        <div class="alert alert-error" ng-hide="!deletedatas.deleteDisabled" ng-show="deletedatas.deleteDisabled">
+            <!--<button type='button' class='close' data-dismiss='alert'>&times;</button>-->
+            {{deletedatas.errorMsg}}
         </div>
-        <div class="alert alert-success" ng-show="deleteSuccess"><button type='button' class='close' data-dismiss='alert'>&times;</button>
-            File / Folder deleted successfully..
+        <div class="alert alert-success" ng-hide="!deletedatas.deleteSuccess" ng-show="deletedatas.deleteSuccess">
+            <!--<button type='button' class='close' data-dismiss='alert'>&times;</button>-->
+            {{deletedatas.successMsg}}
         </div>
     </div>
 </div>
@@ -180,11 +182,11 @@
         <button class="btn" ng-click="resetRenameFolder()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="rename(newname)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Rename</button>
         <div class="alert alert-error" ng-hide="!renamedatas.renameDisabled" ng-show="renamedatas.renameDisabled">
-            <button type='button' ng-click="resetRenameFolder()" class='close' data-dismiss='alert'  data-dismiss='modal'>&times;</button>
+            <!--<button type='button' ng-click="resetRenameFolder()" class='close' data-dismiss='alert'  data-dismiss='modal'>&times;</button>-->
            {{renamedatas.errorMsg}}
         </div>
         <div class="alert alert-error" ng-hide="!renamedatas.folderExist" ng-show="renamedatas.folderExist"  >
-            <button type='button'  ng-click="resetRenameFolder()"  class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>
+            <!--<button type='button'  ng-click="resetRenameFolder()"  class='close' data-dismiss='alert' data-dismiss='modal' aria-hidden="true">&times;</button>-->
             {{renamedatas.folderExistMsg}}
         </div>
         <div class="alert alert-success" ng-show="renamedatas.renameSuccess" ng-hide="!renamedatas.renameSuccess">
@@ -222,13 +224,16 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" ng-show="true" ng-click="resetMv()">Reset</button>
+        <button class="btn" ng-click="resetMv()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="move(foldername, otherfolder, homeFoldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Move</button>
-        <div class="alert alert-error" ng-show="mvDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
-            Error occurred while moving to folder. Please try again later
+        <div class="alert alert-error" ng-hide="!mvdatas.moveDisabled" ng-show="mvdatas.moveDisabled">
+            <!--<button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>-->
+            {{mvdatas.errorMsg}}
         </div>
-        <div class="alert alert-success" ng-show="mvSuccess"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
-            Data moved successfully..
+        <div class="alert alert-success" ng-hide="!mvdatas.moveSuccess" ng-show="mvdatas.moveSuccess">
+            <!--<button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>-->
+            {{mvdatas.successMsg}}
         </div>
     </div>
 </div>
@@ -261,14 +266,17 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" ng-show="true" ng-click="resetCp()">Reset</button>
+        <button class="btn" ng-click="resetCp()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="copy(foldername, otherfolder, homeFoldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Copy</button>
         <!--<button ng-click="copy(foldername)" class="btn btn-danger pull-left">Copy</button>-->
-        <div class="alert alert-error" ng-show="cpDisabled"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
-            Error occurred while copying to folder. Please try again later
+        <div class="alert alert-error" ng-hide="!cpdatas.copyDisabled" ng-show="cpdatas.copyDisabled">
+            <!--<button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>-->
+            {{cpdatas.errorMsg}}
         </div>
-        <div class="alert alert-success" ng-show="cpSuccess"><button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>
-            Data copied successfully..
+        <div class="alert alert-success" ng-hide="!cpdatas.copySuccess" ng-show="cpdatas.copySuccess">
+            <!--<button type='button' class='close' data-dismiss='alert' data-dismiss='modal'>&times;</button>-->
+            {{cpdatas.successMsg}}
         </div>
     </div>
 </div>
