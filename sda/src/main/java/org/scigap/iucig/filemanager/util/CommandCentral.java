@@ -113,46 +113,46 @@ public class CommandCentral {
                 log.error("Error occured while channel connect", ee.getMessage());
             }
             byte[] tmp = new byte[4096];
-            if (channel.getExitStatus() != 0) {
-                while (true) {
-                    while (in.available() > 0) {
-                        int i = in.read(tmp, 0, 4096);
-                        if (i < 0) break;
-                        result.add(new String(tmp, 0, i));
-                    }
-                    throw new Exception(result.toString());
-                }
-            }else {
-                while (true) {
-                    while (in.available() > 0) {
-                        int i = in.read(tmp, 0, 4096);
-                        if (i < 0) break;
-                        result.add(new String(tmp, 0, i));
-                    }
-                    if (channel.isClosed()) {
-                        System.out.println("exit-status: " + channel.getExitStatus());
-                        break;
-                    }
-                }
-            }
-
-//            while (true) {
-//                while (in.available() > 0) {
-//                    int i = in.read(tmp, 0, 4096);
-//                    if (i < 0) break;
-//                    result.add(new String(tmp, 0, i));
-//                    System.out.println(new String(tmp, 0, i));
+//            if (channel.getExitStatus() != 0) {
+//                while (true) {
+//                    while (in.available() > 0) {
+//                        int i = in.read(tmp, 0, 4096);
+//                        if (i < 0) break;
+//                        result.add(new String(tmp, 0, i));
+//                    }
+//                    throw new Exception(result.toString());
 //                }
-//                if (channel.isClosed()) {
-//                    System.out.println("exit-status: " + channel.getExitStatus());
-//                    break;
-//                }
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (Exception ee) {
-//                    log.error("Error occured while channel connect", ee.getMessage());
+//            }else {
+//                while (true) {
+//                    while (in.available() > 0) {
+//                        int i = in.read(tmp, 0, 4096);
+//                        if (i < 0) break;
+//                        result.add(new String(tmp, 0, i));
+//                    }
+//                    if (channel.isClosed()) {
+//                        System.out.println("exit-status: " + channel.getExitStatus());
+//                        break;
+//                    }
 //                }
 //            }
+
+            while (true) {
+                while (in.available() > 0) {
+                    int i = in.read(tmp, 0, 4096);
+                    if (i < 0) break;
+                    result.add(new String(tmp, 0, i));
+                    System.out.println(new String(tmp, 0, i));
+                }
+                if (channel.isClosed()) {
+                    System.out.println("exit-status: " + channel.getExitStatus());
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ee) {
+                    log.error("Error occured while channel connect", ee.getMessage());
+                }
+            }
         } catch (IOException e) {
             log.error("Error occured while opening channel", e.getMessage());
             throw new Exception(e.getMessage());

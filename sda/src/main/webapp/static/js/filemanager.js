@@ -67,22 +67,22 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         error(function (data, status) {
             console.log("Error getting home directory !");
         });
-    $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.totalSize = data;
-
-        }).
-        error(function (data, status) {
-        });
-    $http({method: "GET", url: "filemanager/fileCount", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.totalfiles = data;
-
-        }).
-        error(function (data, status) {
-        });
+//    $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
+//        success(function (data, status) {
+//            console.log(data);
+//            $scope.totalSize = data;
+//
+//        }).
+//        error(function (data, status) {
+//        });
+//    $http({method: "GET", url: "filemanager/fileCount", cache: false}).
+//        success(function (data, status) {
+//            console.log(data);
+//            $scope.totalfiles = data;
+//
+//        }).
+//        error(function (data, status) {
+//        });
     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
         success(function (data, status) {
             console.log(data);
