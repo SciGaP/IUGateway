@@ -487,6 +487,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             }else if (customFolderName == "Home"){
                 fileNameFullPath = home;
                 fileName = home;
+            }else {
+                fileNameFullPath =  home + "*" + customFolderName;
+                fileName = home + "/" + customFolderName;
             }
         }else if (targetFolder.name == "Select from Home"){
             fileNameFullPath = home + "*" + homeFolder.name;
