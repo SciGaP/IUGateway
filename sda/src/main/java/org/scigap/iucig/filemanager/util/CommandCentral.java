@@ -145,6 +145,9 @@ public class CommandCentral {
                 }
                 if (channel.isClosed()) {
                     System.out.println("exit-status: " + channel.getExitStatus());
+                    if (channel.getExitStatus() !=  0){
+                        throw new Exception(result.toString());
+                    }
                     break;
                 }
                 try {
