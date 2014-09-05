@@ -47,11 +47,20 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             errorMsg : ""
         }
     ];
+    $scope.fileUploadinitial =  [
+        {
+            uploadSuccess : false,
+            uploadDisabled : false,
+            successMsg : "",
+            errorMsg : ""
+        }
+    ];
     $scope.addFolderdatas = angular.copy($scope.addFolderinitial);
     $scope.renamedatas =  angular.copy($scope.renameinitial);
     $scope.deletedatas =  angular.copy($scope.deleteinitial);
     $scope.mvdatas =  angular.copy($scope.mvinitial);
     $scope.cpdatas =  angular.copy($scope.cpinitial);
+    $scope.fileUploadDatas =  angular.copy($scope.fileUploadinitial);
     $http({method: "GET", url: "getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -292,7 +301,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     var pwd = $scope.pwd.replace(/\//g, '*');
                     var source = $(this).attr('id');
                     var dest = this.value;
-                    $http({method: "GET", url: "filemanager/command/mv " + source + "*" + pwd + "*" + dest, cache: false}).
+                    $http({method: "GET", url: "filemanager/command/rename " + source + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;
                             $scope.renamedatas.renameSuccess = true;
@@ -535,6 +544,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
                 var deleteFilename = fileNames[j].name;
+                fileNames[j].file
                 $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;

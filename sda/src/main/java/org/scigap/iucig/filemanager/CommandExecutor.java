@@ -94,61 +94,100 @@ public class CommandExecutor {
                     pathStack.push(name);
                 }
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
-                command = LS + workingDirectory;
+//                command = LS + workingDirectory;
+                command = "ls" + workingDirectory;
                 log.info("COMMAND: " + command);
-                setResult(commandCentral.executeCommand(session, command));
-                setResultMap(stringUtils.categorizeResult(getResult()));
-                setResultItemList(stringUtils.getResultsList(getResult()));
+                ls(workingDirectory, session);
+//                setResult(commandCentral.executeCommand(session, command));
+//                setResultMap(stringUtils.categorizeResult(getResult()));
+//                setResultItemList(stringUtils.getResultsList(getResult()));
             } else if (commandList.get(0).equals("mkdir")) {
-                command = "mkdir " + workingDirectory + "/" + name;
+                String path = workingDirectory + "/" + name;
+                command = "mkdir " + path;
                 log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                ls(workingDirectory);
+                mkdir(path, session);
+                ls(workingDirectory, session);
             } else if (commandList.get(0).equals("rm")) {
-                command = "rm -r " + workingDirectory + "/" + name;
+                String path = workingDirectory + "/" + name;
+                command = "rm -r " + path;
                 log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                ls(workingDirectory);
+//                commandCentral.executeCommand(session, command);
+                remove(path, session);
+                ls(workingDirectory, session);
             } else if (commandList.get(0).equals("ls")) {
                 String path = workingDirectory;
                 if (commandList.size() > 1){
-                    path = name;
+                    if (commandList.get(1).equals("~")) {
+                      path = homePath;
+                    }else {
+                        path = name;
+                    }
                 }
                 command = LS + path;
-                log.info("COMMAND: " + command);
-                ls(path);
+                log.info("Command " + command);
+                ls(path, session);
             } else if (commandList.get(0).equals("mv")) {
                 command = "mv " + getWorkingDirectory() + "/" + name + " ";
+                String source =  getWorkingDirectory() + "/" + name;
+                String target =  "";
                 for (int i=2; i < commandList.size(); i++){
                     String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
-                    command += "/" + fname ;
+                    command +=  "/" + fname ;
+                    target +=  "/" + fname ;
+                }
+
+                target += "/" + name;
+                log.info("COMMAND: " + "mv " + source + " " + target);
+                move(source, target, session);
+//                commandCentral.executeCommand(session, command);
+                ls(getWorkingDirectory(), session);
+            }else if (commandList.get(0).equals("rename")) {
+                command = "rename " + getWorkingDirectory() + "/" + name + " ";
+                String source =  getWorkingDirectory() + "/" + name;
+                String target =  "";
+                for (int i=2; i < commandList.size(); i++){
+                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    command +=  "/" + fname ;
+                    target +=  "/" + fname ;
                 }
                 command += "/";
-                log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                ls(getWorkingDirectory());
+//                target += "/";
+                log.info("COMMAND: " + "rename " + source + " " + target);
+                rename(source, target, session);
+//                commandCentral.executeCommand(session, command);
+                ls(getWorkingDirectory(), session);
             }
             else if (commandList.get(0).equals("mvr")) {
+                String source =  getWorkingDirectory() + "/" + name;
+                String target =  "";
                 command = "mv -r " + getWorkingDirectory() + "/" + name + " ";
                 for (int i=2; i < commandList.size(); i++){
                     String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
                     command +=  "/" + fname ;
+                    target +=  "/" + fname ;
                 }
-                log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                ls(getWorkingDirectory());
+                target += "/" + name;
+                log.info("COMMAND: " + "mv " + source + " " + target);
+                move(source, target, session);
+//                commandCentral.executeCommand(session, command);
+                ls(getWorkingDirectory(), session);
             }
             //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
                 command = "cp -r " + getWorkingDirectory() + "/" + name + " ";
+                String source =  getWorkingDirectory() + "/" + name;
+                String target =  "";
                 for (int i=2; i < commandList.size(); i++){
                     String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
                     command +=  "/" + fname ;
+                    target +=  "/" + fname ;
                 }
-                command += "/";
-                log.info("COMMAND: " + command);
-                commandCentral.executeCommand(session, command);
-                ls(getWorkingDirectory());
+                target += "/" + name;
+//                target += "/";
+                log.info("COMMAND: " + "cp " + source + " " + target);
+                cp(source, target, session);
+//                commandCentral.executeCommand(session, command);
+                ls(getWorkingDirectory(), session);
             } else if (commandList.get(0).equals("freedisk")) {
                 command = "du -sh " + workingDirectory;
                 log.info("COMMAND: " + command);
@@ -219,7 +258,7 @@ public class CommandExecutor {
         try {
             session = kerberosConnector.getSession(remoteUser);
             //getting the home directory
-            String path = commandCentral.pwd(session);
+            String path = commandCentral.pwdSFTP(session);
             homePath = path;
             //add it to the stack
             pathStack = stringUtils.getPathStack(path);
@@ -228,7 +267,7 @@ public class CommandExecutor {
             log.info("CURRENT WORKING DIR: " + workingDirectory);
             log.info("CURRENT PATH: " + path);
         } catch (Exception e) {
-            log.error("Error occured", e);
+            log.error("Error occured while getting current working directory... ", e);
             throw new Exception(e);
         } finally {
             if (session != null) {
@@ -240,15 +279,119 @@ public class CommandExecutor {
         return workingDirectory;
     }
 
-    public void ls(String path) throws Exception {
-        Session session = null;
+    public void ls(String path, Session session) throws Exception {
         try {
-            session = kerberosConnector.getSession(remoteUser);
-            setResult(commandCentral.executeCommand(session, LS + path));
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            setResult(commandCentral.ls(session, path));
             setResultMap(stringUtils.categorizeResult(getResult()));
             setResultItemList(stringUtils.getResultsList(getResult()));
         } catch (Exception e) {
-            log.error("Error occured", e);
+            log.error("Error occured while listing files in " + path + "....", e);
+            throw new Exception(e);
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
+
+    public void cp(String source, String target, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            commandCentral.cp(session, source, target);
+        } catch (Exception e) {
+            log.error("Error occured while copy from " + source + " to destination " + target + "....", e);
+            throw new Exception(e);
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
+
+    public boolean isFile(String path, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            return commandCentral.isFile(session, path);
+        } catch (Exception e) {
+            log.error("Error occured while checking whether given " + path + " is file or folder...", e);
+            throw new Exception(e);
+        }
+    }
+
+
+    public void move(String source, String target, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            commandCentral.move(session, source, target);
+        } catch (Exception e) {
+            log.error("Error occured while move from " + source + " to destination " + target + "....", e);
+            throw new Exception(e);
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
+
+    public void rename(String source, String target, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            commandCentral.rename(session, source, target);
+        } catch (Exception e) {
+            log.error("Error occured while rename " + source + " to " + target + "....", e);
+            throw new Exception(e);
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
+
+    public void mkdir(String path, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+           commandCentral.mkdir(session, path);
+        } catch (Exception e) {
+            log.error("Error occured while mkdir " + path + "....", e);
+            throw new Exception(e);
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.disconnect();
+                }
+            }
+        }
+    }
+
+    public void remove(String path, Session session) throws Exception {
+        try {
+            if (!session.isConnected()){
+                session = kerberosConnector.getSession(remoteUser);
+            }
+            commandCentral.remove(session, path);
+        } catch (Exception e) {
+            log.error("Error occured while remove files " + path + "....", e);
             throw new Exception(e);
         } finally {
             if (session != null) {

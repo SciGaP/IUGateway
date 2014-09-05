@@ -56,11 +56,12 @@ public class KerberosConnector {
             session = jsch.getSession(remoteUser, host, 22);
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
-            config.put("PreferredAuthentications",
-                    "gssapi-with-mic");
-            config.put("MaxAuthTries", "5");
+//            config.put("PreferredAuthentications",
+//                    "gssapi-with-mic");
+//            config.put("MaxAuthTries", "5");
             session.setConfig(config);
             session.connect(5000);
+//            session.setPortForwardingL()
         } catch (JSchException e) {
             log.error("Authentication fails.." , e);
             throw new Exception("Authentication fails..", e);

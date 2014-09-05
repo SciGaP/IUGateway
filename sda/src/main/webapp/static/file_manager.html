@@ -123,7 +123,7 @@
         <form id="fileUploadForm" method="post" action="filemanager/uploadFile" enctype="multipart/form-data">
             <div class="row-fluid"><div class="span4">File</div><div><input type="file" name="file" ng-model="file"/></div></div>
             <div><div class="checkbox inline"><input type="checkbox">Overwrite file if it already exists</div></div>
-            <input class="btn pull-left" type="submit" value="Upload File"/>
+            <input ng-hide="file==undefined" ng-show="file" class="btn pull-left" type="submit" value="Upload File"/>
         </form>
     </div>
     <div class="modal-footer">

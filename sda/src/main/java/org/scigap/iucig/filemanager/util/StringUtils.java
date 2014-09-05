@@ -80,23 +80,17 @@ public class StringUtils {
         String fileOrFolder = null;
 
         if (resultList != null) {
-            StringTokenizer tokenizer = new StringTokenizer(resultList.toString(), "\n");
-            List<String> filteredResults = new ArrayList<String>();
-            while (tokenizer.hasMoreTokens()) {
-                filteredResults.add(tokenizer.nextToken());
-            }
-
-            for (String line : filteredResults) {
+            for (String line : resultList) {
                 temp = new ArrayList<String>();
-                tokenizer = new StringTokenizer(line, " ");
+                StringTokenizer tokenizer = new StringTokenizer(line, " ");
                 while (tokenizer.hasMoreTokens()) {
                     temp.add(tokenizer.nextToken());
                 }
                 if (temp.size() > 3) {
                     fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
                     String fileName = temp.get(8);
-                    if (temp.size() > 9){
-                        for (int k = 9; k < temp.size(); k++){
+                    if (temp.size() > 9) {
+                        for (int k = 9; k < temp.size(); k++) {
                             fileName = fileName + " " + temp.get(k);
                         }
                     }
@@ -121,20 +115,14 @@ public class StringUtils {
         List<String> temp = null;
         boolean isFile = false;
         if (resultList != null) {
-            StringTokenizer tokenizer = new StringTokenizer(resultList.toString(), "\n");
-            List<String> filteredResults = new ArrayList<String>();
-            while (tokenizer.hasMoreTokens()) {
-                filteredResults.add(tokenizer.nextToken());
-            }
-
-            for (String line : filteredResults) {
+            for (String line : resultList){
                 temp = new ArrayList<String>();
-                tokenizer = new StringTokenizer(line, " ");
+                StringTokenizer tokenizer = new StringTokenizer(line, " ");
                 while (tokenizer.hasMoreTokens()) {
                     temp.add(tokenizer.nextToken());
                 }
                 if (temp.size() > 8) {
-                    isFile = (temp.get(0).charAt(0) == 'd') ? false : true;
+                    isFile = (temp.get(0).charAt(0) != 'd');
                     owner = temp.get(2);
                     group = temp.get(3);
                     size = temp.get(4);

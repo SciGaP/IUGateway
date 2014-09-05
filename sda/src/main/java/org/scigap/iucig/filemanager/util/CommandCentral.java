@@ -1,9 +1,6 @@
 package org.scigap.iucig.filemanager.util;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by swithana on 3/24/14.
@@ -26,7 +24,7 @@ public class CommandCentral {
     public String pwd(Session session) throws Exception {
 
         if (!session.isConnected()) {
-            return null;
+            throw new Exception("Session is not connected...");
         }
         result = new ArrayList<String>();
         String path = "";
@@ -55,15 +53,16 @@ public class CommandCentral {
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ee) {
-                    log.error("Error occured while channel connect", ee.getMessage());
+                    log.error("Error occured while channel connect", ee);
+                    throw new Exception(ee);
                 }
             }
         } catch (IOException e) {
-            log.error("Error occured while opening channel", e.getMessage());
-            e.printStackTrace();
+            log.error("Error occured while opening channel", e);
+            throw new Exception(e);
         } catch (JSchException e) {
-            log.error("Auth failure", e.getMessage());
-            e.printStackTrace();
+            log.error("Auth failure", e);
+            throw new Exception(e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -76,7 +75,38 @@ public class CommandCentral {
         return path;
     }
 
-    public String readProperty (String propertyName){
+    public String pwdSFTP(Session session) throws Exception {
+
+        if (!session.isConnected()) {
+            throw new Exception("Session is not connected...");
+        }
+        result = new ArrayList<String>();
+        String path = "";
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            path = c.pwd();
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
+        return path;
+    }
+
+    public String readProperty (String propertyName) throws Exception{
         try {
             URL resource = CommandCentral.class.getClassLoader().getResource(KERB_PROPERTIES);
             if (resource != null){
@@ -84,9 +114,232 @@ public class CommandCentral {
                 return properties.getProperty(propertyName);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new Exception("Error while reading properties..", e);
         }
         return null;
+    }
+
+    public List<String> ls (Session session, String path) throws Exception {
+        result = new ArrayList<String>();
+        log.info("COMMAND: ls " + path);
+
+        if (!session.isConnected()) {
+            throw new Exception("Session is not connected...");
+        }
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            Vector ls = c.ls(path);
+            if (ls != null && ls.size() != 0) {
+                for (int i = 0; i < ls.size(); i++) {
+                    Object obj = ls.elementAt(i);
+                    if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
+                        ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) obj;
+                        if (!lsEntry.getFilename().startsWith(".")) {
+                            String string = lsEntry.getLongname();
+                            string = string.replaceAll(",", "");
+                            string = string.replaceAll("\t", "\\s");
+                            System.out.println(string);
+                            result.add(string);
+                        }
+
+                    }
+                }
+            }
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
+        return result;
+    }
+
+
+    public void cp (Session session, String source, String target) throws Exception {
+        log.info("COMMAND: cp " + source + " " + target);
+
+        if (!session.isConnected()) {
+            log.error("Session is not connected");
+            throw new Exception("Session is not connected...");
+        }
+        Channel upChannel = null;
+        Channel downChannel = null;
+        ChannelSftp uploadChannel = null;
+        ChannelSftp downloadChannel = null;
+        try {
+            upChannel = session.openChannel("sftp");
+            downChannel = session.openChannel("sftp");
+            upChannel.connect();
+            downChannel.connect();
+            uploadChannel = (ChannelSftp) upChannel;
+            downloadChannel = (ChannelSftp) downChannel;
+            FileProgressMonitor monitor = new FileProgressMonitor();
+            InputStream inputStream = uploadChannel.get(source);
+
+            downloadChannel.put(inputStream, target, monitor);
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (upChannel == null || downChannel == null) {
+                System.out.println("Channel is null ...");
+            }else if (uploadChannel != null && !uploadChannel.isClosed() && !downloadChannel.isClosed()){
+                uploadChannel.exit();
+                downloadChannel.exit();
+                uploadChannel.disconnect();
+                downloadChannel.disconnect();
+            }else if (!upChannel.isClosed() && !downChannel.isClosed()) {
+                upChannel.disconnect();
+                downChannel.disconnect();
+            }
+            session.disconnect();
+        }
+    }
+
+    public void move (Session session, String source, String target) throws Exception {
+        log.info("COMMAND: mv " + source + " " + target);
+
+        if (!session.isConnected()) {
+            log.error("Session is not connected");
+            throw new Exception("Session is not connected...");
+        }
+        Channel upChannel = null;
+        Channel downChannel = null;
+        ChannelSftp uploadChannel = null;
+        ChannelSftp downloadChannel = null;
+        try {
+            upChannel = session.openChannel("sftp");
+            downChannel = session.openChannel("sftp");
+            upChannel.connect();
+            downChannel.connect();
+            uploadChannel = (ChannelSftp) upChannel;
+            downloadChannel = (ChannelSftp) downChannel;
+            InputStream inputStream = downloadChannel.get(source);
+            uploadChannel.put(inputStream, target);
+            remove(session, source);
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (upChannel == null || downChannel == null) {
+                System.out.println("Channel is null ...");
+            }else if (uploadChannel != null && !uploadChannel.isClosed() && !downloadChannel.isClosed()){
+                uploadChannel.exit();
+                downloadChannel.exit();
+                uploadChannel.disconnect();
+                downloadChannel.disconnect();
+            }else if (!upChannel.isClosed() && !downChannel.isClosed()) {
+                upChannel.disconnect();
+                downChannel.disconnect();
+            }
+            session.disconnect();
+        }
+    }
+
+    public void rename (Session session, String source, String target) throws Exception {
+        log.info("COMMAND: rename " + source + " " + target);
+
+        if (!session.isConnected()) {
+            log.error("Session is not connected");
+            throw new Exception("Session is not connected...");
+        }
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            c.rename(source, target);
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            }else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
+    }
+
+    public void mkdir (Session session, String path) throws Exception {
+        log.info("COMMAND: mkdir " + path);
+
+        if (!session.isConnected()) {
+            log.error("Session is not connected");
+            throw new Exception("Session is not connected");
+        }
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            c.mkdir(path);
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
+    }
+
+    public void remove (Session session, String path) throws Exception {
+        log.info("COMMAND: rm -rf " + path);
+
+        if (!session.isConnected()) {
+            log.error("Session is not connected");
+            throw new Exception("Session is not connected");
+        }
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            if (isFile(session, path)){
+                c.rm(path);
+            }else {
+                c.rmdir(path);
+            }
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
     }
 
     public List<String> executeCommand(Session session, String command) throws Exception {
@@ -95,7 +348,7 @@ public class CommandCentral {
         log.info("COMMAND: " + command);
 
         if (!session.isConnected()) {
-            return null;
+            throw new Exception("Session is not connected...");
         }
         ChannelExec channel = null;
         InputStream in = null;
@@ -385,5 +638,42 @@ public class CommandCentral {
             }
         }
         return b;
+    }
+
+    public boolean isFile (Session session, String path) throws Exception{
+        boolean isFile = false;
+        log.info("COMMAND: ls " + path);
+
+        if (!session.isConnected()) {
+            throw new Exception("Session is not connected...");
+        }
+        Channel channel = null;
+        ChannelSftp c = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            Vector ls = c.ls(path);
+            if (ls != null){
+                System.out.println("file count : " + ls.size());
+                if (ls.size() == 1){
+                    isFile = true;
+                }
+            }
+        } catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }
+//            session.disconnect();
+        }
+        return isFile;
     }
 }
