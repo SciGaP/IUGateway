@@ -79,12 +79,26 @@ public class PageController {
         logger.debug("Redirecting to science discipline page");
         return ViewNames.SCIENCE_DISCIPLINE_INFO_PAGE;
     }
+
+    @RequestMapping(value = "/ssh", method = RequestMethod.GET)
+    public String getSSHClient() {
+        // Temporarily redirecting to search software page before completely removing it.
+        logger.debug("Redirecting to secure ssh client");
+        return ViewNames.SSH_CLIENT;
+    }
+
 	
 	@RequestMapping(value = "/searchModulesInfo", method = RequestMethod.GET)
 	public String getSoftwareSearchInfo() {
 		logger.debug("Load Search Software Info page");
 		return ViewNames.SEARCH_MODULES_INFO_PAGE;
 	}
+
+    @RequestMapping(value = "/moduleInfo", method = RequestMethod.GET)
+    public String getModuleInfo() {
+        logger.debug("Load Module Info page");
+        return ViewNames.MODULE_INFO_PAGE;
+    }
 	
 	@RequestMapping(value = "/charts", method = RequestMethod.GET)
 	public String getCharts() {

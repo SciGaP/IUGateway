@@ -1,8 +1,8 @@
 var moduleSearchApp = angular.module("moduleSearchApp", ["user"]);
 moduleSearchApp.controller("SearchCtrl", function($scope, $http) {
 	loadData($scope,$http,"modules/all");
-	
 	$scope.showDetails = function(module) {
+        var url = UrlProvider.getModuleUrl();
 		$scope.$broadcast("moduleSelection", module);
 	};
 });

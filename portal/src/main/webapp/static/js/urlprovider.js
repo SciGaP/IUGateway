@@ -5,6 +5,7 @@ angular.module("urlprovider",[]).
 			bigred2 = {name:"Big Red II", id:"bigred2", url:"/bigred2"};
 			mason = {name:"Mason", id:"mason", url:"/mason"};
 			quarry = {name:"Quarry", id:"quarry", url:"/quarry"};
+			module = {name:"Module", id:"module", url:"/name"};
 			CIBFeedUrl = "http://internal.pti.iu.edu/feeds/news/all/rss.xml";
 			noticesFeedUrl = "http://itnotices.iu.edu/rss.aspx";
 			feedLoaderUrl = "//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=JSON_CALLBACK&q=";
@@ -46,6 +47,9 @@ angular.module("urlprovider",[]).
 			this.getNoticesFeedUrl = function() {
 				return noticesFeedUrl;
 			};
+            this.getModuleUrl = function() {
+                return module.url;
+            };
 			
 		};
 		
