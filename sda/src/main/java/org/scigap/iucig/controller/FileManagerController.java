@@ -28,6 +28,7 @@ public class FileManagerController {
     public static final String KERB_PROPERTIES = "kerb.properties";
     private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
+
     /**
      * Returns the result of a command using a Item list
      */
@@ -194,45 +195,6 @@ public class FileManagerController {
         }
     }
 
-    /**
-     * Upload a file
-     */
-    @ResponseBody
-    @RequestMapping(value = "/upload/{user}/", method = RequestMethod.POST)
-    public void uploadFile(@PathVariable(value = "user") final String user,@RequestParam("filename") String filename,
-                           @RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
-
-        File createdFile = new File(filename);
-        file.transferTo(createdFile);
-
-        if (filename == null) {
-            filename = file.getName();
-        }
-
-        String remoteUser = request.getRemoteUser();
-        String defaultPath = "sda/filemanager/command/";
-        String requestURI = request.getRequestURI();
-        requestURI = URLDecoder.decode(requestURI, "UTF-8");
-        String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-        System.out.println("Command : " + commandFinal);
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            System.out.println("Remote User : " + remoteUser);
-            if (commandExecutor == null) {
-                commandExecutor = new CommandExecutor(remoteUser);
-            }
-        }
-
-        try {
-            commandExecutor.uploadFile(filename, createdFile);
-
-        } catch (Exception e) {
-            System.out.println("Error uploading file ....!!");
-            e.printStackTrace();
-        }
-    }
-
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public String uploadFileHandler(@RequestParam("file") MultipartFile file,
                              HttpServletRequest request) throws Exception {
@@ -250,7 +212,7 @@ public class FileManagerController {
         String fileName;
         if (!file.isEmpty()) {
             fileName = file.getOriginalFilename();
-            File createdFile = new File(fileName);
+            File createdFile = new File("/tmp/" + fileName);
             file.transferTo(createdFile);
 
             try {

@@ -17,9 +17,7 @@ public class KerberosConnector {
     public static final String KERB_PROPERTIES = "kerb.properties";
     public static final String KERB_HOST = "kerb.host";
     public static final String  KERB_CONF_LOCATION = "kerb.conf.location";
-    public static final String KERB_LOGIN_LOCATION = "kerb.login.location";
     public static final String JAVA_SECURITY_KRB5_CONF = "java.security.krb5.conf";
-    public static final String JAVA_SECURITY_AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
     public static final String JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY = "javax.security.auth.useSubjectCredsOnly";
     public static final String SUN_SECURITY_KRB5_DEBUG = "sun.security.krb5.debug";
     public static final String LOGIN_FILE_LOCATION = "kerb.conffile.location";
@@ -35,15 +33,11 @@ public class KerberosConnector {
         String krbConf = readProperty(KERB_CONF_LOCATION);
 
         System.setProperty(JAVA_SECURITY_KRB5_CONF, krbConf);
-//        System.setProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG, loginFile);
-//        System.out.println("LOGIN FILE: "+loginFile);
         System.setProperty(JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY, "false");
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
     }
 
     public Session getSession(String remoteUser) throws Exception{
-
-        String krbLogin = readProperty(KERB_LOGIN_LOCATION);
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
         String ticketCache = loginConfigUtil.searchTicket(remoteUser);
         javax.security.auth.login.Configuration.setConfiguration(new JaaSConfiguration(ticketCache));
@@ -56,12 +50,11 @@ public class KerberosConnector {
             session = jsch.getSession(remoteUser, host, 22);
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
-//            config.put("PreferredAuthentications",
-//                    "gssapi-with-mic");
-//            config.put("MaxAuthTries", "5");
+            config.put("PreferredAuthentications",
+                    "gssapi-with-mic");
+            config.put("MaxAuthTries", "5");
             session.setConfig(config);
             session.connect(5000);
-//            session.setPortForwardingL()
         } catch (JSchException e) {
             log.error("Authentication fails.." , e);
             throw new Exception("Authentication fails..", e);
@@ -96,6 +89,7 @@ public class KerberosConnector {
         public boolean isEnabled(int level){
             return true;
         }
+
         public void log(int level, String message){
             System.err.print(name.get(new Integer(level)));
             System.err.println(message);

@@ -8,11 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author Viknes
- *
- */
-
 @Controller
 public class PageController {
 	

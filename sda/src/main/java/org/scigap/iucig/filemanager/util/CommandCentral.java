@@ -1,6 +1,7 @@
 package org.scigap.iucig.filemanager.util;
 
 import com.jcraft.jsch.*;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,69 +12,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
-/**
- * Created by swithana on 3/24/14.
- */
 public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
     public static final String KERB_PROPERTIES = "kerb.properties";
     public static final String SDA_FILEDOWNLOAD_LOCATION = "file.download.location";
     private List<String> result;
     private static Properties properties = new Properties();
-
-    public String pwd(Session session) throws Exception {
-
-        if (!session.isConnected()) {
-            throw new Exception("Session is not connected...");
-        }
-        result = new ArrayList<String>();
-        String path = "";
-        Channel channel = null;
-        InputStream in = null;
-        try {
-            channel = session.openChannel("exec");
-            String command = "pwd";
-            ((ChannelExec) channel).setCommand(command);
-            channel.setInputStream(null);
-            ((ChannelExec) channel).setErrStream(System.err);
-            in = channel.getInputStream();
-            channel.connect();
-            byte[] tmp = new byte[1024];
-            while (true) {
-                while (in.available() > 0) {
-                    int i = in.read(tmp, 0, 1024);
-                    if (i < 0) break;
-                    if (new String(tmp, 0, i).equals("\n")) break;
-                    path = (new String(tmp, 0, i - 1));
-                }
-                if (channel.isClosed()) {
-                    System.out.println("exit-status: " + channel.getExitStatus());
-                    break;
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception ee) {
-                    log.error("Error occured while channel connect", ee);
-                    throw new Exception(ee);
-                }
-            }
-        } catch (IOException e) {
-            log.error("Error occured while opening channel", e);
-            throw new Exception(e);
-        } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
-        } finally {
-            if (channel == null) {
-                System.out.println("Channel is null ...");
-            } else if (!channel.isClosed()) {
-                channel.disconnect();
-            }
-            in.close();
-            session.disconnect();
-        }
-        return path;
-    }
 
     public String pwdSFTP(Session session) throws Exception {
 
@@ -427,107 +371,18 @@ public class CommandCentral {
         return result;
     }
 
-    public StringBuffer readAll(BufferedReader bufferedReader,StringBuffer buffer) throws Exception{
-        try {
-            String value;
-            while((value = bufferedReader.readLine()) != null)
-            {
-                result.add(value);
-                buffer.append(value);
-            }
-        } catch (Exception e){
-            throw new Exception(e);
-        }
-        return buffer;
-    }
-
-    public InputStream scpFrom(Session session, String filename, OutputStream outStream) throws Exception {
+    public void scpFrom(Session session, String filePath, OutputStream outStream) throws Exception {
         Channel channel = null;
-        InputStream in = null;
-
-        String command = "scp -f " + "\"" + filename +  "\"";
-        String prefix = null;
-        if (new File(filename).isDirectory()) {
-            prefix = filename + File.separator;
-        }
+        ChannelSftp c = null;
+        InputStream inputStream = null;
         try {
-            channel = session.openChannel("exec");
-            ((ChannelExec) channel).setCommand(command);
-            channel.setInputStream(null);
-            ((ChannelExec) channel).setErrStream(System.err);
-            // get I/O streams for remote scp
-            OutputStream out = channel.getOutputStream();
-            in = channel.getInputStream();
+            channel = session.openChannel("sftp");
             channel.connect();
-            byte[] buf = new byte[1024];
-            // send '\0'
-            buf[0] = 0;
-            out.write(buf, 0, 1);
-            out.flush();
-
-            while (true) {
-                int c = checkAck(in);
-                if (c != 'C') {
-                    break;
-                }
-                // read '0644 '
-                int read = in.read(buf, 0, 5);
-                long filesize = 0L;
-                while (true) {
-                    if (in.read(buf, 0, 1) < 0) {
-                        break;
-                    }
-                    if (buf[0] == ' ') break;
-                    filesize = filesize * 10L + (long) (buf[0] - '0');
-                }
-                String file = null;
-                for (int i = 0; ; i++) {
-                    int read1 = in.read(buf, i, 1);
-                    if (buf[i] == (byte) 0x0a) {
-                        file = new String(buf, 0, i);
-                        break;
-                    }
-                }
-                log.info("Downloding file: "+file+" filesize= "+filesize);
-
-                // send '\0'
-                buf[0] = 0;
-                out.write(buf, 0, 1);
-                out.flush();
-
-
-                String fileDownloadLocation = readProperty(SDA_FILEDOWNLOAD_LOCATION);
-                FileOutputStream fos=new FileOutputStream(fileDownloadLocation);
-
-                int foo;
-                while(true){
-                    if(buf.length<filesize){
-                        foo=buf.length;
-                    }else {
-                        foo=(int)filesize;
-                    }
-                    foo=in.read(buf, 0, foo);
-                    if(foo<0){
-                        // error
-                        break;
-                    }
-                    outStream.write(buf, 0, foo);
-                    fos.write(buf, 0, foo);
-                    filesize-=foo;
-                    if(filesize==0L) break;
-                }
-                fos.close();
-                // outStream.close();
-
-                if(checkAck(in)!=0){
-                    throw new Exception("Error occurred");
-                }
-
-                // send '\0'
-                buf[0]=0; out.write(buf, 0, 1); out.flush();
-
-            }
-
+            c = (ChannelSftp) channel;
+            inputStream = c.get(filePath);
+            IOUtils.copy(inputStream, outStream);
+            inputStream.close();
+            outStream.close();
         } catch (FileNotFoundException e1) {
             log.error("Unable to find the file", e1.getMessage());
             throw new Exception(e1.getMessage());
@@ -539,105 +394,48 @@ public class CommandCentral {
             throw new Exception(e1.getMessage());
         } finally {
             if (channel == null) {
-                log.error("Channel is null ...");
-            } else if (!channel.isClosed()) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
                 channel.disconnect();
+            }else if (inputStream != null){
+                inputStream.close();
+            }else if (outStream != null){
+                outStream.close();
             }
-            // session.disconnect();
-        }
-        return in;
-    }
-
-    public void scpTo(Session session, String filepath,File uploadedFile) throws Exception{
-        FileInputStream fis = null;
-        try {
-            String lfile = "";
-            // exec 'scp -t rfile' remotely
-            String command = "scp " + " -t " + filepath;
-            Channel channel = session.openChannel("exec");
-            ((ChannelExec) channel).setCommand(command);
-
-            // get I/O streams for remote scp
-            OutputStream out = channel.getOutputStream();
-            InputStream in = channel.getInputStream();
-
-            channel.connect();
-            if (checkAck(in) != 0) {
-                throw new Exception("Error occured...");
-            }
-
-            // send "C0644 filesize filename", where filename should not include '/'
-            long filesize = uploadedFile.length();
-            command = "C0644 " + filesize + " ";
-            if (lfile.lastIndexOf('/') > 0) {
-                command += lfile.substring(lfile.lastIndexOf('/') + 1);
-            } else {
-                command += lfile;
-            }
-            command += "\n";
-            out.write(command.getBytes());
-            out.flush();
-            if (checkAck(in) != 0) {
-                throw new Exception("Error occured...");
-//                System.exit(0);
-            }
-
-            // send a content of lfile
-            fis = new FileInputStream(uploadedFile);
-            byte[] buf = new byte[1024];
-            while (true) {
-                int len = fis.read(buf, 0, buf.length);
-                if (len <= 0) break;
-                out.write(buf, 0, len); //out.flush();
-            }
-            fis.close();
-            fis = null;
-            // send '\0'
-            buf[0] = 0;
-            out.write(buf, 0, 1);
-            out.flush();
-            if (checkAck(in) != 0) {
-                throw new Exception("Error occured...");
-            }
-            out.close();
-
-            channel.disconnect();
             session.disconnect();
-        } catch (Exception e) {
-            log.error("Error occured"+e.getMessage());
-            try {
-                if (fis != null) fis.close();
-            } catch (Exception ee) {
-                log.error("File inputstream cannot be closed", ee);
-            }
         }
     }
 
-    private int checkAck(InputStream in) throws IOException {
-        int b = in.read();
-        // b may be 0 for success,
-        //          1 for error,
-        //          2 for fatal error,
-        //          -1
-        if (b == 0) return b;
-        if (b == -1) return b;
-
-        if (b == 1 || b == 2) {
-            StringBuffer sb = new StringBuffer();
-            int c;
-            do {
-                c = in.read();
-                sb.append((char) c);
+    public void scpToSFTP(Session session,String filePath, File uploadedFile) throws Exception{
+        Channel channel = null;
+        ChannelSftp c = null;
+        FileInputStream fileInputStream = null;
+        try {
+            channel = session.openChannel("sftp");
+            channel.connect();
+            c = (ChannelSftp) channel;
+            fileInputStream = new FileInputStream(uploadedFile);
+            c.put(fileInputStream, filePath);
+            fileInputStream.close();
+        }catch (JSchException e) {
+            log.error("Auth failure", e);
+            throw new Exception(e);
+        } finally {
+            if (channel == null) {
+                System.out.println("Channel is null ...");
+            } else if (c != null && !c.isClosed()){
+                c.exit();
+                c.disconnect();
+            }else if (!channel.isClosed()) {
+                channel.disconnect();
+            }else if (fileInputStream != null){
+                fileInputStream.close();
             }
-            while (c != '\n');
-            if (b == 1) { // error
-                 log.error(sb.toString());
-            }
-            if (b == 2) { // fatal error
-                log.error(sb.toString());
-            }
+            session.disconnect();
         }
-        return b;
     }
 
     public boolean isFile (Session session, String path) throws Exception{

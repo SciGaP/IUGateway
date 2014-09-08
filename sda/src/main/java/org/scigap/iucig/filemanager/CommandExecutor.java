@@ -239,7 +239,7 @@ public class CommandExecutor {
             session = kerberosConnector.getSession(remoteUser);
             log.info("UPLOADING FILE: " + filename);
             String filepath = workingDirectory + "/" + filename;
-            commandCentral.scpTo(session, filepath, uploadedFile);
+            commandCentral.scpToSFTP(session, filepath, uploadedFile);
 //            ls();
         } catch (Exception e) {
             log.error("Error occured", e);
