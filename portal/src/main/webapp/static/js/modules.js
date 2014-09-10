@@ -1,38 +1,38 @@
-var moduleSearchApp = angular.module("moduleSearchApp", ["user"]);
-moduleSearchApp.controller("SearchCtrl", function($scope, $http) {
+var moduleSearchApp = angular.module("moduleSearchApp", ["user", "urlprovider"]);
+moduleSearchApp.controller("SearchCtrl", function($scope, $http, UrlProvider) {
 	loadData($scope,$http,"modules/all");
-	
-	$scope.showDetails = function(module) {
-		$scope.$broadcast("moduleSelection", module);
-	};
+    $scope.getModulePage = function(modulename){
+        $scope.moduleName = modulename;
+        document.location.href = "moduleInfo?" + UrlProvider.getModuleUrl() + "=" + modulename;
+    }
 });
 
-moduleSearchApp.controller("DetailsCtrl", function($scope, $http) {
-	$scope.$on("moduleSelection", function(emitEvent, moduleName) {
-		$scope.name = moduleName;
-		$http({method:"GET", url:"modules/"+moduleName}).
-		success(function(data,status) {
-			$scope.detailLoadError = false;
-			var clusters = {};
-			data.forEach(function(module) {
-				if(clusters[module.cluster]==undefined) {
-					var cluster = {};
-					cluster.name = module.cluster;
-					cluster.versions = [];
-					cluster.versions.push(module.version);
-					cluster.description = module.description;
-					clusters[module.cluster] = cluster;
-				}
-				else
-					clusters[module.cluster].versions.push(module.version);
-			});
-			$scope.clusters = clusters;
-		}).
-		error(function(data, status) {
-			$scope.detailLoadError = true;
-		});
-	});
-});
+//moduleSearchApp.controller("DetailsCtrl", function($scope, $http) {
+//	$scope.$on("moduleSelection", function(emitEvent, moduleName) {
+//		$scope.name = moduleName;
+//		$http({method:"GET", url:"modules/"+moduleName}).
+//		success(function(data,status) {
+//			$scope.detailLoadError = false;
+//			var clusters = {};
+//			data.forEach(function(module) {
+//				if(clusters[module.cluster]==undefined) {
+//					var cluster = {};
+//					cluster.name = module.cluster;
+//					cluster.versions = [];
+//					cluster.versions.push(module.version);
+//					cluster.description = module.description;
+//					clusters[module.cluster] = cluster;
+//				}
+//				else
+//					clusters[module.cluster].versions.push(module.version);
+//			});
+//			$scope.clusters = clusters;
+//		}).
+//		error(function(data, status) {
+//			$scope.detailLoadError = true;
+//		});
+//	});
+//});
 
 /*var modulesApp = angular.module("modulesApp", ["user","urlprovider"]);
 modulesApp.controller("ModulesCtrl", function($scope, $http, UrlProvider) {
