@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="moduleApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Module Info</title>
+    <link rel="icon" href="https://www.indiana.edu/favicon.ico"/>
+    <link rel="shortcut icon" href="https://www.indiana.edu/favicon.ico"/>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="static/js/common.js"></script>
+    <script src="static/js/module.js"></script>
+    <script src="static/js/urlprovider.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="static/css/iu.css" rel="stylesheet">
+</head>
+<body>
+<div ng-include src="'static/topbars.html'"></div>
+<div ng-controller="DetailsCtrl">
+    <div class="well container-fluid">
+        <div class="row-fluid">
+            <div class="well-iu span12">
+                <div class="well-heading">{{name}}</div>
+                <div>
+                    <table class="table table-hover table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th class="span2"><strong>Machine</strong></th>
+                            <th class="span5"><strong>Version & Description</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-hide="hideLoader"></tr>
+                        <tr ng-hide="hideLoader">
+                            <td colspan="7">
+                                <div class="loading-iu"></div>
+                            </td>
+                        </tr>
+                        <tr ng-show="showError"></tr>
+                        <tr ng-show="showError">
+                            <td colspan="7">
+                                <div class="alert alert-error">There was an error loading the software info !</div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="cluster in clusters">
+                            <td>{{cluster.name}}</td>
+                            <td>
+                                <div ng-repeat="version in cluster.versions">{{version}}</div>
+                                <br>{{cluster.description}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-include src="'static/footer.html'"></div>
+</body>
+</html>
