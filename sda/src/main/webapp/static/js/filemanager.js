@@ -76,22 +76,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         error(function (data, status) {
             console.log("Error getting home directory !");
         });
-//    $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
-//        success(function (data, status) {
-//            console.log(data);
-//            $scope.totalSize = data;
-//
-//        }).
-//        error(function (data, status) {
-//        });
-//    $http({method: "GET", url: "filemanager/fileCount", cache: false}).
-//        success(function (data, status) {
-//            console.log(data);
-//            $scope.totalfiles = data;
-//
-//        }).
-//        error(function (data, status) {
-//        });
     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
         success(function (data, status) {
             console.log(data);
@@ -368,8 +352,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     }
 
-    //todo: if it's a directory, it should be mvr not mv
-    //moving a file
     $scope.move = function (targetFolder , customFolderName, homeFolder) {
         var selectedFiles = getCheckedFiles($scope.files);
         var home = $scope.home.replace(/\//g, '*');
@@ -400,7 +382,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $scope.mvdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++){
             var mvSelectedFile = selectedFiles[i].name;
-            $http({method: "GET", url: "filemanager/command/mv " + mvSelectedFile +"*" + fileNameFullPath, cache: false}).
+            fileNameFullPath = fileNameFullPath + "*" + mvSelectedFile;
+            $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile +"*" + fileNameFullPath, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
@@ -517,6 +500,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             } else if (targetFolder.name == "To Current Folder"){
                     fileNameFullPath = pwd + "*" + "Copy_" + selectedCPFile;
                     fileName = "Copy_" + selectedCPFile;
+            }else {
+                fileNameFullPath = fileNameFullPath + "*" + selectedCPFile;
             }
             $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile +"*" + fileNameFullPath, cache: false}).
                 success(function (data, status) {

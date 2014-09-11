@@ -11,36 +11,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.*;
 
-
-/*
-* SUPPORTED COMMANDS
-*
-* cd <directory name>
-* mkdir <directory>
-* rm <file or directory name>
-*
-* renaming
-* mv <file/dir>*<secondArgument>
-*
-* moving a file
-* mv <file>*<location>
-*
-* get free disk space
-* freedisk
-*
-* COMMANDS WITH TWO ARGUMENTS SHOULD BE PROVIDED WITH A "*" BETWEEN THE ARGUMENTS
-* mv <firstArgument>*<secondArgument>
-*
-*
-*
-* USAGE
-*
-* executeCommand( command )
-* downloadFile(filename)
-*
-* to get the results --> getResultsMap()
-*
-*  */
 public class CommandExecutor {
     private static final Logger log = LoggerFactory.getLogger(CommandExecutor.class);
 
@@ -172,7 +142,6 @@ public class CommandExecutor {
 //                commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory(), session);
             }
-            //doing an ls after copying to get the corner case of copying it to the same folder
             else if (commandList.get(0).equals("cpr")) {
                 command = "cp -r " + getWorkingDirectory() + "/" + name + " ";
                 String source =  getWorkingDirectory() + "/" + name;
@@ -182,8 +151,7 @@ public class CommandExecutor {
                     command +=  "/" + fname ;
                     target +=  "/" + fname ;
                 }
-                target += "/" + name;
-//                target += "/";
+//                target += "/" + name;
                 log.info("COMMAND: " + "cp " + source + " " + target);
                 cp(source, target, session);
 //                commandCentral.executeCommand(session, command);
@@ -316,19 +284,6 @@ public class CommandExecutor {
             }
         }
     }
-
-    public boolean isFile(String path, Session session) throws Exception {
-        try {
-            if (!session.isConnected()){
-                session = kerberosConnector.getSession(remoteUser);
-            }
-            return commandCentral.isFile(session, path);
-        } catch (Exception e) {
-            log.error("Error occured while checking whether given " + path + " is file or folder...", e);
-            throw new Exception(e);
-        }
-    }
-
 
     public void move(String source, String target, Session session) throws Exception {
         try {

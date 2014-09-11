@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
@@ -129,10 +126,13 @@ public class CommandCentral {
             downChannel.connect();
             uploadChannel = (ChannelSftp) upChannel;
             downloadChannel = (ChannelSftp) downChannel;
-            FileProgressMonitor monitor = new FileProgressMonitor();
-            InputStream inputStream = uploadChannel.get(source);
+            if (isFile(uploadChannel, source)){
+                InputStream inputStream = uploadChannel.get(source);
+                downloadChannel.put(inputStream, target);
+            }else {
+                copydDir(uploadChannel,downloadChannel, source, target);
+            }
 
-            downloadChannel.put(inputStream, target, monitor);
         } catch (JSchException e) {
             log.error("Auth failure", e);
             throw new Exception(e);
@@ -150,6 +150,46 @@ public class CommandCentral {
             }
             session.disconnect();
         }
+    }
+
+    public void copydDir(ChannelSftp channel1,ChannelSftp channel2, String sourcePath, String destPath) throws SftpException {
+        try {
+            channel1.mkdir(destPath);
+            channel1.cd(destPath);
+            // Copy remote folders one by one.
+            lsFolderCopy(channel1, channel2, sourcePath, destPath);
+        } catch (Exception e) {
+            log.error("Error occured while copy folder", e);
+            throw new SftpException(0, "Error occured while copy folder" + e);
+        }
+
+    }
+
+    private void lsFolderCopy(ChannelSftp channel1,ChannelSftp channel2, String sourcePath, String destPath) throws SftpException { // List source (remote, sftp) directory and create a local copy of it - method for every single directory.
+        try {
+            Vector ls = channel1.ls(sourcePath);
+            if (ls != null && ls.size() != 0) {
+                for (int i = 0; i < ls.size(); i++) {
+                    Object obj = ls.elementAt(i);
+                    if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
+                        ChannelSftp.LsEntry oListItem = (ChannelSftp.LsEntry) obj;
+                        String filename = oListItem.getFilename();
+                        if (!oListItem.getAttrs().isDir()) {
+                            InputStream inputStream = channel1.get(sourcePath + "/" + filename);
+                            String filePath = destPath + "/" + filename;
+                            channel2.put(inputStream, filePath);
+                        } else if (!(".".equals(filename)) && !("..".equals(filename))) {
+                            channel1.mkdir(destPath + "/" + filename);
+                            lsFolderCopy(channel1, channel2, sourcePath + "/" + filename, destPath + "/" + filename); // Enter found folder on server to read its contents and create locally.
+                        }
+                    }
+                }
+            }
+        }catch (SftpException e){
+            log.error("Error occured while copy folder", e);
+            throw new SftpException(0, "Error occured while copy folder", e);
+        }
+
     }
 
     public void move (Session session, String source, String target) throws Exception {
@@ -265,7 +305,7 @@ public class CommandCentral {
             channel = session.openChannel("sftp");
             channel.connect();
             c = (ChannelSftp) channel;
-            if (isFile(session, path)){
+            if (isFile(c, path)){
                 c.rm(path);
             }else {
                 c.rmdir(path);
@@ -438,39 +478,20 @@ public class CommandCentral {
         }
     }
 
-    public boolean isFile (Session session, String path) throws Exception{
+    public boolean isFile (ChannelSftp channelSftp, String path) throws Exception{
         boolean isFile = false;
         log.info("COMMAND: ls " + path);
-
-        if (!session.isConnected()) {
-            throw new Exception("Session is not connected...");
-        }
-        Channel channel = null;
-        ChannelSftp c = null;
         try {
-            channel = session.openChannel("sftp");
-            channel.connect();
-            c = (ChannelSftp) channel;
-            Vector ls = c.ls(path);
+            Vector ls = channelSftp.ls(path);
             if (ls != null){
                 System.out.println("file count : " + ls.size());
                 if (ls.size() == 1){
                     isFile = true;
                 }
             }
-        } catch (JSchException e) {
+        } catch (Exception e) {
             log.error("Auth failure", e);
             throw new Exception(e);
-        } finally {
-            if (channel == null) {
-                System.out.println("Channel is null ...");
-            } else if (c != null && !c.isClosed()){
-                c.exit();
-                c.disconnect();
-            }else if (!channel.isClosed()) {
-                channel.disconnect();
-            }
-//            session.disconnect();
         }
         return isFile;
     }
