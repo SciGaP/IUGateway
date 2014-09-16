@@ -53,7 +53,7 @@ public class CommandExecutor {
             if (commandList.size() >1){
                 if (commandList.get(1) != null){
                     name =  commandList.get(1);
-                    name = name.replaceAll("\\s", "\\\\ ");
+//                    name = name.replaceAll("\\s", "\\\\ ");
                 }
             }
 
@@ -73,6 +73,10 @@ public class CommandExecutor {
 //                setResultItemList(stringUtils.getResultsList(getResult()));
             } else if (commandList.get(0).equals("mkdir")) {
                 String path = workingDirectory + "/" + name;
+//                for (int i=2; i < commandList.size(); i++){
+//                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+//                    path +=  "/" + fname ;
+//                }
                 command = "mkdir " + path;
                 log.info("COMMAND: " + command);
                 mkdir(path, session);

@@ -308,7 +308,7 @@ public class CommandCentral {
             if (isFile(c, path)){
                 c.rm(path);
             }else {
-                c.rmdir(path);
+                folderDelete(c, path);
             }
         } catch (JSchException e) {
             log.error("Auth failure", e);
@@ -324,6 +324,40 @@ public class CommandCentral {
             }
             session.disconnect();
         }
+    }
+
+    private void folderDelete(ChannelSftp channel, String path) throws SftpException {
+        try {
+            Vector ls = channel.ls(path);
+            if (ls != null && ls.size() == 2){
+                channel.rmdir(path);
+            }
+            if (ls != null && ls.size() > 2) {
+                for (int i = 0; i < ls.size(); i++) {
+                    Object obj = ls.elementAt(i);
+                    if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
+                        ChannelSftp.LsEntry oListItem = (ChannelSftp.LsEntry) obj;
+                        String filename = oListItem.getFilename();
+                        if (!oListItem.getAttrs().isDir()) {
+                            String filePath = path + "/" + filename;
+                            channel.rm(filePath);
+                            if (isFolderEmpty(channel,path)){
+                                channel.rmdir(path);
+                            }
+                        } else if (!(".".equals(filename)) && !("..".equals(filename))) {
+                            folderDelete(channel, path + "/" + filename);
+                            if (isFolderEmpty(channel,path)){
+                                channel.rmdir(path);
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (SftpException e){
+            log.error("Error occured while copy folder", e);
+            throw new SftpException(0, "Error occured while copy folder", e);
+        }
+
     }
 
     public List<String> executeCommand(Session session, String command) throws Exception {
@@ -494,5 +528,23 @@ public class CommandCentral {
             throw new Exception(e);
         }
         return isFile;
+    }
+
+    public boolean isFolderEmpty (ChannelSftp channelSftp, String path) throws SftpException{
+        boolean isEmpty = false;
+        log.info("COMMAND: ls " + path);
+        try {
+            Vector ls = channelSftp.ls(path);
+            if (ls != null){
+                System.out.println("file count : " + ls.size());
+                if (ls.size() == 2){
+                    isEmpty = true;
+                }
+            }
+        } catch (Exception e) {
+            log.error("Auth failure", e);
+            throw new SftpException(0, "Error..", e);
+        }
+        return isEmpty;
     }
 }
