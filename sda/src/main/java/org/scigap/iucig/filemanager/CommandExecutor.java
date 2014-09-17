@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -204,7 +205,7 @@ public class CommandExecutor {
     }
 
     //upload a file
-    public void uploadFile(String filename,File uploadedFile) throws Exception {
+    public void uploadFile(String filename,InputStream uploadedFile) throws Exception {
         Session session = null;
         filename = filename.replaceAll("\\s", "\\\\ ");
         try {

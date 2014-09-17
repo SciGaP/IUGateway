@@ -483,15 +483,13 @@ public class CommandCentral {
         }
     }
 
-    public void scpToSFTP(Session session,String filePath, File uploadedFile) throws Exception{
+    public void scpToSFTP(Session session,String filePath, InputStream fileInputStream) throws Exception{
         Channel channel = null;
         ChannelSftp c = null;
-        FileInputStream fileInputStream = null;
         try {
             channel = session.openChannel("sftp");
             channel.connect();
             c = (ChannelSftp) channel;
-            fileInputStream = new FileInputStream(uploadedFile);
             c.put(fileInputStream, filePath);
             fileInputStream.close();
         }catch (JSchException e) {

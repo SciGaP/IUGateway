@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
@@ -212,11 +214,10 @@ public class FileManagerController {
         String fileName;
         if (!file.isEmpty()) {
             fileName = file.getOriginalFilename();
-            File createdFile = new File("/tmp/" + fileName);
-            file.transferTo(createdFile);
+            InputStream stream = file.getInputStream();
 
             try {
-                commandExecutor.uploadFile(fileName, createdFile);
+                commandExecutor.uploadFile(fileName, stream);
             } catch (Throwable e) {
                 System.out.println("Error uploading file ....!!");
                 e.printStackTrace();
