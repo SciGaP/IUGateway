@@ -67,23 +67,20 @@
 		<property name="suffix" value=".html" />
 	</bean>
     <bean id="multipartResolver"
-                class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- setting maximum upload size -->
-        <property name="maxUploadSize" value="200000000" />
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- max upload size in bytes -->
+        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+
+        <!-- max size of file in memory (in bytes) -->
+        <property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
 
     </bean>
-    <!--<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
-        <!--<property name="mappings">-->
-            <!--<value>-->
-                <!--/uploadFile=fileUploadController-->
-            <!--</value>-->
+    <!--<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="java.lang.Exception">error</prop>-->
+            <!--</props>-->
         <!--</property>-->
-    <!--</bean>-->
-
-    <!--<bean id="fileUploadController" class="org.scigap.iucig.controller.FileManagerController">-->
-        <!--<property name="commandClass" value="org.scigap.iucig.util.FileUploadBean"/>-->
-        <!--<property name="formView" value="fileuploadform"/>-->
-        <!--<property name="successView" value="confirmation"/>-->
     <!--</bean>-->
 
 </beans>

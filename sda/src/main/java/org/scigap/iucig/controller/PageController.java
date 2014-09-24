@@ -18,4 +18,11 @@ public class PageController {
 		logger.debug("Loading SDA page");
 		return ViewNames.SDA_PAGE;
 	}
+
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String errorPage(HttpServletRequest request) {
+        logger.debug("Loading Error page");
+        return ViewNames.ERROR_PAGE;
+    }
+
 }

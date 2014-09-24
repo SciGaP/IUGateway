@@ -61,7 +61,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.mvdatas =  angular.copy($scope.mvinitial);
     $scope.cpdatas =  angular.copy($scope.cpinitial);
     $scope.fileUploadDatas =  angular.copy($scope.fileUploadinitial);
-    $http({method: "GET", url: "getRemoteUser" , cache: false}).
+    $http({method: "GET", url: "filemanager/getRemoteUser" , cache: false}).
         success(function (data, status) {
             console.log(data);
             $scope.remoteUser = data;
@@ -524,12 +524,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     //deleting a file
     $scope.deleteFile = function () {
         var fileNames = getCheckedFiles($scope.files);
+
         $scope.deletedatas.successMsg = "";
         $scope.deletedatas.errorMsg = "";
+
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
                 var deleteFilename = fileNames[j].name;
-                fileNames[j].file
                 $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
@@ -579,4 +580,28 @@ var getCheckedFileNames = function(files) {
         fileNames.push(files[i].name);
     }
     return fileNames;
+}
+
+$(document).ready(function() {
+    $( "#fileUploadForm" ).submit(function( event ) {
+        if (validateUpload()){
+        }else{
+            event.preventDefault();
+        }
+    })
+});
+
+var validateUpload = function () {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        //get the file size and file type from file input field
+        var fsize = $('#fileField')[0].files[0].size;
+
+        if (fsize > 20971520) //do something if file size more than 20 mb
+        {
+            alert(fsize + " bites\nToo big! Please upload a file less than 20 MB.");
+            return false;
+        }else {
+            return true;
+        }
+    }
 }

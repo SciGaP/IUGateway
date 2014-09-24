@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -158,7 +156,13 @@ public class FileManagerController {
     @ResponseBody
     @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
     public String getRemoteUser(HttpServletRequest request) throws Exception {
-        return request.getRemoteUser();
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            System.out.println("Remote User : " + remoteUser);
+        }
+        return remoteUser;
     }
 
     /**
