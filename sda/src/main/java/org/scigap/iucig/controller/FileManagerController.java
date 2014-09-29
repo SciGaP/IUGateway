@@ -1,5 +1,9 @@
 package org.scigap.iucig.controller;
 
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.util.ViewNames;
@@ -201,10 +205,41 @@ public class FileManagerController {
         }
     }
 
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public String uploadFileHandler(@RequestParam("file") MultipartFile file,
-                             HttpServletRequest request) throws Exception {
+//    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+//    public String uploadFileHandler(@RequestParam("file") MultipartFile file,
+//                             HttpServletRequest request) throws Exception {
+//
+//        System.out.println("**********upload file*********");
+//        String remoteUser = request.getRemoteUser();
+//        String mail = "@ADS.IU.EDU";
+//        if (remoteUser != null) {
+//            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+//            System.out.println("Remote User : " + remoteUser);
+//            if (commandExecutor == null) {
+//                commandExecutor = new CommandExecutor(remoteUser);
+//            }
+//        }
+//        String fileName;
+//        if (!file.isEmpty()) {
+//            fileName = file.getOriginalFilename();
+//            InputStream stream = file.getInputStream();
+//
+//            try {
+//                commandExecutor.uploadFile(fileName, stream);
+//            } catch (Throwable e) {
+//                System.out.println("Error uploading file ....!!");
+//                e.printStackTrace();
+//            }
+//            //return "You successfully uploaded file=" + fileName;
+//            return "redirect:/";
+//        } else {
+//            return ViewNames.SDA_PAGE;
+//        }
+//    }
 
+
+    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    public String uploadFile(HttpServletRequest request) throws Exception {
         System.out.println("**********upload file*********");
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
@@ -215,22 +250,29 @@ public class FileManagerController {
                 commandExecutor = new CommandExecutor(remoteUser);
             }
         }
-        String fileName;
-        if (!file.isEmpty()) {
-            fileName = file.getOriginalFilename();
-            InputStream stream = file.getInputStream();
+        boolean multipartContent = ServletFileUpload.isMultipartContent(request);
+        if (multipartContent) {
+            ServletFileUpload upload = new ServletFileUpload();
+            FileItemIterator iter = upload.getItemIterator(request);
+            while (iter.hasNext()) {
+                FileItemStream item = iter.next();
+                String fileName = item.getName();
+                System.out.println("********** file name : " + fileName);
+                String name = item.getFieldName();
+                InputStream stream = item.openStream();
+                if (item.isFormField()) {
+                    return ViewNames.SDA_PAGE;
+                } else {
+                    log.info("File field " + name + " with file name "
+                            + item.getName() + " detected.");
 
-            try {
-                commandExecutor.uploadFile(fileName, stream);
-            } catch (Throwable e) {
-                System.out.println("Error uploading file ....!!");
-                e.printStackTrace();
+                    commandExecutor.uploadFile(fileName, stream);
+                    return "redirect:/";
+                }
             }
-            //return "You successfully uploaded file=" + fileName;
-            return "redirect:/";
-        } else {
+        }else {
             return ViewNames.SDA_PAGE;
         }
+        return ViewNames.SDA_PAGE;
     }
-
 }

@@ -66,15 +66,15 @@
 		<property name="prefix" value="/static/" />
 		<property name="suffix" value=".html" />
 	</bean>
-    <bean id="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- max upload size in bytes -->
-        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+    <!--<bean id="multipartResolver"-->
+          <!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+        <!--&lt;!&ndash; max upload size in bytes &ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="maxUploadSize" value="20971520" /> &lt;!&ndash; 20MB &ndash;&gt;&ndash;&gt;-->
 
-        <!-- max size of file in memory (in bytes) -->
-        <property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+        <!--&lt;!&ndash; max size of file in memory (in bytes) &ndash;&gt;-->
+        <!--<property name="maxInMemorySize" value="1048576" /> &lt;!&ndash; 1MB &ndash;&gt;-->
 
-    </bean>
+    <!--</bean>-->
     <!--<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
         <!--<property name="exceptionMappings">-->
             <!--<props>-->

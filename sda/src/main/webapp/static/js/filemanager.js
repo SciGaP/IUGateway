@@ -584,10 +584,10 @@ var getCheckedFileNames = function(files) {
 
 $(document).ready(function() {
     $( "#fileUploadForm" ).submit(function( event ) {
-        if (validateUpload()){
-        }else{
-            event.preventDefault();
-        }
+//        if (validateUpload()){
+//        }else{
+//            event.preventDefault();
+//        }
     })
 });
 
