@@ -124,7 +124,14 @@
             <div class="row-fluid">
                 <div class="span4">File</div>
                 <div>
-                    <input type="file" name="file" id="fileField" ng-model="file" required/></div></div>
+                    <input type="file" name="file" id="fileField" ng-model="file" required/>
+                </div>
+                <div>
+                    <div class="checkbox inline">
+                        <input type="checkbox" id="overwrite_enabled" checked="checked">Overwrite file if it already exists
+                    </div>
+                </div>
+            </div>
             <input class="btn pull-left" type="submit" value="Upload File"/>
         </form>
     </div>

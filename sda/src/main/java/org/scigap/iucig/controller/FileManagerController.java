@@ -3,7 +3,6 @@ package org.scigap.iucig.controller;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.util.ViewNames;
@@ -11,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,9 +43,19 @@ public class FileManagerController {
         String remoteUser = request.getRemoteUser();
         String defaultPath = "sda/filemanager/command/";
         String requestURI = request.getRequestURI();
-        requestURI = URLDecoder.decode(requestURI, "UTF-8");
+//      requestURI = URLDecoder.decode(requestURI, "ASCII");
         String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-        System.out.println("Command : " + commandFinal);
+        String decodedCommand = "";
+        if (commandFinal.contains("+")){
+            String[] strings = commandFinal.split("\\+");
+            decodedCommand = URLDecoder.decode(strings[0], "UTF-8");
+            for (int i = 1; i < strings.length; i++){
+                decodedCommand += "+" + URLDecoder.decode(strings[i], "UTF-8");
+            }
+        }else {
+            decodedCommand = URLDecoder.decode(commandFinal, "UTF-8");
+        }
+        System.out.println("Command : " + decodedCommand);
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
@@ -52,7 +63,7 @@ public class FileManagerController {
             if (commandExecutor == null) {
                  commandExecutor = new CommandExecutor(remoteUser);
             }
-            commandExecutor.executeCommand(commandFinal);
+            commandExecutor.executeCommand(decodedCommand);
             return commandExecutor.getResultItemList();
         }
         return null;
@@ -178,13 +189,24 @@ public class FileManagerController {
                              HttpServletResponse response,
                              HttpServletRequest request) throws Exception {
         String fileName = null;
+        String decodedFN = "";
         try {
             String remoteUser = request.getRemoteUser();
             String defaultPath = "sda/filemanager/download/";
             String requestURI = request.getRequestURI();
-            requestURI = URLDecoder.decode(requestURI, "UTF-8");
-            fileName = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-            System.out.println("filename : " + fileName);
+//            requestURI = URLDecoder.decode(requestURI, "ASCII");
+            fileName = requestURI.substring(defaultPath.length() + 4, requestURI.length());
+            if (fileName.contains("+")){
+                String[] strings = fileName.split("\\+");
+                decodedFN = URLDecoder.decode(strings[0], "UTF-8");
+                for (int i = 1; i < strings.length; i++){
+                    decodedFN += "+" + URLDecoder.decode(strings[i], "UTF-8");
+                }
+            }else {
+                decodedFN = URLDecoder.decode(fileName, "UTF-8");
+            }
+
+            System.out.println("filename : " + decodedFN);
             String mail = "@ADS.IU.EDU";
             if (remoteUser != null) {
                 remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
@@ -194,13 +216,13 @@ public class FileManagerController {
                 }
             }
             response.setContentType("application/force-download");
-            response.setHeader( "Content-Disposition", "attachment;filename=" + fileName.trim() );
+            response.setHeader( "Content-Disposition", "attachment;filename=" + decodedFN.trim() );
             // get your file as InputStream
-            commandExecutor.downloadFile(fileName.trim(), response.getOutputStream());
+            commandExecutor.downloadFile(decodedFN.trim(), response.getOutputStream());
 
             response.flushBuffer();
         } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename :'" + fileName);
+            System.out.println("Error writing file to output stream. Filename :'" + decodedFN);
             throw new RuntimeException("IOError writing file to output stream", ex);
         }
     }

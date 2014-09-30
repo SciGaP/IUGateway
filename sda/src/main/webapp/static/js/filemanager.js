@@ -156,18 +156,22 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     console.log("Error while cd ing to folder !");
                 });
         } else{
-            window.location = "filemanager/download/ " + file.name;
+            var name = encodeURIComponent(file.name).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);;
+            window.location = "filemanager/download/ " + name;
         }
     }
 
     $scope.addFolder = function (folderName) {
         $scope.addFolderdatas.folderExist = false;
         for (var i = 0; i < $scope.files.length; i++) {
-            if (folderName == $scope.files[i].name) {
-                $scope.addFolderdatas.folderExist = true;
-                $scope.addFolderdatas.foldername = "";
-                $scope.addFolderdatas.folderExistMsg = folderName + " already exists. Please provide a different name...";
+            if (!$scope.files[i].file){
+                if (folderName == $scope.files[i].name) {
+                    $scope.addFolderdatas.folderExist = true;
+                    $scope.addFolderdatas.foldername = "";
+                    $scope.addFolderdatas.folderExistMsg = folderName + " already exists. Please provide a different name...";
+                }
             }
+
         }
         if ($scope.addFolderdatas.folderExist == false) {
             $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
@@ -270,10 +274,12 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $('#renameDiv :input').each(function () {
             $scope.renamedatas.folderExist = false;
             for (var i = 0; i < $scope.files.length; i++) {
-                if (this.value == $scope.files[i].name) {
-                    $scope.renamedatas.folderExist = true;
-                    $scope.renamedatas.folderExistMsg = "";
-                    $scope.renamedatas.folderExistMsg += this.value + " already exists. Please provide a different name...";
+                if (!$scope.files[i].file){
+                    if (this.value == $scope.files[i].name) {
+                        $scope.renamedatas.folderExist = true;
+                        $scope.renamedatas.folderExistMsg = "";
+                        $scope.renamedatas.folderExistMsg += this.value + " already exists. Please provide a different name...";
+                    }
                 }
             }
             if ($scope.renamedatas.folderExist == false){
@@ -284,15 +290,16 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 }else {
                     var pwd = $scope.pwd.replace(/\//g, '*');
                     var source = $(this).attr('id');
+                    source = encodeURIComponent(source);
                     var dest = this.value;
                     $http({method: "GET", url: "filemanager/command/rename " + source + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;
                             $scope.renamedatas.renameSuccess = true;
-                            $scope.renamedatas.successMsg += source + " successfully renamed to " + dest + "... ";
+                            $scope.renamedatas.successMsg += $(this).attr('id') + " successfully renamed to " + dest + "... ";
                         }).
                         error(function (data, status) {
-                            $scope.renamedatas.errorMsg += "Error occurred while renaming " + source + ". Please try again later... ";
+                            $scope.renamedatas.errorMsg += "Error occurred while renaming " + $(this).attr('id') + ". Please try again later... ";
                             $scope.renamedatas.renameDisabled = true;
                         });
                 }
@@ -382,8 +389,9 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $scope.mvdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++){
             var mvSelectedFile = selectedFiles[i].name;
-            fileNameFullPath = fileNameFullPath + "*" + mvSelectedFile;
-            $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile +"*" + fileNameFullPath, cache: false}).
+            mvSelectedFile = encodeURIComponent(mvSelectedFile);
+            var path = fileNameFullPath + "*" + mvSelectedFile;
+            $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile +"*" + path, cache: false}).
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
@@ -493,26 +501,28 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $scope.cpdatas.successMsg = "";
         $scope.cpdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++){
-            var selectedCPFile = selectedFiles[i].name;
+            var selectedFile = selectedFiles[i].name;
+            var selectedCPFile = encodeURIComponent(selectedFile);
+            var path = "";
             if (selectedCPFile == targetFolder.name){
-                fileNameFullPath =  pwd + "*" + "Copy_" + targetFolder.name;
+                path =  pwd + "*" + "Copy_" + targetFolder.name;
                 fileName =  "Copy_" + targetFolder.name;
             } else if (targetFolder.name == "To Current Folder"){
-                    fileNameFullPath = pwd + "*" + "Copy_" + selectedCPFile;
-                    fileName = "Copy_" + selectedCPFile;
+                path = pwd + "*" + "Copy_" + selectedCPFile;
+                fileName = "Copy_" + selectedCPFile;
             }else {
-                fileNameFullPath = fileNameFullPath + "*" + selectedCPFile;
+                path = fileNameFullPath + "*" + selectedCPFile;
             }
-            $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile +"*" + fileNameFullPath, cache: false}).
+            $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile +"*" + path, cache: false}).
                 success(function (data, status) {
                     $scope.files = data;
                     $scope.cpdatas.copySuccess = true;
-                    $scope.cpdatas.successMsg += selectedCPFile + " copied to " + fileName + " successfully... " ;
+                    $scope.cpdatas.successMsg += selectedFile + " copied to " + fileName + " successfully... " ;
                 }).
                 error(function (data, status) {
                     console.log("Error copying files !");
                     $scope.cpdatas.copyDisabled = true;
-                    $scope.cpdatas.errorMsg += "Error occured while copying " + selectedCPFile + " to " + fileName + " . Please try again later... " ;
+                    $scope.cpdatas.errorMsg += "Error occured while copying " + selectedFile + " to " + fileName + " . Please try again later... " ;
                 });
         }
     }
@@ -530,16 +540,17 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
-                var deleteFilename = fileNames[j].name;
+                var filename = fileNames[j].name;
+                var deleteFilename = encodeURIComponent(filename);
                 $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
                         $scope.deletedatas.deleteSuccess = true;
-                        $scope.deletedatas.successMsg += deleteFilename + " deleted successfully... ";
+                        $scope.deletedatas.successMsg += filename + " deleted successfully... ";
                     }).
                     error(function (data, status) {
                         $scope.deletedatas.deleteDisabled = true;
-                        $scope.deletedatas.errorMsg += "Unable to delete " + deleteFilename + " ... ";
+                        $scope.deletedatas.errorMsg += "Unable to delete " + filename + " ... ";
                     });
             }
         }
@@ -561,6 +572,29 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             return false;
         }
     }
+
+    angular.element(document).ready(function() {
+        $( "#fileUploadForm" ).submit(function( event ) {
+            if (validateUpload()){
+                if ($('#overwrite_enabled').prop('checked')){
+                }else{
+                    var fileName = $('#fileField')[0].files[0].name;
+                    var files = $scope.files;
+                    console.log(files);
+                    for (var i = 0; i < files.length; i++) {
+                        if ($scope.files[i].file) {
+                            if ($scope.files[i].name == fileName){
+                                event.preventDefault();
+                                alert(fileName + " already exists...");
+                            }
+                        }
+                    }
+                }
+            }else{
+                event.preventDefault();
+            }
+        })
+    });
 });
 
 
@@ -582,23 +616,17 @@ var getCheckedFileNames = function(files) {
     return fileNames;
 }
 
-$(document).ready(function() {
-    $( "#fileUploadForm" ).submit(function( event ) {
-//        if (validateUpload()){
-//        }else{
-//            event.preventDefault();
-//        }
-    })
-});
+
 
 var validateUpload = function () {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         //get the file size and file type from file input field
         var fsize = $('#fileField')[0].files[0].size;
-
-        if (fsize > 20971520) //do something if file size more than 20 mb
+        fsize = fsize / 1000000000;
+        fsize = parseInt(fsize, 10)
+        if (fsize > 10) //do something if file size more than 20 mb
         {
-            alert(fsize + " bites\nToo big! Please upload a file less than 20 MB.");
+            alert(fsize + " GB\nToo big! Please upload a file less than 10 GB.");
             return false;
         }else {
             return true;
