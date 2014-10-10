@@ -274,13 +274,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         $('#renameDiv :input').each(function () {
             $scope.renamedatas.folderExist = false;
             for (var i = 0; i < $scope.files.length; i++) {
-                if (!$scope.files[i].file){
+//                if (!$scope.files[i].file){
                     if (this.value == $scope.files[i].name) {
                         $scope.renamedatas.folderExist = true;
                         $scope.renamedatas.folderExistMsg = "";
                         $scope.renamedatas.folderExistMsg += this.value + " already exists. Please provide a different name...";
                     }
-                }
+//                }
             }
             if ($scope.renamedatas.folderExist == false){
                 var name = jQuery.trim(this.value);
@@ -574,9 +574,17 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     angular.element(document).ready(function() {
+//        $("upload-body").prepend('<div id="loading" class="loading-iu" style="display: none;"></div>');
+        $("progress").prepend('<div id="overlay" class="ui-widget-overlay" style="z-index: 1001; display: none;"></div>');
+        $("progress").prepend("<div id='PleaseWait' class='loading-iu' style='display: none;'></div>");
         $( "#fileUploadForm" ).submit(function( event ) {
             if (validateUpload()){
                 if ($('#overwrite_enabled').prop('checked')){
+                    $scope.fileUploading = true;
+                    $('#progress1').show();
+                    $('#progress2').show();
+//                    $("#loading").show();
+                    console.log($scope.fileUploading);
                 }else{
                     var fileName = $('#fileField')[0].files[0].name;
                     var files = $scope.files;
@@ -584,6 +592,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     for (var i = 0; i < files.length; i++) {
                         if ($scope.files[i].file) {
                             if ($scope.files[i].name == fileName){
+                                $scope.fileUploading = false;
+                                console.log($scope.fileUploading);
                                 event.preventDefault();
                                 alert(fileName + " already exists...");
                             }
@@ -591,8 +601,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     }
                 }
             }else{
+                $scope.fileUploading = false;
+                console.log($scope.fileUploading);
                 event.preventDefault();
             }
+//            $("#overlay, #PleaseWait").show();
         })
     });
 });

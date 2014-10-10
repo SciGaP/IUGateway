@@ -4,7 +4,7 @@ angular.module("user", []).
     service("UserService",function ($http) {
         function service() {
             this.login = function () {
-                return $http({method: "GET", url: "getRemoteUser", cache: false}).
+                return $http({method: "GET", url: "filemanager/getRemoteUser", cache: false}).
                     success(function (data, status) {
                         console.log(data);
                     }).

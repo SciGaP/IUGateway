@@ -323,3 +323,69 @@ a.circle.active:hover {
 .tdcolor {
     color: #222222;
 }
+
+.progress {
+    background: url(../images/progress.gif) no-repeat;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+}
+
+.fileupload-progress {
+    margin: 10px 0;
+}
+.fileupload-progress .progress-extended {
+    margin-top: 5px;
+}
+.error {
+    color: red;
+}
+
+.fileupload-buttonbar .btn,
+.fileupload-buttonbar .toggle {
+    margin-bottom: 5px;
+}
+.progress-animated .progress-bar,
+.progress-animated .bar {
+    background: url("../images/progressbar.gif") !important;
+    filter: none;
+}
+.fileupload-process {
+    float: right;
+    display: none;
+}
+.fileupload-processing .fileupload-process,
+.files .processing .preview {
+    display: block;
+    width: 32px;
+    height: 32px;
+    background: url("../images/loader_iu.gif") center no-repeat;
+    background-size: contain;
+}
+.files audio,
+.files video {
+    max-width: 300px;
+}
+
+@media (max-width: 767px) {
+    .fileupload-buttonbar .toggle,
+    .files .toggle,
+    .files .btn span {
+        display: none;
+    }
+    .files .name {
+        width: 80px;
+        word-wrap: break-word;
+    }
+    .files audio,
+    .files video {
+        max-width: 80px;
+    }
+    .files img,
+    .files canvas {
+        max-width: 100%;
+    }
+}
