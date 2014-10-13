@@ -290,16 +290,16 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 }else {
                     var pwd = $scope.pwd.replace(/\//g, '*');
                     var source = $(this).attr('id');
-                    source = encodeURIComponent(source);
+                    var encodedSource = encodeURIComponent(source);
                     var dest = this.value;
-                    $http({method: "GET", url: "filemanager/command/rename " + source + "*" + pwd + "*" + dest, cache: false}).
+                    $http({method: "GET", url: "filemanager/command/rename " + encodedSource + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;
                             $scope.renamedatas.renameSuccess = true;
-                            $scope.renamedatas.successMsg += $(this).attr('id') + " successfully renamed to " + dest + "... ";
+                            $scope.renamedatas.successMsg += source + " successfully renamed to " + dest + "... ";
                         }).
                         error(function (data, status) {
-                            $scope.renamedatas.errorMsg += "Error occurred while renaming " + $(this).attr('id') + ". Please try again later... ";
+                            $scope.renamedatas.errorMsg += "Error occurred while renaming " + source + ". Please try again later... ";
                             $scope.renamedatas.renameDisabled = true;
                         });
                 }
@@ -574,9 +574,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     angular.element(document).ready(function() {
-//        $("upload-body").prepend('<div id="loading" class="loading-iu" style="display: none;"></div>');
-        $("progress").prepend('<div id="overlay" class="ui-widget-overlay" style="z-index: 1001; display: none;"></div>');
-        $("progress").prepend("<div id='PleaseWait' class='loading-iu' style='display: none;'></div>");
         $( "#fileUploadForm" ).submit(function( event ) {
             if (validateUpload()){
                 if ($('#overwrite_enabled').prop('checked')){
