@@ -208,14 +208,17 @@ public class CommandExecutor {
     public void uploadFile(String filename,InputStream uploadedFile) throws Exception {
         Session session = null;
         filename = filename.replaceAll("\\s", "\\\\ ");
+        String filepath = "";
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("UPLOADING FILE: " + filename);
-            String filepath = workingDirectory + "/" + filename;
+            filepath = workingDirectory + "/" + filename;
             commandCentral.scpToSFTP(session, filepath, uploadedFile);
 //            ls();
         } catch (Exception e) {
-            log.error("Error occured", e);
+            // remove partial uploads
+            remove(filepath, session);
+            log.error("Error occured while uploading file", e);
             throw new Exception(e);
         } finally {
             if (session != null) {

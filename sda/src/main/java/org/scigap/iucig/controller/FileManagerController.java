@@ -262,39 +262,45 @@ public class FileManagerController {
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public String uploadFile(HttpServletRequest request) throws Exception {
-        System.out.println("**********upload file*********");
-        String remoteUser = request.getRemoteUser();
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            System.out.println("Remote User : " + remoteUser);
-            if (commandExecutor == null) {
-                commandExecutor = new CommandExecutor(remoteUser);
-            }
-        }
-        boolean multipartContent = ServletFileUpload.isMultipartContent(request);
-        if (multipartContent) {
-            ServletFileUpload upload = new ServletFileUpload();
-            FileItemIterator iter = upload.getItemIterator(request);
-            while (iter.hasNext()) {
-                FileItemStream item = iter.next();
-                String fileName = item.getName();
-                System.out.println("********** file name : " + fileName);
-                String name = item.getFieldName();
-                InputStream stream = item.openStream();
-                if (item.isFormField()) {
-                    return ViewNames.SDA_PAGE;
-                } else {
-                    log.info("File field " + name + " with file name "
-                            + item.getName() + " detected.");
-
-                    commandExecutor.uploadFile(fileName, stream);
-                    return "redirect:/";
+        try {
+            System.out.println("**********upload file*********");
+            String remoteUser = request.getRemoteUser();
+            String mail = "@ADS.IU.EDU";
+            if (remoteUser != null) {
+                remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+                System.out.println("Remote User : " + remoteUser);
+                if (commandExecutor == null) {
+                    commandExecutor = new CommandExecutor(remoteUser);
                 }
             }
-        }else {
-            return ViewNames.SDA_PAGE;
+            boolean multipartContent = ServletFileUpload.isMultipartContent(request);
+            if (multipartContent) {
+                ServletFileUpload upload = new ServletFileUpload();
+                FileItemIterator iter = upload.getItemIterator(request);
+                while (iter.hasNext()) {
+                    FileItemStream item = iter.next();
+                    String fileName = item.getName();
+                    System.out.println("********** file name : " + fileName);
+                    String name = item.getFieldName();
+                    InputStream stream = item.openStream();
+                    if (item.isFormField()) {
+                        return ViewNames.SDA_PAGE;
+                    } else {
+                        log.info("File field " + name + " with file name "
+                                + item.getName() + " detected.");
+
+                        commandExecutor.uploadFile(fileName, stream);
+                        return "redirect:/";
+                    }
+                }
+            }else {
+                return ViewNames.SDA_PAGE;
+            }
+        }catch (Exception e){
+            log.error("Error occured while uploading file ", e);
+            throw new Exception(e);
         }
+
         return ViewNames.SDA_PAGE;
     }
 }

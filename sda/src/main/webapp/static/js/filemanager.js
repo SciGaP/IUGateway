@@ -121,7 +121,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 $scope.hideLoader = false;
                 $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
                     success(function (data, status) {
-                        console.log(data);
                         $scope.pwd = data;
                     }).
                     error(function (data, status) {
@@ -144,7 +143,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $scope.files = data;
                     $http({method: "GET", url: "filemanager/getPwd" , cache: false}).
                         success(function (data, status) {
-                            console.log(data);
                             $scope.pwd = data;
                         }).
                         error(function (data, status) {
@@ -164,14 +162,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     $scope.addFolder = function (folderName) {
         $scope.addFolderdatas.folderExist = false;
         for (var i = 0; i < $scope.files.length; i++) {
-            if (!$scope.files[i].file){
-                if (folderName == $scope.files[i].name) {
-                    $scope.addFolderdatas.folderExist = true;
-                    $scope.addFolderdatas.foldername = "";
-                    $scope.addFolderdatas.folderExistMsg = folderName + " already exists. Please provide a different name...";
-                }
+            if (folderName == $scope.files[i].name) {
+                $scope.addFolderdatas.folderExist = true;
+                $scope.addFolderdatas.foldername = "";
+                $scope.addFolderdatas.folderExistMsg = folderName + " already exists. Please provide a different name...";
             }
-
         }
         if ($scope.addFolderdatas.folderExist == false) {
             $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
@@ -192,9 +187,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.resetAddFolder = function(){
-        console.log($scope.addFolderinitial[0].folderExistMsg);
         $scope.addFolderdatas = angular.copy($scope.addFolderinitial);
-        console.log($scope.addFolderdatas.folderExistMsg);
     }
 
     $scope.generateDeleteModel = function () {
@@ -224,7 +217,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             success(function (data, status) {
             }).
             error(function (data, status) {
-                console.log("Error getting profile !");
+                console.log("Error getting free disk space !");
             });
     }
 
@@ -235,7 +228,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 $scope.totalfiles = data;
                 $http({method: "GET", url: "filemanager/usedSpace", cache: false}).
                     success(function (data, status) {
-                        console.log(data);
                         $scope.totalSize = data;
                         var content = "<p>Number of files for user " + $scope.remoteUser + " : " + $scope.totalfiles + "</p>";
                         content += "<p>Used space for user " + $scope.remoteUser + " : " + $scope.totalSize  + "</p></br>";
@@ -295,6 +287,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $http({method: "GET", url: "filemanager/command/rename " + encodedSource + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;
+                            $scope.files = removeDuplicates($scope.files);
                             $scope.renamedatas.renameSuccess = true;
                             $scope.renamedatas.successMsg += source + " successfully renamed to " + dest + "... ";
                         }).
@@ -305,6 +298,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 }
             }
         });
+//        $scope.files = getRemainingFiles($scope.files);
     }
 
     $scope.resetRenameFolder = function(){
@@ -321,13 +315,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var folders = [];
         $http({method: "GET", url: "filemanager/command/ls ~", cache: false}).
             success(function (data, status) {
-                console.log(data);
                 $scope.homeFiles = data;
                 var homeFiles =  $scope.homeFiles;
                 for (var i=0; i < homeFiles.length; i++){
                     if (!homeFiles[i].file ){
                         var found  = $.inArray(homeFiles[i].name, fileNames);
-                        console.log(found);
                         if (found == -1){
                             homeFolders.push(homeFiles[i]);
                         }
@@ -338,7 +330,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 for (var j=0; j < files.length; j++){
                     if (!files[j].file ){
                         var found  = $.inArray(files[j].name, fileNames);
-                        console.log(found);
                         if (found == -1){
                             folders.push(files[j]);
                         }
@@ -393,8 +384,8 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             var path = fileNameFullPath + "*" + mvSelectedFile;
             $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile +"*" + path, cache: false}).
                 success(function (data, status) {
-                    console.log(data);
                     $scope.files = data;
+                    $scope.files = removeDuplicates($scope.files);
                     $scope.mvdatas.moveSuccess = true;
                     $scope.mvdatas.successMsg += mvSelectedFile + " moved to " + fileName + " successfully... ";
                 }).
@@ -420,13 +411,11 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
         var folders = [];
         $http({method: "GET", url: "filemanager/command/ls ~", cache: false}).
             success(function (data, status) {
-                console.log(data);
                 $scope.homeFiles = data;
                 var homeFiles =  $scope.homeFiles;
                 for (var i=0; i < homeFiles.length; i++){
                     if (!homeFiles[i].file ){
                         var found  = $.inArray(homeFiles[i].name, fileNames);
-                        console.log(found);
                         if (found == -1){
                             homeFolders.push(homeFiles[i]);
                         }
@@ -437,7 +426,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 for (var j=0; j < files.length; j++){
                     if (!files[j].file ){
                         var found  = $.inArray(files[j].name, fileNames);
-                        console.log(found);
                         if (found == -1){
                             folders.push(files[j]);
                         }
@@ -461,7 +449,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
     }
 
     $scope.populateRest = function(folerName){
-        console.log(folerName.name);
         $scope.selectOther = false;
         $scope.selectHome = false;
         if (folerName.name == "Other"){
@@ -516,6 +503,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
             $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile +"*" + path, cache: false}).
                 success(function (data, status) {
                     $scope.files = data;
+                    $scope.files = removeDuplicates($scope.files);
                     $scope.cpdatas.copySuccess = true;
                     $scope.cpdatas.successMsg += selectedFile + " copied to " + fileName + " successfully... " ;
                 }).
@@ -537,7 +525,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
         $scope.deletedatas.successMsg = "";
         $scope.deletedatas.errorMsg = "";
-
         for (var j = 0; j < fileNames.length ; j++){
             if (fileNames[j] != null || fileNames[j] != undefined ){
                 var filename = fileNames[j].name;
@@ -545,6 +532,7 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                 $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                     success(function (data, status) {
                         $scope.files = data;
+                        $scope.files = removeDuplicates($scope.files);
                         $scope.deletedatas.deleteSuccess = true;
                         $scope.deletedatas.successMsg += filename + " deleted successfully... ";
                     }).
@@ -558,11 +546,6 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
 
     $scope.resetDelete = function(){
         $scope.deletedatas = angular.copy($scope.deleteinitial);
-    }
-
-    $scope.uploadFile = function (file) {
-        console.log("*******at upload controller*****");
-        console.log(file);
     }
 
     $scope.validateForm = function(){
@@ -580,17 +563,13 @@ fileManagerApp.controller("FileManagerCtrl",function($scope,$http) {
                     $scope.fileUploading = true;
                     $('#progress1').show();
                     $('#progress2').show();
-//                    $("#loading").show();
-                    console.log($scope.fileUploading);
                 }else{
                     var fileName = $('#fileField')[0].files[0].name;
                     var files = $scope.files;
-                    console.log(files);
                     for (var i = 0; i < files.length; i++) {
                         if ($scope.files[i].file) {
                             if ($scope.files[i].name == fileName){
                                 $scope.fileUploading = false;
-                                console.log($scope.fileUploading);
                                 event.preventDefault();
                                 alert(fileName + " already exists...");
                             }
@@ -616,6 +595,21 @@ var getCheckedFiles = function(files) {
         }
     }
     return fileNames;
+}
+
+var removeDuplicates = function(files) {
+    console.log(files);
+    var fileNames = [];
+    for (var i = 0; i < files.length; i++) {
+        fileNames[files[i].name] = files[i];
+    }
+
+    files = [];
+    for ( var key in fileNames ) {
+        files.push(fileNames[key]);
+    }
+    console.log(files);
+    return files;
 }
 
 var getCheckedFileNames = function(files) {
