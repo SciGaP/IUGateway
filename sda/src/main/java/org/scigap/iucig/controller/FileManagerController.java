@@ -222,8 +222,8 @@ public class FileManagerController {
 
             response.flushBuffer();
         } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename :'" + decodedFN);
-            throw new RuntimeException("IOError writing file to output stream", ex);
+            log.error("Error writing file to output stream. Filename :'" + decodedFN);
+            throw new Exception("IOError writing file to output stream", ex);
         }
     }
 

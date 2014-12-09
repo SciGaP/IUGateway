@@ -104,6 +104,8 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 }).
                 error(function (data, status) {
                     console.log("Error getting current working directory !");
+                    $scope.hideLoader = false;
+                    $scope.showError = true;
                 });
         }).
         error(function (data, status) {
@@ -134,7 +136,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
     }
 
     $scope.goInside = function (file) {
-        if (!file.file) {
+        if (file.fileType == "dir") {
             $scope.hideLoader = true;
             var folderName = file.name;
             $http({method: "GET", url: "filemanager/command/cd " + folderName, cache: false}).
@@ -153,10 +155,14 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                     $scope.hideLoader = false;
                     console.log("Error while cd ing to folder !");
                 });
-        } else {
+        } else if (file.fileType == "file"){
             var name = encodeURIComponent(file.name).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
-            ;
-            window.location = "filemanager/download/ " + name;
+            try {
+                $scope.showError1 = false;
+                window.location = "filemanager/download/ " + name;
+            }catch(err) {
+                $scope.showError1 = true;
+            }
         }
     }
 

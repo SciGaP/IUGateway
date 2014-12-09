@@ -54,7 +54,7 @@ public class KerberosConnector {
                     "gssapi-with-mic");
             config.put("MaxAuthTries", "5");
             session.setConfig(config);
-            session.connect(5000);
+            session.connect(20000);
         } catch (JSchException e) {
             log.error("Authentication fails.." , e);
             throw new Exception("Authentication fails..", e);

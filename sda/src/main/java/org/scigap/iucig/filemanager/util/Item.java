@@ -7,14 +7,14 @@ public class Item {
     private String owner;
     private String group;
     private String permission;
-    private boolean isFile;
+    private String fileType;
     private String size;
 
-    public Item(String name, String date, String owner,boolean isFile) {
+    public Item(String name, String date, String owner,String fileType) {
         this.name = name;
         this.date = date;
         this.owner = owner;
-        this.isFile= isFile;
+        this.fileType= fileType;
     }
 
     public String getSize() {
@@ -65,12 +65,12 @@ public class Item {
         this.permission = permission;
     }
 
-    public boolean isFile() {
-        return isFile;
+    public String getFileType() {
+        return fileType;
     }
 
-    public void setFile(boolean isFile) {
-        this.isFile = isFile;
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Item {
                 ", owner='" + owner + '\'' +
                 ", group='" + group + '\'' +
                 ", permission='" + permission + '\'' +
-                ", isFile=" + isFile +
+                ", fileType=" + fileType +
                 ", size='" + size + '\'' +
                 '}';
     }

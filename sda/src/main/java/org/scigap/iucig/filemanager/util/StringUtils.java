@@ -87,7 +87,13 @@ public class StringUtils {
                     temp.add(tokenizer.nextToken());
                 }
                 if (temp.size() > 3) {
-                    fileOrFolder = (temp.get(0).charAt(0) == 'd') ? "dir" : "file";
+                    if (temp.get(0).charAt(0) == 'd'){
+                        fileOrFolder = "dir";
+                    }else if (temp.get(0).charAt(0) == 'l'){
+                        fileOrFolder = "symlink";
+                    }else {
+                        fileOrFolder = "file";
+                    }
                     String fileName = temp.get(8);
                     if (temp.size() > 9) {
                         for (int k = 9; k < temp.size(); k++) {
@@ -113,7 +119,7 @@ public class StringUtils {
         String size;
 
         List<String> temp = null;
-        boolean isFile = false;
+        String fileType;
         if (resultList != null) {
             for (String line : resultList){
                 temp = new ArrayList<String>();
@@ -122,7 +128,13 @@ public class StringUtils {
                     temp.add(tokenizer.nextToken());
                 }
                 if (temp.size() > 8) {
-                    isFile = (temp.get(0).charAt(0) != 'd');
+                    if (temp.get(0).charAt(0) == 'd'){
+                        fileType = "dir";
+                    }else if (temp.get(0).charAt(0) == 'l'){
+                        fileType = "symlink";
+                    }else {
+                        fileType = "file";
+                    }
                     owner = temp.get(2);
                     group = temp.get(3);
                     size = temp.get(4);
@@ -138,7 +150,7 @@ public class StringUtils {
                     permission = temp.get(0);
 
                     date = month + " " + day + " " + time;
-                    item = new Item(name, date, owner, isFile);
+                    item = new Item(name, date, owner, fileType);
                     item.setGroup(group);
                     item.setSize(size);
                     item.setPermission(permission);
