@@ -110,7 +110,7 @@
         <div class="row-fluid"><div class="span4"><strong>Folder Name</strong></div><div><input type="text" name="addFolderdatas.foldername" ng-model="addFolderdatas.foldername"/></div></div>
     </div>
     <div class="modal-footer">
-        <button class="btn" ng-show="true" ng-click="resetAddFolder()">Reset</button>
+        <button class="btn" ng-show="true" ng-click="resetAddFolder()">Clear Dialog</button>
         <!--<a class="underline" ng-click="resetAddFolder()">Reset</a>-->
         <button class="btn" ng-click="resetAddFolder()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="!addFolderdatas.foldername" ng-click="addFolder(addFolderdatas.foldername)" class="btn btn-danger pull-left" ng-show="addFolderdatas.foldername">Create Folder</button>
@@ -189,7 +189,7 @@
     <div id="deletefiles" class="modal-body">
     </div>
     <div class="modal-footer">
-        <button class="btn" ng-show="true" ng-click="resetDelete()">Reset</button>
+        <button class="btn" ng-show="true" ng-click="resetDelete()">Clear Dialog</button>
         <button class="btn" ng-click="resetDelete()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="deleteFile()" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Delete</button>
         <!--<button ng-click="deleteFile()" class="btn btn-danger pull-left">Delete</button>-->
@@ -222,7 +222,7 @@
     <div id="renameFile" class="modal-body">
     </div>
     <div id="renameFooter" class="modal-footer">
-        <button class="btn" ng-show="true" ng-click="resetRenameFolder()">Reset</button>
+        <button class="btn" ng-show="true" ng-click="resetRenameFolder()">Clear Dialog</button>
         <button class="btn" ng-click="resetRenameFolder()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="rename(newname)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Rename</button>
         <div class="alert alert-error" ng-hide="!renamedatas.renameDisabled" ng-show="renamedatas.renameDisabled">
@@ -260,7 +260,7 @@
             <div class="span4" ng-show="selectOther"><strong>Folder Name</strong></div>
             <div>
                 <input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/>
-                <div ng-show="selectOther">Type the custom folder relative to your home as a/b/c</div>
+                <div ng-show="selectOther">Type the path of the destination folder relative to your home directory: as subdir1/subdir2</div>
             </div>
             <div class="span4" ng-show="selectHome"><strong>Home Folders</strong></div>
             <div><select ng-show="selectHome" name="homeFoldername" required
@@ -271,7 +271,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn" ng-show="true" ng-click="resetMv()">Reset</button>
+        <button class="btn" ng-show="true" ng-click="resetMv()">Clear Dialog</button>
         <button class="btn" ng-click="resetMv()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="move(foldername, otherfolder, homeFoldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Move</button>
         <div class="alert alert-error" ng-hide="!mvdatas.moveDisabled" ng-show="mvdatas.moveDisabled">
@@ -305,7 +305,7 @@
                 <div class="span4" ng-show="selectOther"><strong>Folder Name</strong></div>
                 <div>
                     <input type="text" ng-show="selectOther" name="otherfolder" ng-model="otherfolder"/>
-                    <div ng-show="selectOther">Type the custom folder relative to your home as a/b/c</div>
+                    <div ng-show="selectOther">Type the path of the destination folder relative to your home directory, as subdir1/subdir2</div>
                 </div>
                 <div class="span4" ng-show="selectHome"><strong>Home Folders</strong></div>
                 <div><select ng-show="selectHome" name="homeFoldername" required
@@ -316,7 +316,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn" ng-show="true" ng-click="resetCp()">Reset</button>
+        <button class="btn" ng-show="true" ng-click="resetCp()">Clear Dialog</button>
         <button class="btn" ng-click="resetCp()" data-dismiss="modal" aria-hidden="true">Close</button>
         <button ng-hide="selectedFiles.length==0" ng-click="copy(foldername, otherfolder, homeFoldername)" class="btn btn-danger pull-left" ng-show="selectedFiles.length>0">Copy</button>
         <!--<button ng-click="copy(foldername)" class="btn btn-danger pull-left">Copy</button>-->

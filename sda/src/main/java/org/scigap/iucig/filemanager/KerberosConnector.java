@@ -20,14 +20,13 @@ public class KerberosConnector {
     public static final String JAVA_SECURITY_KRB5_CONF = "java.security.krb5.conf";
     public static final String JAVAX_SECURITY_AUTH_USE_SUBJECT_CREDS_ONLY = "javax.security.auth.useSubjectCredsOnly";
     public static final String SUN_SECURITY_KRB5_DEBUG = "sun.security.krb5.debug";
-    public static final String LOGIN_FILE_LOCATION = "kerb.conffile.location";
-    public static final String LOGIN_FILE_NAME = "login2.conf";
+//    public static final String LOGIN_FILE_LOCATION = "kerb.conffile.location";
+//    public static final String LOGIN_FILE_NAME = "login2.conf";
     private static Properties properties = new Properties();
-    private String loginFile;
     private String host;
 
     public KerberosConnector() throws Exception{
-        loginFile = readProperty(LOGIN_FILE_LOCATION)+LOGIN_FILE_NAME;
+//        loginFile = readProperty(LOGIN_FILE_LOCATION)+LOGIN_FILE_NAME;
         host = readProperty(KERB_HOST);
         System.out.println("HOST : " + host);
         String krbConf = readProperty(KERB_CONF_LOCATION);

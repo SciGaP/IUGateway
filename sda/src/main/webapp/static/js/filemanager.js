@@ -325,7 +325,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 $scope.homeFiles = data;
                 var homeFiles = $scope.homeFiles;
                 for (var i = 0; i < homeFiles.length; i++) {
-                    if (!homeFiles[i].file) {
+                    if (homeFiles[i].fileType=='dir') {
                         var found = $.inArray(homeFiles[i].name, fileNames);
                         if (found == -1) {
                             homeFolders.push(homeFiles[i]);
@@ -335,7 +335,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 $scope.homeFoldername = homeFolders[0];
                 $scope.homeFolders = homeFolders;
                 for (var j = 0; j < files.length; j++) {
-                    if (!files[j].file) {
+                    if (files[j].fileType=='dir') {
                         var found = $.inArray(files[j].name, fileNames);
                         if (found == -1) {
                             folders.push(files[j]);
@@ -346,7 +346,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 homeFile.name = "Select from Home";
                 folders.push(homeFile);
                 var otherFile = {};
-                otherFile.name = "Other";
+                otherFile.name = "Specify Path";
                 folders.push(otherFile);
 //                $scope.foldername = folders[0];
                 $scope.folders = folders;
@@ -364,7 +364,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         var fileNameFullPath = home;
         var fileName;
 
-        if (targetFolder.name == "Other") {
+        if (targetFolder.name == "Specify Path") {
             if (customFolderName.contains("/")) {
                 customFolderName = customFolderName.replace(/\//g, '*');
                 fileNameFullPath = home + "*" + customFolderName;
@@ -421,7 +421,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 $scope.homeFiles = data;
                 var homeFiles = $scope.homeFiles;
                 for (var i = 0; i < homeFiles.length; i++) {
-                    if (!homeFiles[i].file) {
+                    if (homeFiles[i].fileType=='dir') {
                         var found = $.inArray(homeFiles[i].name, fileNames);
                         if (found == -1) {
                             homeFolders.push(homeFiles[i]);
@@ -431,7 +431,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 $scope.homeFoldername = homeFolders[0];
                 $scope.homeFolders = homeFolders;
                 for (var j = 0; j < files.length; j++) {
-                    if (!files[j].file) {
+                    if (files[j].fileType=='dir') {
                         var found = $.inArray(files[j].name, fileNames);
                         if (found == -1) {
                             folders.push(files[j]);
@@ -445,7 +445,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 currentFolder.name = "To Current Folder";
                 folders.push(currentFolder);
                 var otherFile = {};
-                otherFile.name = "Other";
+                otherFile.name = "Specify Path";
                 folders.push(otherFile);
 //                $scope.foldername = folders[0];
                 $scope.folders = folders;
@@ -458,7 +458,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
     $scope.populateRest = function (folerName) {
         $scope.selectOther = false;
         $scope.selectHome = false;
-        if (folerName.name == "Other") {
+        if (folerName.name == "Specify Path") {
             $scope.selectOther = true;
             $scope.otherfolder = "Home";
 
@@ -473,7 +473,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         var fileName;
         var home = $scope.home.replace(/\//g, '*');
         var pwd = $scope.pwd.replace(/\//g, '*');
-        if (targetFolder.name == "Other") {
+        if (targetFolder.name == "Specify Path") {
             if (customFolderName.contains("/")) {
                 customFolderName = customFolderName.replace(/\//g, '*');
                 fileNameFullPath = home + "*" + customFolderName;
