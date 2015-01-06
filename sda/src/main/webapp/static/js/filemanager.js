@@ -157,12 +157,25 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 });
         } else if (file.fileType == "file"){
             var name = encodeURIComponent(file.name).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
-            try {
-                $scope.showError1 = false;
-                window.location = "filemanager/download/ " + name;
-            }catch(err) {
-                $scope.showError1 = true;
-            }
+            var url = "filemanager/download/ " + name;
+            $.get(url)
+                .done(function() {
+                    window.location = url;
+                }).fail(function(e) {
+                    alert("Error occured while downloading the file. Please try again later..");
+                    console.log(e);
+                })
+
+//            $.ajax(url, {
+//                type: 'GET',
+//                success: function (d) {
+//                    //window.location = url;
+//                    console.log("success");
+//                },
+//                error: function ( e) {
+//                    alert("Error occured while downloading the file. Please try again later..");
+//                }
+//            });
         }
     }
 

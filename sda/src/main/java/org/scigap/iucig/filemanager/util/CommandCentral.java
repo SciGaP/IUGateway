@@ -452,20 +452,44 @@ public class CommandCentral {
         try {
             channel = session.openChannel("sftp");
             channel.connect();
+            try {
+                Thread.sleep(10000);
+            } catch (Exception ee) {
+                log.error("Error occured while channel connect", ee.getMessage());
+            }
             c = (ChannelSftp) channel;
-            inputStream = c.get(filePath);
-            IOUtils.copy(inputStream, outStream);
-            inputStream.close();
-            outStream.close();
+            if (isFile(c, filePath)){
+                inputStream = c.get(filePath);
+                IOUtils.copy(inputStream, outStream);
+                inputStream.close();
+                outStream.close();
+            }
         } catch (FileNotFoundException e1) {
             log.error("Unable to find the file", e1.getMessage());
-            throw new Exception(e1.getMessage());
+//            throw new Exception(e1.getMessage());
         } catch (JSchException e1) {
             log.error("Auth failure", e1.getMessage());
-            throw new Exception(e1.getMessage());
+//            throw new Exception(e1.getMessage());
         } catch (IOException e1) {
             log.error("Error occured", e1.getMessage());
-            throw new Exception(e1.getMessage());
+            if (channel.isClosed()){
+                log.info("***** channel closed *****");
+                channel.connect();
+                try {
+                    Thread.sleep(10000);
+                } catch (Exception ee) {
+                    log.error("Error occured while channel connect", ee.getMessage());
+                }
+            }
+
+            c = (ChannelSftp) channel;
+            if (isFile(c, filePath)){
+                inputStream = c.get(filePath);
+                IOUtils.copy(inputStream, outStream);
+                inputStream.close();
+                outStream.close();
+            }
+//            throw new Exception(e1.getMessage());
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -523,7 +547,7 @@ public class CommandCentral {
             }
         } catch (Exception e) {
             log.error("Auth failure", e);
-            throw new Exception(e);
+//            throw new Exception(e);
         }
         return isFile;
     }

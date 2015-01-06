@@ -38,4 +38,7 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/sda/*</url-pattern>
     </filter-mapping>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
 </web-app>
