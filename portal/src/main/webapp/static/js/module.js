@@ -44,6 +44,6 @@ function getUrlParameter(sParam)
 
 $(document).ready(function () {
     setTimeout(function () {
-        $("#infoLink").parent().addClass("active");
+        $("#swlisting").parent().addClass("active");
     }, 50);
 });

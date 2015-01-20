@@ -34,7 +34,7 @@ moduleSearchApp.controller("SearchCtrl", function($scope, $http, UrlProvider) {
 //	});
 //});
 
-/*var modulesApp = angular.module("modulesApp", ["user","urlprovider"]);
+var modulesApp = angular.module("modulesApp", ["user","urlprovider"]);
 modulesApp.controller("ModulesCtrl", function($scope, $http, UrlProvider) {
 	var machine = getURLParamValue("machine");
 	var url = UrlProvider.getUrlForMachine(machine);
@@ -47,33 +47,38 @@ modulesApp.controller("ModulesCtrl", function($scope, $http, UrlProvider) {
 		$scope.machineName = name;
 		loadData($scope,$http,"modules"+url);
 	}
-});*/
+    $scope.getModulePage = function(modulename){
+        $scope.moduleName = modulename;
+        document.location.href = "moduleInfo?" + UrlProvider.getModuleUrl() + "=" + modulename;
+    }
+});
 
 
-var loadData = function($scope,$http,url) {
-	$http({method: "GET", url: url, cache: true}).
-	success(function(data, status) {
-        /*var updatedData = new Array();
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].description == ""){
-                data[i].description = "N/A";
-            }
-            if (data[i].cluster == "tds"){
-                data[i].cluster = "Big Red II";
-            }
-            updatedData[i] = data[i];
-        }*/
-		$scope.modules = data;
-		$scope.hideLoader = true;
-	}).
-	error(function(data, status) {
-		$scope.hideLoader = true;
-		$scope.showError = true;
-    });
+var loadData = function ($scope, $http, url) {
+    $http({method: "GET", url: url, cache: true}).
+        success(function (data, status) {
+            /*var updatedData = new Array();
+             for (var i = 0; i < data.length; i++) {
+             if (data[i].description == ""){
+             data[i].description = "N/A";
+             }
+             if (data[i].cluster == "tds"){
+             data[i].cluster = "Big Red II";
+             }
+             updatedData[i] = data[i];
+             }*/
+            $scope.modules = data;
+            console.log($scope.modules.length);
+            $scope.hideLoader = true;
+        }).
+        error(function (data, status) {
+            $scope.hideLoader = true;
+            $scope.showError = true;
+        });
 };
 
 $(document).ready(function() {
 	setTimeout(function() {
-		$("#infoLink").parent().addClass("active");
+		$("#swlisting").parent().addClass("active");
 	},50);
 });

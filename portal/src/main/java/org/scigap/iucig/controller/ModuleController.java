@@ -1,7 +1,5 @@
 package org.scigap.iucig.controller;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.scigap.iucig.model.Module;
 import org.scigap.iucig.service.ModuleService;
@@ -13,15 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequestMapping(value="/modules/")
 public class ModuleController {
 	
 	@Autowired
-	UserService userService;
+    UserService userService;
 	
 	@Autowired
-	ModuleService moduleService;
+    ModuleService moduleService;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	
@@ -40,15 +40,15 @@ public class ModuleController {
 		return moduleService.getModuleDetails(moduleName);
 	}
 	
-/*	*//** Returns the module software available on Quarry *//*
+	//** Returns the module software available on Quarry *//*
 	@ResponseBody
 	@RequestMapping(value="/quarry", method = RequestMethod.GET)
 	public List<Module> getQuarryModules() {
 		logger.debug("Getting quarry modules info");
 		return moduleService.getQuarryModules();
 	}
-	
-	*//** Returns the module software available on Mason *//*
+
+	//** Returns the module software available on Mason *//*
 	@ResponseBody
 	@RequestMapping(value="/mason", method = RequestMethod.GET)
 	public List<Module> getMasonModules() {
@@ -56,23 +56,23 @@ public class ModuleController {
 		return moduleService.getMasonModules();
 	}
 
-    *//** Returns the module software available on Mason *//*
+    //** Returns the module software available on Mason *//*
     @ResponseBody
     @RequestMapping(value="/bigred2", method = RequestMethod.GET)
     public List<Module> getBR2Modules() {
         logger.debug("Getting BR2 modules info");
         return moduleService.getBR2Modules();
     }
-    
-    @ResponseBody
-    @RequestMapping(value="/search", method = RequestMethod.GET)
-    public List<Module> searchModules(@RequestParam(value="machine", required=false) String machine,
-    		@RequestParam(value="name", required=false) String name,
-    		@RequestParam(value="version", required=false) String version,
-    		@RequestParam(value="category", required=false) String category,
-    		@RequestParam(value="description", required=false) String description) {
-        logger.debug("Searching modules info");
-        return moduleService.searchModules(machine,name,version,category,description);
-    }*/
-	
+
+//    @ResponseBody
+//    @RequestMapping(value="/search", method = RequestMethod.GET)
+//    public List<Module> searchModules(@RequestParam(value="machine", required=false) String machine,
+//    		@RequestParam(value="name", required=false) String name,
+//    		@RequestParam(value="version", required=false) String version,
+//    		@RequestParam(value="category", required=false) String category,
+//    		@RequestParam(value="description", required=false) String description) {
+//        logger.debug("Searching modules info");
+//        return moduleService.searchModules(machine,name,version,category,description);
+//    }
+
 }

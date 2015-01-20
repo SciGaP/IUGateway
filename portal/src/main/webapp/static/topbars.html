@@ -55,9 +55,17 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
-                        <a id="infoLink" href="searchModulesInfo">Software</a>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="swlisting" href="#">Software</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="modulesInfo?machine=bigred2">BigRed2</a></li>
+                            <li><a href="modulesInfo?machine=quarry">Quarry</a></li>
+                            <li><a href="modulesInfo?machine=mason">Mason</a></li>
+                        </ul>
                     </li>
+                    <!--<li>-->
+                        <!--<a id="infoLink" href="searchModulesInfo">Software</a>-->
+                    <!--</li>-->
                     <!--<li ng-show="authenticated">-->
                     <!--<a id="disciplineLink" href="scienceDiscipline">Science Disciplines</a>-->
                     <!--</li>-->
@@ -67,9 +75,9 @@
                     <li ng-show="authenticated">
                         <a id="globusOnlineLink" href="https://iub.globusonline.org/SignIn">File Transfer</a>
                     </li>
-                    <li ng-show="authenticated">
-                        <a id="sshLink" href="ssh">SSH</a>
-                    </li>
+                    <!--<li ng-show="authenticated">-->
+                        <!--<a id="sshLink" href="ssh">SSH</a>-->
+                    <!--</li>-->
                     <li class="dropdown">
                         <a class="dropdown-toggle" id="aboutLink" href="#">Contact</a>
                         <ul class="dropdown-menu">
