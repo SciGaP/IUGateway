@@ -42,11 +42,18 @@ public class ModuleController {
 	
 	//** Returns the module software available on Quarry *//*
 	@ResponseBody
-	@RequestMapping(value="/quarry", method = RequestMethod.GET)
-	public List<Module> getQuarryModules() {
-		logger.debug("Getting quarry modules info");
+	@RequestMapping(value="/karst", method = RequestMethod.GET)
+	public List<Module> getKarstModules() {
+		logger.debug("Getting karst modules info");
 		return moduleService.getQuarryModules();
 	}
+
+    @ResponseBody
+    @RequestMapping(value="/quarry", method = RequestMethod.GET)
+    public List<Module> getQuarryModules() {
+        logger.debug("Getting Quarry modules info");
+        return moduleService.getQuarryModules();
+    }
 
 	//** Returns the module software available on Mason *//*
 	@ResponseBody

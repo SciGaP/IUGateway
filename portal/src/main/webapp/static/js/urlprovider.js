@@ -5,6 +5,7 @@ angular.module("urlprovider",[]).
 			bigred2 = {name:"Big Red II", id:"bigred2", url:"/bigred2"};
 			mason = {name:"Mason", id:"mason", url:"/mason"};
 			quarry = {name:"Quarry", id:"quarry", url:"/quarry"};
+			karst = {name:"Karst", id:"karst", url:"/karst"};
 			module = {name:"Module", id:"module", url:"name"};
 			CIBFeedUrl = "http://internal.pti.iu.edu/feeds/news/all/rss.xml";
 			noticesFeedUrl = "http://itnotices.iu.edu/rss.aspx";
@@ -20,7 +21,11 @@ angular.module("urlprovider",[]).
 				} else if(machine.toUpperCase() == quarry.name.toUpperCase() || 
 						machine.toUpperCase() == quarry.id.toUpperCase()) {
 					return quarry.url;
-				}
+				}else if(machine.toUpperCase() == karst.name.toUpperCase() ||
+                    machine.toUpperCase() == karst.id.toUpperCase()) {
+                    return karst.url;
+                }
+
 			};
 			
 			this.getNameForMachine = function(machine) {
@@ -33,7 +38,10 @@ angular.module("urlprovider",[]).
 				} else if(machine.toUpperCase() == quarry.name.toUpperCase() || 
 						machine.toUpperCase() == quarry.id.toUpperCase()) {
 					return quarry.name;
-				}
+				}else if(machine.toUpperCase() == karst.name.toUpperCase() ||
+                    machine.toUpperCase() == karst.id.toUpperCase()) {
+                    return karst.name;
+                }
 			};
 
 			this.getFeedLoaderUrl = function() {
