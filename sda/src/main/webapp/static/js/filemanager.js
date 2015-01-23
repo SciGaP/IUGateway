@@ -220,11 +220,13 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         } else {
             var content = "<div id='deleteDiv'>";
             for (var j = 0; j < selectedFiles.length; j++) {
-                if (selectedFiles[j].file) {
-                    content += "<p>Will delete the file " + selectedFiles[j].name + "</p>";
-                } else {
-                    content += "<p>Will delete the folder " + selectedFiles[j].name + " and any of its available content.</p>";
-                }
+                    if (selectedFiles[j].fileType == 'file') {
+                        content += "<p>Will delete the file " + selectedFiles[j].name + "</p>";
+                    } else if (selectedFiles[j].fileType == 'dir') {
+                        content += "<p>Will delete the folder " + selectedFiles[j].name + " and any of its available content.</p>";
+                    }else {
+                        content += "<p>"+ selectedFiles[j].name + " is a symlink. Current version does not support symlinks...</p>";
+                    }
             }
             content += "</div>";
             $('#deleteModel').show();
@@ -271,7 +273,11 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         } else {
             var content = "<div id='renameDiv'>";
             for (var j = 0; j < selectedFiles.length; j++) {
-                content += "<div class='row-fluid'><div class='span4'><strong>Rename " + selectedFiles[j].name + " to</strong></div><div><input id='" + selectedFiles[j].name + "' type='text' value='" + selectedFiles[j].name + "' name='newName" + j + "' ng-model='newName" + j + "'/></div></div>";
+                if (selectedFiles[j].fileType != 'symlink' ){
+                    content += "<div class='row-fluid'><div class='span4'><strong>Rename " + selectedFiles[j].name + " to</strong></div><div><input id='" + selectedFiles[j].name + "' type='text' value='" + selectedFiles[j].name + "' name='newName" + j + "' ng-model='newName" + j + "'/></div></div>";
+                }else{
+                    content += "<p>"+ selectedFiles[j].name + " is a symlink. Current version does not support symlinks...</p>";
+                }
             }
             content += "</div>";
             $('#renameModel').show();
@@ -399,21 +405,23 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         $scope.mvdatas.successMsg = "";
         $scope.mvdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++) {
-            var mvSelectedFile = selectedFiles[i].name;
-            mvSelectedFile = encodeURIComponent(mvSelectedFile);
-            var path = fileNameFullPath + "*" + mvSelectedFile;
-            $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile + "*" + path, cache: false}).
-                success(function (data, status) {
-                    $scope.files = data;
-                    $scope.files = removeDuplicates($scope.files);
-                    $scope.mvdatas.moveSuccess = true;
-                    $scope.mvdatas.successMsg += mvSelectedFile + " moved to " + fileName + " successfully... ";
-                }).
-                error(function (data, status) {
-                    console.log("Error getting files !");
-                    $scope.mvdatas.moveDisabled = true;
-                    $scope.mvdatas.errorMsg += "Error occured while moving " + mvSelectedFile + " to " + fileName + " .Please try again later...  ";
-                });
+            if (selectedFiles[i].fileType != "symlink") {
+                var mvSelectedFile = selectedFiles[i].name;
+                mvSelectedFile = encodeURIComponent(mvSelectedFile);
+                var path = fileNameFullPath + "*" + mvSelectedFile;
+                $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile + "*" + path, cache: false}).
+                    success(function (data, status) {
+                        $scope.files = data;
+                        $scope.files = removeDuplicates($scope.files);
+                        $scope.mvdatas.moveSuccess = true;
+                        $scope.mvdatas.successMsg += mvSelectedFile + " moved to " + fileName + " successfully... ";
+                    }).
+                    error(function (data, status) {
+                        console.log("Error getting files !");
+                        $scope.mvdatas.moveDisabled = true;
+                        $scope.mvdatas.errorMsg += "Error occured while moving " + mvSelectedFile + " to " + fileName + " .Please try again later...  ";
+                    });
+            }
         }
     }
 
@@ -508,30 +516,32 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         $scope.cpdatas.successMsg = "";
         $scope.cpdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++) {
-            var selectedFile = selectedFiles[i].name;
-            var selectedCPFile = encodeURIComponent(selectedFile);
-            var path = "";
-            if (selectedCPFile == targetFolder.name) {
-                path = pwd + "*" + "Copy_" + targetFolder.name;
-                fileName = "Copy_" + targetFolder.name;
-            } else if (targetFolder.name == "To Current Folder") {
-                path = pwd + "*" + "Copy_" + selectedCPFile;
-                fileName = "Copy_" + selectedCPFile;
-            } else {
-                path = fileNameFullPath + "*" + selectedCPFile;
+            if (selectedFiles[i].fileType != "symlink") {
+                var selectedFile = selectedFiles[i].name;
+                var selectedCPFile = encodeURIComponent(selectedFile);
+                var path = "";
+                if (selectedCPFile == targetFolder.name) {
+                    path = pwd + "*" + "Copy_" + targetFolder.name;
+                    fileName = "Copy_" + targetFolder.name;
+                } else if (targetFolder.name == "To Current Folder") {
+                    path = pwd + "*" + "Copy_" + selectedCPFile;
+                    fileName = "Copy_" + selectedCPFile;
+                } else {
+                    path = fileNameFullPath + "*" + selectedCPFile;
+                }
+                $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile + "*" + path, cache: false}).
+                    success(function (data, status) {
+                        $scope.files = data;
+                        $scope.files = removeDuplicates($scope.files);
+                        $scope.cpdatas.copySuccess = true;
+                        $scope.cpdatas.successMsg += selectedFile + " copied to " + fileName + " successfully... ";
+                    }).
+                    error(function (data, status) {
+                        console.log("Error copying files !");
+                        $scope.cpdatas.copyDisabled = true;
+                        $scope.cpdatas.errorMsg += "Error occured while copying " + selectedFile + " to " + fileName + " . Please try again later... ";
+                    });
             }
-            $http({method: "GET", url: "filemanager/command/cpr " + selectedCPFile + "*" + path, cache: false}).
-                success(function (data, status) {
-                    $scope.files = data;
-                    $scope.files = removeDuplicates($scope.files);
-                    $scope.cpdatas.copySuccess = true;
-                    $scope.cpdatas.successMsg += selectedFile + " copied to " + fileName + " successfully... ";
-                }).
-                error(function (data, status) {
-                    console.log("Error copying files !");
-                    $scope.cpdatas.copyDisabled = true;
-                    $scope.cpdatas.errorMsg += "Error occured while copying " + selectedFile + " to " + fileName + " . Please try again later... ";
-                });
         }
     }
 
@@ -546,20 +556,22 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         $scope.deletedatas.successMsg = "";
         $scope.deletedatas.errorMsg = "";
         for (var j = 0; j < fileNames.length; j++) {
-            if (fileNames[j] != null || fileNames[j] != undefined) {
-                var filename = fileNames[j].name;
-                var deleteFilename = encodeURIComponent(filename);
-                $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
-                    success(function (data, status) {
-                        $scope.files = data;
-                        $scope.files = removeDuplicates($scope.files);
-                        $scope.deletedatas.deleteSuccess = true;
-                        $scope.deletedatas.successMsg += filename + " deleted successfully... ";
-                    }).
-                    error(function (data, status) {
-                        $scope.deletedatas.deleteDisabled = true;
-                        $scope.deletedatas.errorMsg += "Unable to delete " + filename + " ... ";
-                    });
+            if (fileNames[j].fileType != "symlink"){
+                if (fileNames[j] != null || fileNames[j] != undefined) {
+                    var filename = fileNames[j].name;
+                    var deleteFilename = encodeURIComponent(filename);
+                    $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
+                        success(function (data, status) {
+                            $scope.files = data;
+                            $scope.files = removeDuplicates($scope.files);
+                            $scope.deletedatas.deleteSuccess = true;
+                            $scope.deletedatas.successMsg += filename + " deleted successfully... ";
+                        }).
+                        error(function (data, status) {
+                            $scope.deletedatas.deleteDisabled = true;
+                            $scope.deletedatas.errorMsg += "Unable to delete " + filename + " ... ";
+                        });
+                }
             }
         }
     }
