@@ -34,10 +34,7 @@ import org.scigap.iucig.gateway.util.WebClientDevWrapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.DataOutputStream;
@@ -56,10 +53,10 @@ public class ScienceDisciplineController {
 
     @ResponseBody
     @RequestMapping(value = "/getScienceDiscipline", method = RequestMethod.GET)
-    public String getScienceDiscipline() {
+    public String getScienceDiscipline(@RequestParam(value="selectedCluster") String cluster) {
         String responseJSON = null;
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL + "discipline/?format=json");
+        HttpRequestBase disciplines = new HttpGet(SCIENCE_DISCIPLINE_URL + "discipline/?format=json&cluster=" + cluster);
         logger.debug("Executing REST GET request" + disciplines.getRequestLine());
 
         try {
@@ -81,7 +78,7 @@ public class ScienceDisciplineController {
 
     @ResponseBody
     @RequestMapping(value = "/getUsersScienceDiscipline", method = RequestMethod.GET)
-    public String getUsersScienceDiscipline(HttpServletRequest request) throws Exception {
+    public String getUsersScienceDiscipline( @RequestParam(value="selectedCluster") String cluster, HttpServletRequest request) throws Exception {
         String responseJSON = null;
         String remoteUser;
         if (request != null) {
@@ -90,7 +87,7 @@ public class ScienceDisciplineController {
             throw new Exception("Remote user is null");
         }
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        String url = SCIENCE_DISCIPLINE_URL + "user/" + remoteUser + "?format=json&fields=disciplines";
+        String url = SCIENCE_DISCIPLINE_URL + "user/" + remoteUser + "?format=json&fields=disciplines&cluster=" + cluster;
         System.out.println(url);
         HttpRequestBase disciplines = new HttpGet(url);
         logger.debug("Executing REST GET request" + disciplines.getRequestLine());
@@ -213,7 +210,7 @@ public class ScienceDisciplineController {
                 con.setDoInput(true);
                 con.setDoOutput(true);
                 con.setUseCaches(false);
-                urlParameters += "&date=" + discipline.getDate() + "&source=cybergateway&commit=Update";
+                urlParameters += "&date=" + discipline.getDate() + "&source=cybergateway&commit=Update&cluster=" + discipline.getCluster();
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 wr.writeBytes(urlParameters);
                 wr.flush();

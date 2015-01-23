@@ -1,48 +1,113 @@
 var disciplineApp = angular.module("disciplineApp", ["user"]);
 
 disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
-    $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
-        success(function (savedDiscipline, status) {
-            $scope.submitDisabled = false;
-            $http({method: "GET", url: "getScienceDiscipline", cache: false}).
-                success(function (allDisciplines, status) {
+    $scope.getClusterDisciplines = function(){
+        //hiding all previous alert messages
+        $scope.submitSuccess = false;
+        $scope.submitDisabled = false;
+        var selectedCluster = $("#selectCluster").val();
+        console.log(selectedCluster);
+        if( selectedCluster != "")
+        {
+            $http({method: "GET", url: "getUsersScienceDiscipline", params:{selectedCluster :selectedCluster}, cache: false}).
+                success(function (savedDiscipline, status) {
                     $scope.item = {};
-                   // $scope.disciplineForm = {};
-                    $scope.allDisciplines = getDisciplines(allDisciplines);
-                    $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
-                    console.log($scope.allDisciplines);
-                    console.log($scope.selectedDisciplines);
-                    $scope.item.primaryDisc = null;
-                    $scope.item.primarySubDisc = null;
-                    $scope.item.secondaryDisc = null;
-                    $scope.item.secondarySubDisc = null;
-                    $scope.item.tertiaryDisc = null;
-                    $scope.item.tertiarySubDisc = null;
-                    if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0) {
-                        $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
-                        $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
-                        $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
-                        if ($scope.selectedDisciplines[1] != undefined) {
-                            $scope.item.secondaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index];
-                            $scope.item.secondarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index].subdisciplines[[$scope.selectedDisciplines[1].sindex]];
-                            $scope.subdisciplines2 = getSubdisciplines($scope.item.secondaryDisc.id, $scope.allDisciplines);
-                        }
-                        if ($scope.selectedDisciplines[2] != undefined) {
-                            $scope.item.tertiaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index];
-                            $scope.item.tertiarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index].subdisciplines[[$scope.selectedDisciplines[2].sindex]];
-                            $scope.subdisciplines3 = getSubdisciplines($scope.item.tertiaryDisc.id, $scope.allDisciplines);
-                        }
-                    } else {
-                        $scope.item = null;
-                    }
+                    $scope.item.cluster = selectedCluster;
+                    $scope.submitDisabled = false;
+                    $http({method: "GET", url: "getScienceDiscipline",params:{selectedCluster :selectedCluster}, cache: false}).
+                        success(function (allDisciplines, status) {
+                            $scope.allDisciplines = getDisciplines(allDisciplines);
+                            $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+                            $scope.item.primaryDisc = null;
+                            $scope.item.primarySubDisc = null;
+                            $scope.item.secondaryDisc = null;
+                            $scope.item.secondarySubDisc = null;
+                            $scope.item.tertiaryDisc = null;
+                            $scope.item.tertiarySubDisc = null;
+                            if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0) {
+                                $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
+                                $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
+                                $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
+                                if ($scope.selectedDisciplines[1] != undefined) {
+                                    $scope.item.secondaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index];
+                                    $scope.item.secondarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index].subdisciplines[[$scope.selectedDisciplines[1].sindex]];
+                                    $scope.subdisciplines2 = getSubdisciplines($scope.item.secondaryDisc.id, $scope.allDisciplines);
+                                }
+                                if ($scope.selectedDisciplines[2] != undefined) {
+                                    $scope.item.tertiaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index];
+                                    $scope.item.tertiarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index].subdisciplines[[$scope.selectedDisciplines[2].sindex]];
+                                    $scope.subdisciplines3 = getSubdisciplines($scope.item.tertiaryDisc.id, $scope.allDisciplines);
+                                }
+                            } else {
+                                $scope.item = {};
+                                $scope.item.cluster = selectedCluster;
+                            }
+                            $(".disciplineForm").removeClass("hide");
+                        }).
+                        error(function (data, status) {
+                            console.log("Error getting user disciplines !");
+                            $(".disciplineForm").addClass("hide");
+                            $scope.submitSuccess = false;
+                            $scope.submitDisabled = false;
+                        });
+
+
                 }).
                 error(function (data, status) {
-                    console.log("Error getting user disciplines !");
+                    console.log("Error getting disciplines !");
+                    $(".disciplineForm").addClass("hide");
+                    $scope.submitSuccess = false;
+                    $scope.submitDisabled = false;
                 });
-        }).
-        error(function (data, status) {
-            console.log("Error getting disciplines !");
-        });
+
+        }
+        else
+        {
+            $(".disciplineForm").addClass("hide");
+        }
+    }
+//    $http({method: "GET", url: "getUsersScienceDiscipline", cache: false}).
+//        success(function (savedDiscipline, status) {
+//            $scope.submitDisabled = false;
+//            $http({method: "GET", url: "getScienceDiscipline", cache: false}).
+//                success(function (allDisciplines, status) {
+//                    $scope.item = {};
+//                   // $scope.disciplineForm = {};
+//                    $scope.allDisciplines = getDisciplines(allDisciplines);
+//                    $scope.selectedDisciplines = getUserDisciplines(allDisciplines, savedDiscipline);
+//                    console.log($scope.allDisciplines);
+//                    console.log($scope.selectedDisciplines);
+//                    $scope.item.primaryDisc = null;
+//                    $scope.item.primarySubDisc = null;
+//                    $scope.item.secondaryDisc = null;
+//                    $scope.item.secondarySubDisc = null;
+//                    $scope.item.tertiaryDisc = null;
+//                    $scope.item.tertiarySubDisc = null;
+//                    if ($scope.selectedDisciplines != undefined && $scope.selectedDisciplines.length > 0) {
+//                        $scope.item.primaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index];
+//                        $scope.item.primarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[0].index].subdisciplines[[$scope.selectedDisciplines[0].sindex]];
+//                        $scope.subdisciplines1 = getSubdisciplines($scope.item.primaryDisc.id, $scope.allDisciplines);
+//                        if ($scope.selectedDisciplines[1] != undefined) {
+//                            $scope.item.secondaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index];
+//                            $scope.item.secondarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[1].index].subdisciplines[[$scope.selectedDisciplines[1].sindex]];
+//                            $scope.subdisciplines2 = getSubdisciplines($scope.item.secondaryDisc.id, $scope.allDisciplines);
+//                        }
+//                        if ($scope.selectedDisciplines[2] != undefined) {
+//                            $scope.item.tertiaryDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index];
+//                            $scope.item.tertiarySubDisc = $scope.allDisciplines[$scope.selectedDisciplines[2].index].subdisciplines[[$scope.selectedDisciplines[2].sindex]];
+//                            $scope.subdisciplines3 = getSubdisciplines($scope.item.tertiaryDisc.id, $scope.allDisciplines);
+//                        }
+//                    } else {
+//                        $scope.item = null;
+//                    }
+//                }).
+//                error(function (data, status) {
+//                    console.log("Error getting user disciplines !");
+//                });
+//        }).
+//        error(function (data, status) {
+//            console.log("Error getting disciplines !");
+//        });
 
     $scope.getSubDisciplineList1 = function () {
         if ($scope.item.primaryDisc != undefined) {
@@ -52,6 +117,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
         } else{
             $scope.item.primarySubDisc = null;
         }
+        $scope.submitSuccess = false;
+        $scope.submitDisabled = false;
     };
 
     $scope.getSubDisciplineList2 = function () {
@@ -62,6 +129,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
         } else{
             $scope.item.secondarySubDisc = null;
         }
+        $scope.submitSuccess = false;
+        $scope.submitDisabled = false;
     };
 
     $scope.getSubDisciplineList3 = function () {
@@ -72,6 +141,8 @@ disciplineApp.controller("DisciplineCtrl", function ($scope, $http) {
         } else {
             $scope.item.tertiarySubDisc = null;
         }
+        $scope.submitSuccess = false;
+        $scope.submitDisabled = false;
     };
 
     $scope.addDiscipline = function (disciplineInfo) {

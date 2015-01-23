@@ -33,83 +33,96 @@
                     work has changed, please edit the disciplines/sub-disciplines
                     using the form below.
                 </p><br>
+
                 <form id="disciplineForm" name="disciplineForm" class="form-horizontal">
-                    <div class="control-group" ng-class="{error: disciplineForm.pDisc.$invalid}">
-                        <label class="control-label required" for="primaryDiscipline">Primary Discipline</label>
+                    <div class="control-group form-horizontal">
+                        <label class="control-label required">IU Resource</label>
                         <div class="controls">
-                            <select name="pDisc" required
-                            ng-options="pDisc as pDisc.name for pDisc in allDisciplines"
-                            ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">
+                            <select name="cluster" id="selectCluster" required ng-model="item.cluster" ng-change="getClusterDisciplines()">
                                 <option value="">--Select--</option>
+                                <option value="bigred2">Big Red 2</option>
+                                <option value="karst">Karst</option>
                             </select>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label" for="primarySubDiscipline">Primary Sub-discipline</label>
-
-                        <div class="controls">
-                            <select name="pSubDisc" ng-model="item.primarySubDisc"
-                                    ng-options="pSubDisc as pSubDisc.name for pSubDisc in subdisciplines1">
-                                <option value="">--Select--</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="secondaryDiscipline">Secondary Discipline</label>
-
-                        <div class="controls">
-                            <select name="secondaryDisc" ng-model="item.secondaryDisc"
-                                    ng-options="secondaryDisc as secondaryDisc.name for secondaryDisc in allDisciplines"
-                                    ng-change="getSubDisciplineList2()">
-                                <option value="">--Select--</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="secondarySubDiscipline">Secondary Sub-discipline</label>
-
-                        <div class="controls">
-                            <select name="secondarySubDisc" ng-model="item.secondarySubDisc"
-                                    ng-options="secondarySubDisc as secondarySubDisc.name for secondarySubDisc in subdisciplines2">
-                                <option value="">--Select--</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label" for="tertiaryDiscipline">Tertiary Discipline</label>
-
-                        <div class="controls">
-                            <select name="tertiaryDisc" ng-model="item.tertiaryDisc"
-                                    ng-options="tertiaryDisc.name for tertiaryDisc in allDisciplines"
-                                    ng-change="getSubDisciplineList3()">
-                                <option value="">--Select--</option>
-                            </select></div>
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label" for="tertiarySubDiscipline">Tertiary Sub-discipline</label>
-
-                        <div class="controls">
-                            <select name="tertiarySubDisc" ng-model="item.tertiarySubDisc"
-                                    ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines3">
-                                <option value="">--Select--</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="controls">
-                            <!--<button ng-disabled="submitDisabled" ng-click="addDiscipline(item)"  class="btn">-->
-                            <button ng-disabled="disciplineForm.pDisc.$invalid" ng-click="addDiscipline(item)"  class="btn">
-                                Submit
-                            </button>
-                            <div class="alert alert-error" ng-show="submitDisabled">
-                                <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                                Error occurred, please correct and submit
+                    <div class="disciplineForm hide">
+                        <div class="control-group" ng-class="{error: disciplineForm.pDisc.$invalid}">
+                            <label class="control-label required" for="primaryDiscipline">Primary Discipline</label>
+                            <div class="controls">
+                                <select name="pDisc" required
+                                ng-options="pDisc as pDisc.name for pDisc in allDisciplines"
+                                ng-model="item.primaryDisc" ng-change="getSubDisciplineList1()">
+                                    <option value="">--Select--</option>
+                                </select>
                             </div>
-                            <div class="alert alert-success" ng-show="submitSuccess">
-                                <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                                Submitted successfully..
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="primarySubDiscipline">Primary Sub-discipline</label>
+
+                            <div class="controls">
+                                <select name="pSubDisc" ng-model="item.primarySubDisc"
+                                        ng-options="pSubDisc as pSubDisc.name for pSubDisc in subdisciplines1">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="secondaryDiscipline">Secondary Discipline</label>
+
+                            <div class="controls">
+                                <select name="secondaryDisc" ng-model="item.secondaryDisc"
+                                        ng-options="secondaryDisc as secondaryDisc.name for secondaryDisc in allDisciplines"
+                                        ng-change="getSubDisciplineList2()">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="secondarySubDiscipline">Secondary Sub-discipline</label>
+
+                            <div class="controls">
+                                <select name="secondarySubDisc" ng-model="item.secondarySubDisc"
+                                        ng-options="secondarySubDisc as secondarySubDisc.name for secondarySubDisc in subdisciplines2">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="tertiaryDiscipline">Tertiary Discipline</label>
+
+                            <div class="controls">
+                                <select name="tertiaryDisc" ng-model="item.tertiaryDisc"
+                                        ng-options="tertiaryDisc.name for tertiaryDisc in allDisciplines"
+                                        ng-change="getSubDisciplineList3()">
+                                    <option value="">--Select--</option>
+                                </select></div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="tertiarySubDiscipline">Tertiary Sub-discipline</label>
+
+                            <div class="controls">
+                                <select name="tertiarySubDisc" ng-model="item.tertiarySubDisc"
+                                        ng-options="tertiarySubDisc.name for tertiarySubDisc in subdisciplines3">
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <!--<button ng-disabled="submitDisabled" ng-click="addDiscipline(item)"  class="btn">-->
+                                <button ng-disabled="disciplineForm.pDisc.$invalid" ng-click="addDiscipline(item)"  class="btn">
+                                    Submit
+                                </button>
+                                <div class="alert alert-error" ng-show="submitDisabled">
+                                    <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                                    Error occurred, please correct and submit
+                                </div>
+                                <div class="alert alert-success" ng-show="submitSuccess">
+                                    <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                                    Submitted successfully..
+                                </div>
                             </div>
                         </div>
                     </div>

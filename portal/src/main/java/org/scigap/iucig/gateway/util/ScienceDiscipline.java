@@ -31,9 +31,18 @@ public class ScienceDiscipline implements Serializable {
     private Map<String, Object> tertiaryDisc;
     private String username;
     private String date;
+    private String cluster;
     private Map<String, String> primarySubDisc;
     private Map<String, String> secondarySubDisc;
     private Map<String, String> tertiarySubDisc;
+
+    public String getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
+    }
 
     public Map<String, Object> getPrimaryDisc() {
         return primaryDisc;
