@@ -335,6 +335,14 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         $scope.selectOther = false;
         $scope.selectHome = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
+        if ($scope.selectedFiles.length != 0) {
+            $scope.symlink = false;
+            for (var i = 0; i < $scope.selectedFiles.length; i++) {
+                if ($scope.selectedFiles[i].fileType == 'symlink'){
+                    $scope.symlink = true;
+                }
+            }
+        }
         var fileNames = getCheckedFileNames($scope.selectedFiles);
         var files = $scope.files;
         var homeFolders = [];
@@ -434,6 +442,14 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         $scope.selectHome = false;
         $scope.selectedFiles = getCheckedFiles($scope.files);
         var fileNames = getCheckedFileNames($scope.selectedFiles);
+        if ($scope.selectedFiles.length != 0) {
+            $scope.symlink = false;
+            for (var i = 0; i < $scope.selectedFiles.length; i++) {
+                if ($scope.selectedFiles[i].fileType == 'symlink'){
+                    $scope.symlink = true;
+                }
+            }
+        }
         var files = $scope.files;
         var homeFolders = [];
         var folders = [];

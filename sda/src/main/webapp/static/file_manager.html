@@ -249,8 +249,11 @@
             <div class="alert alert-error" ng-show="selectedFiles.length<1">
                 <button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to move...
             </div>
-            <div class="span4" ng-show="selectedFiles.length>0"><strong>Target folder</strong></div>
-            <div ng-show="selectedFiles.length>0">
+            <div class="alert alert-warn" ng-show="symlink">
+                <button type='button' class='close' data-dismiss='alert'>&times;</button>Symlinks are not supported in current version..
+            </div>
+            <div class="span4" ng-show="!symlink"><strong>Target folder</strong></div>
+            <div ng-show="!symlink">
                 <select name="foldername" required
                         ng-options="folder as folder.name for folder in folders"
                         ng-model="foldername" ng-change="populateRest(foldername)">
@@ -294,8 +297,11 @@
             <div class="alert alert-error" ng-show="selectedFiles.length<1">
                 <button type='button' class='close' data-dismiss='alert'>&times;</button>Please select files to copy...
             </div>
-            <div class="span4" ng-show="selectedFiles.length>0"><strong>Target folder</strong></div>
-            <div ng-show="selectedFiles.length>0">
+            <div class="alert alert-warn" ng-show="symlink">
+                <button type='button' class='close' data-dismiss='alert'>&times;</button>Symlinks are not supported in current version..
+            </div>
+            <div class="span4" ng-show="!symlink"><strong>Target folder</strong></div>
+            <div ng-show="!symlink">
                 <select name="foldername" required
                         ng-options="folder as folder.name for folder in folders"
                         ng-model="foldername" ng-change="populateRest(foldername)">
