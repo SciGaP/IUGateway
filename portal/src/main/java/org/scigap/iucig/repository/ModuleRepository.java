@@ -90,7 +90,7 @@ public class ModuleRepository {
     public List<Module> getModuleDetails(String moduleName) {
     	List<Map<String,Object>> table = jdbc.queryForList("select v.name as Version, v.description as Description, c.name as Cluster "
 				+ "from stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id "
-				+ "inner join stats.clusters c on m.cluster_id = c.id where m.name = ?",moduleName);
+				+ "inner join stats.clusters c on m.cluster_id = c.id where c.name != 'Quarry' and m.name = ?",moduleName);
 		List<Module> modulesList = getModulesList(table);
 		return modulesList;
 	}
