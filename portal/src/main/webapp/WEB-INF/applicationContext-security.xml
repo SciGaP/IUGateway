@@ -32,10 +32,10 @@
         <security:intercept-url pattern="/modules/mason" access="permitAll" />
         <security:intercept-url pattern="/modules/bigred2" access="permitAll" />
         <security:intercept-url pattern="/modules/search" access="permitAll" /-->
-		<security:intercept-url pattern="/nodeInfo/quarry/nodestatus" access="permitAll" />
+		<security:intercept-url pattern="/nodeInfo/karst/nodestatus" access="permitAll" />
 		<security:intercept-url pattern="/nodeInfo/mason/nodestatus" access="permitAll" />
 		<security:intercept-url pattern="/nodeInfo/bigred2/nodestatus" access="permitAll" />
-		<security:intercept-url pattern="/jobInfo/quarry/jobstatus" access="permitAll" />
+		<security:intercept-url pattern="/jobInfo/karst/jobstatus" access="permitAll" />
 		<security:intercept-url pattern="/jobInfo/mason/jobstatus" access="permitAll" />
 		<security:intercept-url pattern="/jobInfo/bigred2/jobstatus" access="permitAll" />
 		<security:intercept-url pattern="/submitFeedback" access="permitAll" />

@@ -1,9 +1,5 @@
 package org.scigap.iucig.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.scigap.iucig.service.MWSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,8 +20,8 @@ public class NodeController {
 	@Autowired
 	MWSService service;
 	
-	@Value("${quarry.mws.url}")
-	private String QUARRY_MWS_URL;
+	@Value("${karst.mws.url}")
+	private String KARST_MWS_URL;
 
     @Value("${br2.mws.url}")
     private String BR2_MWS_URL;
@@ -37,17 +32,17 @@ public class NodeController {
 	private final Logger logger = Logger.getLogger(getClass());
 	
 	@ResponseBody
-	@RequestMapping(value="/quarry")
-	public String getAllNodesQuarry(HttpServletResponse response) {
-		HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"nodes?api-version=2");
+	@RequestMapping(value="/karst")
+	public String getAllNodesKarst(HttpServletResponse response) {
+		HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"nodes?api-version=2");
 		logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
 		return service.getResponseForRequest(mwsRequest, response);
 	}
 
     @ResponseBody
-    @RequestMapping(value="/quarry/nodestatus")
+    @RequestMapping(value="/karst/nodestatus")
     public String getAllNodeStatus(HttpServletResponse response) {
-        HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"nodes?api-version=2&fields=name,states.state");
+        HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"nodes?api-version=2&fields=name,states.state");
         logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
         return service.getResponseForRequest(mwsRequest, response);
     }

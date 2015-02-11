@@ -9,7 +9,7 @@ submitJobApp.controller("SubmitJobCtrl",function($scope,$http) {
 	$scope.machine = [];
 	$scope.machine['bigred2'] = {pubkey:""};
 	$scope.machine['mason'] = {pubkey:""};
-	$scope.machine['quarry'] = {pubkey:""};
+	$scope.machine['karst'] = {pubkey:""};
 	$scope.chooseMachine = function(machinename) {
 		$scope.machinename = machinename;
 		$http({method: "GET", url: "modules/search?machine="+machinename+"&category=applications", cache: true}).

@@ -34,8 +34,8 @@ public class JobInfoController {
 	@Autowired
 	UserService userService;
 	
-	@Value("${quarry.mws.url}")
-    private String QUARRY_MWS_URL;
+	@Value("${karst.mws.url}")
+    private String KARST_MWS_URL;
 
     @Value("${br2.mws.url}")
     private String BIGRED2_MWS_URL;
@@ -47,22 +47,22 @@ public class JobInfoController {
 	
 	/** Returns All Running Jobs of all users in Quarry */
 	@ResponseBody
-	@RequestMapping(value="/quarry", method = RequestMethod.GET)
+	@RequestMapping(value="/karst", method = RequestMethod.GET)
 	public String getAllJobs(HttpServletResponse response) {
-		HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"jobs?api-version=2");
+		HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"jobs?api-version=2");
 		logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
 		return service.getResponseForRequest(mwsRequest,response);
 	}
 
 	/** Returns All Running Jobs of logged in user in Quarry */
 	@ResponseBody
-	@RequestMapping(value="/quarry/user", method = RequestMethod.GET)
-	public String getQuarryUserJobs(HttpServletResponse response) {
+	@RequestMapping(value="/karst/user", method = RequestMethod.GET)
+	public String getKarstUserJobs(HttpServletResponse response) {
 		String username = userService.getAuthenticatedUser().getUsername();
 		// Trying to encode URL. doesnt work as expected.
 		//String encodedQuery = URLEncoder.encode("api-version=2&query={'credentials.user':'"+username+"'}", "UTF-8");
 		// Manually encoding only the curly braces. { - %7B, } - %7D
-		HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"jobs?api-version=2&query=%7B'credentials.user':'"+username+"'%7D");
+		HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"jobs?api-version=2&query=%7B'credentials.user':'"+username+"'%7D");
 		logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
 		return service.getResponseForRequest(mwsRequest,response); 
 	}
@@ -70,18 +70,18 @@ public class JobInfoController {
 	/** Returns the details of a particular job in Quarry 
 	 * @throws UnsupportedEncodingException */
 	@ResponseBody
-	@RequestMapping(value="/quarry/{jobid}", method = RequestMethod.GET)
+	@RequestMapping(value="/karst/{jobid}", method = RequestMethod.GET)
 	public String getJobDetails(@PathVariable(value="jobid") final String jobid, HttpServletResponse response) throws UnsupportedEncodingException {
 		String encodedJobID = URLEncoder.encode(jobid,"ISO-8859-1"); 
-		HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"jobs/"+encodedJobID+"?api-version=2");
+		HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"jobs/"+encodedJobID+"?api-version=2");
 		logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
 		return service.getResponseForRequest(mwsRequest,response);
 	}
 
     @ResponseBody
-    @RequestMapping(value="/quarry/jobstatus")
+    @RequestMapping(value="/karst/jobstatus")
     public String getJobStatus(HttpServletResponse response) {
-        HttpRequestBase mwsRequest = new HttpGet(QUARRY_MWS_URL +"jobs?api-version=2&fields=name,states.state");
+        HttpRequestBase mwsRequest = new HttpGet(KARST_MWS_URL +"jobs?api-version=2&fields=name,states.state");
         logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
         return service.getResponseForRequest(mwsRequest,response);
     }
@@ -89,7 +89,7 @@ public class JobInfoController {
 	/** Cancel a job
 	 * @throws UnsupportedEncodingException */
 	@ResponseBody
-	@RequestMapping(value="/quarry/{jobid}", method = RequestMethod.DELETE)
+	@RequestMapping(value="/karst/{jobid}", method = RequestMethod.DELETE)
 	public String cancelJob(@PathVariable(value="jobid") final String jobid, HttpServletResponse response) throws UnsupportedEncodingException {
 		try {
 			String jobDetails = this.getJobDetails(jobid, response);
@@ -98,7 +98,7 @@ public class JobInfoController {
 			String username = (String) credentials.get("user");
 			if(userService.getAuthenticatedUser().getUsername().equals(username)) {
 				String encodedJobID = URLEncoder.encode(jobid,"ISO-8859-1");
-				HttpRequestBase mwsRequest = new HttpDelete(QUARRY_MWS_URL +"jobs/"+encodedJobID+"?api-version=2");
+				HttpRequestBase mwsRequest = new HttpDelete(KARST_MWS_URL +"jobs/"+encodedJobID+"?api-version=2");
 				logger.debug("Executing REST DELETE request" + mwsRequest.getRequestLine());
 				String deleteResponse = service.getResponseForRequest(mwsRequest,response);
 				if(deleteResponse.equals("{}")) {
@@ -124,7 +124,7 @@ public class JobInfoController {
 	 * Refer MWS (Viewpoint) reference guide for list of supported operations
 	 * @throws UnsupportedEncodingException */
 	@ResponseBody
-	@RequestMapping(value="/quarry/{jobid}/{operation}", method = RequestMethod.PUT)
+	@RequestMapping(value="/karst/{jobid}/{operation}", method = RequestMethod.PUT)
 	public String modifyJob(@PathVariable(value="jobid") final String jobid,@PathVariable(value="operation") final String operation, HttpServletResponse response) throws UnsupportedEncodingException {
 		try {
 			String jobDetails = this.getJobDetails(jobid, response);
@@ -133,7 +133,7 @@ public class JobInfoController {
 			String username = (String) credentials.get("user");
 			if(userService.getAuthenticatedUser().getUsername().equals(username)) {
 				String encodedJobID = URLEncoder.encode(jobid,"ISO-8859-1");
-				HttpRequestBase mwsRequest = new HttpPut(QUARRY_MWS_URL +"jobs/"+getQueryForModifyRequest(encodedJobID,operation));
+				HttpRequestBase mwsRequest = new HttpPut(KARST_MWS_URL +"jobs/"+getQueryForModifyRequest(encodedJobID,operation));
 				logger.info("Executing REST PUT request" + mwsRequest.getRequestLine());
 				return service.getResponseForRequest(mwsRequest,response);
 			} else {

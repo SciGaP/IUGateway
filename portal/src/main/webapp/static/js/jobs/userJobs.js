@@ -4,7 +4,7 @@ var UserJobCtrl = userJobApp.controller("UserJobCtrl",function($scope,$http,UrlP
 	$scope.jobs = [];
 	fetchData($scope,$http,"jobInfo/bigred2/user","Big Red II");
 	fetchData($scope,$http,"jobInfo/mason/user","Mason");
-	fetchData($scope,$http,"jobInfo/quarry/user","Quarry");
+	fetchData($scope,$http,"jobInfo/karst/user","Karst");
 	$scope.hideLoader = true;
 	$scope.showDetails = function(item) {
 		$scope.item = item;

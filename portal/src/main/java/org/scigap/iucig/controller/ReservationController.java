@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value="/reservation/")
 public class ReservationController {
 	
-	@Value("${quarry.mws.url}")
-	private String quarryMwsUrl;
+	@Value("${karst.mws.url}")
+	private String karstMwsUrl;
 
     @Value("${br2.mws.url}")
     private String br2MwsUrl;
@@ -37,9 +37,9 @@ public class ReservationController {
 	
 	/** Returns all reservations on the machine*/
 	@ResponseBody
-	@RequestMapping(value="/quarry", method = RequestMethod.GET)
+	@RequestMapping(value="/karst", method = RequestMethod.GET)
 	public String getAllReservations(HttpServletResponse response) {
-		HttpRequestBase mwsRequest = new HttpGet(quarryMwsUrl +"reservations");
+		HttpRequestBase mwsRequest = new HttpGet(karstMwsUrl +"reservations");
 		logger.debug("Executing REST GET request" + mwsRequest.getRequestLine());
 		return service.getResponseForRequest(mwsRequest, response);
 	}

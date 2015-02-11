@@ -57,15 +57,15 @@ indexApp.controller("IndexCtrl", function($scope,$http,UrlProvider) {
 	$scope.systemStatus = {};
     $scope.systemStatus.bigred2 = {};
 	$scope.systemStatus.mason = {};
-	$scope.systemStatus.quarry = {};
+	$scope.systemStatus.karst = {};
 	
 	var updateSystemStatus = function() {
         loadJobCounts($scope,$http,UrlProvider,"bigred2");
 		loadJobCounts($scope,$http,UrlProvider,"mason");
-		loadJobCounts($scope,$http,UrlProvider,"quarry");
+		loadJobCounts($scope,$http,UrlProvider,"karst");
         loadNodeCounts($scope,$http,UrlProvider,"bigred2");
 		loadNodeCounts($scope,$http,UrlProvider,"mason");
-		loadNodeCounts($scope,$http,UrlProvider,"quarry");
+		loadNodeCounts($scope,$http,UrlProvider,"karst");
 	};
 	updateSystemStatus();
 	// Refresh System status every 5 mins
