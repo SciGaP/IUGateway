@@ -260,9 +260,9 @@ public class CommandExecutor {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
-            setResult(commandCentral.ls(session, path));
-            setResultMap(stringUtils.categorizeResult(getResult()));
-            setResultItemList(stringUtils.getResultsList(getResult()));
+            setResultItemList(commandCentral.ls(session, path));
+//            setResultMap(stringUtils.categorizeResult(getResult()));
+//            setResultItemList(stringUtils.getResultsList(getResult()));
         } catch (Exception e) {
             log.error("Error occured while listing files in " + path + "....", e);
             throw new Exception(e);

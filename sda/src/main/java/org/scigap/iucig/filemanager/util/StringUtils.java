@@ -107,57 +107,57 @@ public class StringUtils {
         }
         return resultMap;
     }
-    public List<Item> getResultsList(List<String> resultList) {
-        //Result Array
-        List<Item> itemList = new ArrayList<Item>();
-        Item item = null;
-        String name;
-        String date;
-        String owner;
-        String group;
-        String permission;
-        String size;
-
-        List<String> temp = null;
-        String fileType;
-        if (resultList != null) {
-            for (String line : resultList){
-                temp = new ArrayList<String>();
-                StringTokenizer tokenizer = new StringTokenizer(line, " ");
-                while (tokenizer.hasMoreTokens()) {
-                    temp.add(tokenizer.nextToken());
-                }
-                if (temp.size() > 8) {
-                    if (temp.get(0).charAt(0) == 'd'){
-                        fileType = "dir";
-                    }else if (temp.get(0).charAt(0) == 'l'){
-                        fileType = "symlink";
-                    }else {
-                        fileType = "file";
-                    }
-                    owner = temp.get(2);
-                    group = temp.get(3);
-                    size = temp.get(4);
-                    String month = temp.get(5);
-                    String day = temp.get(6);
-                    String time = temp.get(7);
-                    name = temp.get(8);
-                    if (temp.size() > 9){
-                        for (int k = 9; k < temp.size(); k++){
-                            name = name + " " + temp.get(k);
-                        }
-                    }
-                    permission = temp.get(0);
-
-                    date = month + " " + day + " " + time;
-                    item = new Item(name, date, owner, fileType);
-                    item.setGroup(group);
-                    item.setSize(size);
-                    item.setPermission(permission);
-                    itemList.add(item);
-                }
-            }
-        }
-        return itemList;
-    }
+//    public List<Item> getResultsList(List<String> resultList) {
+//        //Result Array
+//        List<Item> itemList = new ArrayList<Item>();
+//        Item item = null;
+//        String name;
+//        String date;
+//        String owner;
+//        String group;
+//        String permission;
+//        String size;
+//
+//        List<String> temp = null;
+//        String fileType;
+//        if (resultList != null) {
+//            for (String line : resultList){
+//                temp = new ArrayList<String>();
+//                StringTokenizer tokenizer = new StringTokenizer(line, " ");
+//                while (tokenizer.hasMoreTokens()) {
+//                    temp.add(tokenizer.nextToken());
+//                }
+//                if (temp.size() > 8) {
+//                    if (temp.get(0).charAt(0) == 'd'){
+//                        fileType = "dir";
+//                    }else if (temp.get(0).charAt(0) == 'l'){
+//                        fileType = "symlink";
+//                    }else {
+//                        fileType = "file";
+//                    }
+//                    owner = temp.get(2);
+//                    group = temp.get(3);
+//                    size = temp.get(4);
+//                    String month = temp.get(5);
+//                    String day = temp.get(6);
+//                    String time = temp.get(7);
+//                    name = temp.get(8);
+//                    if (temp.size() > 9){
+//                        for (int k = 9; k < temp.size(); k++){
+//                            name = name + " " + temp.get(k);
+//                        }
+//                    }
+//                    permission = temp.get(0);
+//
+//                    date = month + " " + day + " " + time;
+//                    item = new Item(name, date, owner, fileType);
+//                    item.setGroup(group);
+//                    item.setSize(size);
+//                    item.setPermission(permission);
+//                    itemList.add(item);
+//                }
+//            }
+//        }
+//        return itemList;
+//    }
 }

@@ -59,11 +59,16 @@ public class LoginConfigUtil {
     }
 
     public String searchTicket(final String username) {
-        File folder = new File(ticketLocation);
-        for (final File fileEntry : folder.listFiles()) {
-            String TICKET_PREPHRASE = "krb5cc_apache_";
-            if(fileEntry.getName().contains(TICKET_PREPHRASE +username))
-                return ticketLocation+"/"+fileEntry.getName();
+        System.out.println("*********** TICKET CACHE ******** : " + ticketLocation);
+        if (ticketLocation != null){
+            File folder = new File(ticketLocation);
+            if (folder.exists()){
+                for (final File fileEntry : folder.listFiles()) {
+                    String TICKET_PREPHRASE = "krb5cc_apache_";
+                    if(fileEntry.getName().contains(TICKET_PREPHRASE +username))
+                        return ticketLocation+"/"+fileEntry.getName();
+                }
+            }
         }
         return null;
     }

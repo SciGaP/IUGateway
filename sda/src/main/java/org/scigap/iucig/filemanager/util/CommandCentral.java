@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CommandCentral {
@@ -14,6 +15,7 @@ public class CommandCentral {
     public static final String KERB_PROPERTIES = "kerb.properties";
     public static final String SDA_FILEDOWNLOAD_LOCATION = "file.download.location";
     private List<String> result;
+    private List<Item> itemList;
     private static Properties properties = new Properties();
 
     public String pwdSFTP(Session session) throws Exception {
@@ -60,10 +62,9 @@ public class CommandCentral {
         return null;
     }
 
-    public List<String> ls (Session session, String path) throws Exception {
-        result = new ArrayList<String>();
+    public List<Item> ls (Session session, String path) throws Exception {
         log.info("COMMAND: ls " + path);
-
+        itemList = new ArrayList<Item>();
         if (!session.isConnected()) {
             throw new Exception("Session is not connected...");
         }
@@ -74,19 +75,29 @@ public class CommandCentral {
             channel.connect();
             c = (ChannelSftp) channel;
             Vector ls = c.ls(path);
-            if (ls != null && ls.size() != 0) {
-                for (int i = 0; i < ls.size(); i++) {
-                    Object obj = ls.elementAt(i);
-                    if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
-                        ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) obj;
-                        if (!lsEntry.getFilename().startsWith(".")) {
-                            String string = lsEntry.getLongname();
-                            string = string.replaceAll(",", "");
-                            string = string.replaceAll("\t", "\\s");
-                            System.out.println(string);
-                            result.add(string);
+            if (ls != null && ls.size() != 0) for (int i = 0; i < ls.size(); i++) {
+                Object obj = ls.elementAt(i);
+                if (obj instanceof ChannelSftp.LsEntry) {
+                    ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) obj;
+                    if (!lsEntry.getFilename().startsWith(".")) {
+                        SftpATTRS attrs = lsEntry.getAttrs();
+                        String fileType = "";
+                        if (attrs.isDir()) {
+                            fileType = "dir";
+                        } else if (attrs.isLink()) {
+                            fileType = "symlink";
+                        } else {
+                            fileType = "file";
                         }
-
+                        int size = (int)attrs.getSize();
+                        long mTime = attrs.getMTime() * 1000L;
+                        Date date=new Date(mTime);
+                        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                        String dateText = df2.format(date);
+                        Item item = new Item(lsEntry.getFilename(), dateText, fileType, size);
+                        item.setSize(size);
+                        item.setPermission(attrs.getPermissionsString());
+                        itemList.add(item);
                     }
                 }
             }
@@ -104,7 +115,7 @@ public class CommandCentral {
             }
             session.disconnect();
         }
-        return result;
+        return itemList;
     }
 
 

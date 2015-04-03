@@ -58,7 +58,7 @@ public class StringUtilsTester {
                 "drwxrwxr-x 2 swithana swithana 4096000 Mar 24 03:53 reed\n";
         list.add(input);
         
-        System.out.println(utils.getResultsList(list));
+//        System.out.println(utils.getResultsList(list));
 
     }
 }

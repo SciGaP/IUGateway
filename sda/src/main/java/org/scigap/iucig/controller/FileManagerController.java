@@ -5,10 +5,18 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
+import org.scigap.iucig.service.UserService;
 import org.scigap.iucig.util.ViewNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,14 +34,44 @@ import java.util.Properties;
 
 @Controller
 @Scope("session")
-@RequestMapping(value = "/filemanager/")
+@RequestMapping(value = "/filemanager")
 public class FileManagerController {
     private static final Logger log = LoggerFactory.getLogger(FileManagerController.class);
     public static final String PORTAL_URL = "portal.url";
     public static final String KERB_PROPERTIES = "kerb.properties";
     private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
+    private AuthProvider authProvider;
 
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Logging out of SDA Web Interface");
+        SecurityContextHolder.getContext().setAuthentication(null);
+        if(request.getSession(false)!=null) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
+            request.getSession(false).invalidate();
+        }
+        response.setStatus(HttpStatus.OK.value());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
+    public String getRemoteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            UsernamePasswordAuthenticationToken token =
+                    new UsernamePasswordAuthenticationToken(remoteUser, remoteUser);
+            token.setDetails(new WebAuthenticationDetails(request));
+            authProvider = new AuthProvider();
+            Authentication auth = authProvider.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+        return remoteUser;
+    }
     /**
      * Returns the result of a command using a Item list
      */
@@ -113,6 +151,7 @@ public class FileManagerController {
     @ResponseBody
     @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
     public String getPWD(HttpServletRequest request) throws Exception {
+
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
@@ -168,17 +207,17 @@ public class FileManagerController {
         return null;
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
-    public String getRemoteUser(HttpServletRequest request) throws Exception {
-        String remoteUser = request.getRemoteUser();
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            System.out.println("Remote User : " + remoteUser);
-        }
-        return remoteUser;
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
+//    public String getRemoteUser(HttpServletRequest request) throws Exception {
+//        String remoteUser = request.getRemoteUser();
+//        String mail = "@ADS.IU.EDU";
+//        if (remoteUser != null) {
+//            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+//            System.out.println("Remote User : " + remoteUser);
+//        }
+//        return remoteUser;
+//    }
 
     /**
      * Download a file

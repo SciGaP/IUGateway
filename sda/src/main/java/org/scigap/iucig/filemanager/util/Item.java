@@ -4,24 +4,28 @@ public class Item {
 
     private String name;
     private String date;
-    private String owner;
+//    private String owner;
     private String group;
     private String permission;
     private String fileType;
-    private String size;
+    private int size;
 
-    public Item(String name, String date, String owner,String fileType) {
+    public Item(String name, String date, String fileType, int size) {
         this.name = name;
         this.date = date;
-        this.owner = owner;
+        this.size = size;
         this.fileType= fileType;
     }
 
-    public String getSize() {
-        return size;
+    public String getDate() {
+        return date;
     }
 
-    public void setSize(String size) {
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setSize(int size) {
         this.size = size;
     }
 
@@ -33,21 +37,13 @@ public class Item {
         this.name = name;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+//    public String getOwner() {
+//        return owner;
+//    }
+//
+//    public void setOwner(String owner) {
+//        this.owner = owner;
+//    }
 
     public String getGroup() {
         return group;
@@ -73,12 +69,16 @@ public class Item {
         this.fileType = fileType;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
                 "name='" + name + '\'' +
                 ", date='" + date + '\'' +
-                ", owner='" + owner + '\'' +
+//                ", owner='" + owner + '\'' +
                 ", group='" + group + '\'' +
                 ", permission='" + permission + '\'' +
                 ", fileType=" + fileType +

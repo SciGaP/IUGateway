@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,20 +36,16 @@ public class UserService implements UserDetailsService{
 		return null;
 	}
 
-    
-    public void setAuthenticatedUser(String username, String certificate) {
-		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-		List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
-		authorityList.add(authority);
-		User user = new User(username,"password",authorityList);
-		if(certificate !=null && !certificate.isEmpty()) {
-			user.setCertificate(certificate);
-		}
-        SecurityContext securityContext = createContext(user);
-        SecurityContextHolder.setContext(securityContext);
+    public Authentication setAuthenticatedUser(String username) {
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
+        List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
+        authorityList.add(authority);
+        User user = new User(username,"password",authorityList);
+        Authentication authentication = new CustomToken(user.getAuthorities(), user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
-    
-    
+
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -94,5 +91,29 @@ public class UserService implements UserDetailsService{
             }
         });
         return securityContext;
+    }
+
+    class CustomToken extends AbstractAuthenticationToken {
+        private static final long serialVersionUID = 1L;
+
+        private User user;
+
+        public CustomToken(Collection<? extends GrantedAuthority> authorities, User user) {
+            super(authorities);
+            this.user = user;
+        }
+
+        public Object getCredentials() {
+            return "N/A";
+        }
+
+        public Object getPrincipal() {
+            return user;
+        }
+
+        @Override
+        public boolean isAuthenticated() {
+            return true;
+        }
     }
 }

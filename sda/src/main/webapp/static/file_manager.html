@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv=’cache-control’ content=’no-cache’>
+    <meta http-equiv=’expires’ content=’0′>
+    <meta http-equiv=’pragma’ content=’no-cache’>
 
     <title>Scholarly Data Archive</title>
     <link rel="icon" href="https://www.indiana.edu/favicon.ico" />
@@ -29,7 +32,7 @@
 <body>
 <div ng-include src="'static/topbars.html'"></div>
 
-<div class="well container-fluid">
+<div id="allTable1" class="well container-fluid">
 <div class="row-fluid">
 <div class="well-iu span12">
 <div class="well-heading">Scholarly Data Archive for {{remoteUser}}</div>
@@ -38,7 +41,7 @@
 </div>
 <br/>
 <br/>
-<div class="pull-left">
+<div id="allTable" class="pull-left">
     <button class="btn pull-left" data-toggle="modal" data-target="#newFolderModel">New Folder</button>
     <button class="btn pull-left" data-toggle="modal" data-target="#uploadFileModel">Upload File</button>
     <!--<button class="btn pull-left" ng-click="viewUsedSpace()" data-toggle="modal" data-target="#viewUsedSpaceModel">View Used Space</button>-->
@@ -58,9 +61,9 @@
         <tr>
             <th></th>
             <th></th>
-            <th>Name</th>
-            <th>Size (Byte)</th>
-            <th>Last Modified</th>
+            <th><a href="#" ng-click="predicate = 'name'; reverse=false">Name</a><i ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
+            <th><a href="#" ng-click="predicate = 'size'; reverse=!reverse">Size (Byte)</a><i ng-show="predicate=='size' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='size' && !reverse" class="icon-arrow-down"></i></th>
+            <th><a href="#" ng-click="predicate = 'date'; reverse=!reverse">Last Modified</a><i ng-show="predicate=='date' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='date' && !reverse" class="icon-arrow-down"></i></th>
         </tr>
         </thead>
         <tbody>
@@ -88,7 +91,7 @@
         </tr>
         <tr ng-show="files.length<1"></tr>
         <tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>
-        <tr ng-repeat="file in files" >
+        <tr ng-repeat="file in files | orderBy:predicate:reverse" >
             <td><input type="checkbox" name="filename" ng-model="file.checked"/></td>
             <td><img ng-show="file.fileType=='file'" title="file" src="static/images/file.png" width="22" height="28"/>
                 <img ng-show="file.fileType=='dir'" title="folder" src="static/images/folder.png" width="22" height="28"/>
