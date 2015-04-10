@@ -5,17 +5,14 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.scigap.iucig.filemanager.CommandExecutor;
 import org.scigap.iucig.filemanager.util.Item;
-import org.scigap.iucig.service.UserService;
+import org.scigap.iucig.filemanager.util.LoginConfigUtil;
 import org.scigap.iucig.util.ViewNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -42,18 +40,28 @@ public class FileManagerController {
     private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
     private AuthProvider authProvider;
+//    private static boolean isUserLoggedOut = false;
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
         log.info("Logging out of SDA Web Interface");
         SecurityContextHolder.getContext().setAuthentication(null);
-        if(request.getSession(false)!=null) {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-            response.setDateHeader("Expires", 0);
-            request.getSession(false).invalidate();
+        // delete kerberos ticket
+        LoginConfigUtil configUtil = new LoginConfigUtil();
+        String remoteUser = request.getRemoteUser();
+        String mail = "@ADS.IU.EDU";
+        if (remoteUser != null) {
+            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            if (configUtil.isTicketAvailable(remoteUser)){
+                if(request.getSession(false)!=null) {
+                    response.setStatus(401);
+                    response.setHeader("WWW-Authenticate", "basic realm=\"IU Network ID\"");
+                    session.setAttribute("auth", Boolean.TRUE);
+                }
+            }
+            configUtil.deleteTicket(remoteUser);
         }
-        response.setStatus(HttpStatus.OK.value());
     }
 
     @ResponseBody
@@ -77,29 +85,27 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(@PathVariable(value = "command") final String command, HttpServletRequest request) throws Exception {
+    public List<Item> executeCommand(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String remoteUser = request.getRemoteUser();
-        String defaultPath = "sda/filemanager/command/";
-        String requestURI = request.getRequestURI();
-//      requestURI = URLDecoder.decode(requestURI, "ASCII");
-        String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-        String decodedCommand = "";
-        if (commandFinal.contains("+")){
-            String[] strings = commandFinal.split("\\+");
-            decodedCommand = URLDecoder.decode(strings[0], "UTF-8");
-            for (int i = 1; i < strings.length; i++){
-                decodedCommand += "+" + URLDecoder.decode(strings[i], "UTF-8");
-            }
-        }else {
-            decodedCommand = URLDecoder.decode(commandFinal, "UTF-8");
-        }
-        System.out.println("Command : " + decodedCommand);
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            System.out.println("Remote User : " + remoteUser);
+            String defaultPath = "sda/filemanager/command/";
+            String requestURI = request.getRequestURI();
+            String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+            String decodedCommand = "";
+            if (commandFinal.contains("+")) {
+                String[] strings = commandFinal.split("\\+");
+                decodedCommand = URLDecoder.decode(strings[0], "UTF-8");
+                for (int i = 1; i < strings.length; i++) {
+                    decodedCommand += "+" + URLDecoder.decode(strings[i], "UTF-8");
+                }
+            } else {
+                decodedCommand = URLDecoder.decode(commandFinal, "UTF-8");
+            }
+            System.out.println("Command : " + decodedCommand);
             if (commandExecutor == null) {
-                 commandExecutor = new CommandExecutor(remoteUser);
+                commandExecutor = new CommandExecutor(remoteUser);
             }
             commandExecutor.executeCommand(decodedCommand);
             return commandExecutor.getResultItemList();

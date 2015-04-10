@@ -25,4 +25,10 @@ public class PageController {
         return ViewNames.ERROR_PAGE;
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutPage(HttpServletRequest request) {
+        logger.debug("Loading Error page");
+        return ViewNames.LOGOUT_PAGE;
+    }
+
 }

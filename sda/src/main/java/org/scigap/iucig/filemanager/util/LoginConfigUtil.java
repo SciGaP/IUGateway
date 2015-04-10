@@ -59,7 +59,6 @@ public class LoginConfigUtil {
     }
 
     public String searchTicket(final String username) {
-        System.out.println("*********** TICKET CACHE ******** : " + ticketLocation);
         if (ticketLocation != null){
             File folder = new File(ticketLocation);
             if (folder.exists()){
@@ -85,6 +84,36 @@ public class LoginConfigUtil {
             log.error("Error getting the conffile location: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean deleteTicket(String username){
+        if (ticketLocation != null){
+            File folder = new File(ticketLocation);
+            if (folder.exists()){
+                for (final File fileEntry : folder.listFiles()) {
+                    String TICKET_PREPHRASE = "krb5cc_apache_";
+                    if(fileEntry.getName().contains(TICKET_PREPHRASE +username)) {
+                        return fileEntry.delete();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isTicketAvailable(String username){
+        if (ticketLocation != null){
+            File folder = new File(ticketLocation);
+            if (folder.exists()){
+                for (final File fileEntry : folder.listFiles()) {
+                    String TICKET_PREPHRASE = "krb5cc_apache_";
+                    if(fileEntry.getName().contains(TICKET_PREPHRASE +username)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

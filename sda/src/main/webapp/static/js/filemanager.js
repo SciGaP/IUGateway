@@ -65,38 +65,14 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         success(function (data, status) {
             console.log(data);
             $scope.remoteUser = data;
-        }).
-        error(function (data, status) {
-        });
-    $http({method: "GET", url: "filemanager/getPortalUrl", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.portalUrl = data;
-        }).
-        error(function (data, status) {
-            console.log("Error getting home directory !");
-        });
-    $http({method: "GET", url: "filemanager/getPwd", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.pwd = data;
-        }).
-        error(function (data, status) {
-            console.log("Error getting current working directory !");
-        });
-    $http({method: "GET", url: "filemanager/getHome", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.home = data;
-        }).
-        error(function (data, status) {
-            console.log("Error getting home directory !");
-        });
-    $http({method: "GET", url: "filemanager/command/ls", cache: false}).
-        success(function (data, status) {
-            console.log(data);
-            $scope.files = data;
-            $scope.hideLoader = false;
+            $http({method: "GET", url: "filemanager/getPortalUrl", cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.portalUrl = data;
+                }).
+                error(function (data, status) {
+                    console.log("Error getting home directory !");
+                });
             $http({method: "GET", url: "filemanager/getPwd", cache: false}).
                 success(function (data, status) {
                     console.log(data);
@@ -104,13 +80,38 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 }).
                 error(function (data, status) {
                     console.log("Error getting current working directory !");
+                });
+            $http({method: "GET", url: "filemanager/getHome", cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.home = data;
+                }).
+                error(function (data, status) {
+                    console.log("Error getting home directory !");
+                });
+            console.log( $scope.remoteUser);
+            $http({method: "GET", url: "filemanager/command/ls" , cache: false}).
+                success(function (data, status) {
+                    console.log(data);
+                    $scope.files = data;
+                    $scope.hideLoader = false;
+                    $http({method: "GET", url: "filemanager/getPwd", cache: false}).
+                        success(function (data, status) {
+                            console.log(data);
+                            $scope.pwd = data;
+                        }).
+                        error(function (data, status) {
+                            console.log("Error getting current working directory !");
+                            $scope.hideLoader = false;
+                            $scope.showError = true;
+                        });
+                }).
+                error(function (data, status) {
                     $scope.hideLoader = false;
                     $scope.showError = true;
                 });
         }).
         error(function (data, status) {
-            $scope.hideLoader = false;
-            $scope.showError = true;
         });
 
     $scope.upOneLevel = function () {

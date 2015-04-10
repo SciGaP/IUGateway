@@ -61,7 +61,7 @@
         <tr>
             <th></th>
             <th></th>
-            <th><a href="#" ng-click="predicate = 'name'; reverse=false">Name</a><i ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
+            <th><a href="#" ng-click="predicate = 'name'; reverse=!reverse">Name</a><i ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
             <th><a href="#" ng-click="predicate = 'size'; reverse=!reverse">Size (Byte)</a><i ng-show="predicate=='size' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='size' && !reverse" class="icon-arrow-down"></i></th>
             <th><a href="#" ng-click="predicate = 'date'; reverse=!reverse">Last Modified</a><i ng-show="predicate=='date' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='date' && !reverse" class="icon-arrow-down"></i></th>
         </tr>

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +25,7 @@ public class LoginController {
     @Autowired
     private AuthenticationSuccessHandler successHandler;
 
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "/logout1", method = RequestMethod.POST)
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("Logging out of SDA Web Interface");
 		userService.clearAuthenticatedUser();

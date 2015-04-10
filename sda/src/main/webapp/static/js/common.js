@@ -47,11 +47,12 @@ angular.module("user", []).
             });
         $scope.logout = function () {
             UserService.logout().success(function () {
+                window.location = "/";
                 $scope.remoteUser = "";
                 $scope.authenticated = false;
                 $scope.$emit("UserLogin", { remoteUser: $scope.remoteUser, authenticated: $scope.authenticated});
                 $scope.message = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                    + "User Logged out of SDA Web Interface. To logout of CAS, <a href='https://cas.iu.edu/cas/logout'>Click here</a>. To login again, <a href='" + $scope.portalUrl + "'>Click here</a></div>";
+                    + "User Logged out of SDA Web Interface. To login again, <a href='" + $scope.portalUrl + "'>Click here</a></div>";
 //                if($scope.requireAuthentication && !$scope.authenticated) {
 //                    $("#loginModal").modal({keyboard:false,backdrop:'static',show:true});
 //                }
@@ -60,8 +61,12 @@ angular.module("user", []).
                 $( "#allTable1" ).hide();
             }).
                 error(function () {
-                    $scope.message = "<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
-                        + "Oops. There was a problem logging out. Please try again</div>";
+//                    window.location = "/logout.html";
+                    $scope.$emit("UserLogin", { remoteUser: $scope.remoteUser, authenticated: $scope.authenticated});
+                    $scope.message = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
+                        + "User Logged out of SDA Web Interface. To login again, <a href='" + $scope.portalUrl + "'>Click here</a></div>";
+                    $scope.files = [];
+                    $( "#allTable1" ).hide();
                 });
         };
 
