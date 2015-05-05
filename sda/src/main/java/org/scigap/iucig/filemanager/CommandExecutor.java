@@ -54,7 +54,6 @@ public class CommandExecutor {
             if (commandList.size() >1){
                 if (commandList.get(1) != null){
                     name =  commandList.get(1);
-//                    name = name.replaceAll("\\s", "\\\\ ");
                 }
             }
 
@@ -65,30 +64,24 @@ public class CommandExecutor {
                     pathStack.push(name);
                 }
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
-//                command = LS + workingDirectory;
                 command = "ls" + workingDirectory;
                 log.info("COMMAND: " + command);
                 ls(workingDirectory, session);
-//                setResult(commandCentral.executeCommand(session, command));
-//                setResultMap(stringUtils.categorizeResult(getResult()));
-//                setResultItemList(stringUtils.getResultsList(getResult()));
+                setResultItemList(commandCentral.getItemList());
             } else if (commandList.get(0).equals("mkdir")) {
                 String path = workingDirectory + "/" + name;
-//                for (int i=2; i < commandList.size(); i++){
-//                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
-//                    path +=  "/" + fname ;
-//                }
                 command = "mkdir " + path;
                 log.info("COMMAND: " + command);
                 mkdir(path, session);
                 ls(workingDirectory, session);
+                setResultItemList(commandCentral.getItemList());
             } else if (commandList.get(0).equals("rm")) {
                 String path = workingDirectory + "/" + name;
                 command = "rm -r " + path;
                 log.info("COMMAND: " + command);
-//                commandCentral.executeCommand(session, command);
                 remove(path, session);
                 ls(workingDirectory, session);
+                setResultItemList(commandCentral.getItemList());
             } else if (commandList.get(0).equals("ls")) {
                 String path = workingDirectory;
                 if (commandList.size() > 1){
@@ -101,6 +94,7 @@ public class CommandExecutor {
                 command = LS + path;
                 log.info("Command " + command);
                 ls(path, session);
+                setResultItemList(commandCentral.getItemList());
             } else if (commandList.get(0).equals("mv")) {
                 command = "mv " + getWorkingDirectory() + "/" + name + " ";
                 String source =  getWorkingDirectory() + "/" + name;
@@ -114,8 +108,8 @@ public class CommandExecutor {
                 target += "/" + name;
                 log.info("COMMAND: " + "mv " + source + " " + target);
                 move(source, target, session);
-//                commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory(), session);
+                setResultItemList(commandCentral.getItemList());
             }else if (commandList.get(0).equals("rename")) {
                 command = "rename " + getWorkingDirectory() + "/" + name + " ";
                 String source =  getWorkingDirectory() + "/" + name;
@@ -125,12 +119,10 @@ public class CommandExecutor {
                     command +=  "/" + fname ;
                     target +=  "/" + fname ;
                 }
-                command += "/";
-//                target += "/";
                 log.info("COMMAND: " + "rename " + source + " " + target);
                 rename(source, target, session);
-//                commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory(), session);
+                setResultItemList(commandCentral.getItemList());
             }
             else if (commandList.get(0).equals("mvr")) {
                 String source =  getWorkingDirectory() + "/" + name;
@@ -144,8 +136,8 @@ public class CommandExecutor {
                 target += "/" + name;
                 log.info("COMMAND: " + "mv " + source + " " + target);
                 move(source, target, session);
-//                commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory(), session);
+                setResultItemList(commandCentral.getItemList());
             }
             else if (commandList.get(0).equals("cpr")) {
                 command = "cp -r " + getWorkingDirectory() + "/" + name + " ";
@@ -156,11 +148,10 @@ public class CommandExecutor {
                     command +=  "/" + fname ;
                     target +=  "/" + fname ;
                 }
-//                target += "/" + name;
                 log.info("COMMAND: " + "cp " + source + " " + target);
                 cp(source, target, session);
-//                commandCentral.executeCommand(session, command);
                 ls(getWorkingDirectory(), session);
+                setResultItemList(commandCentral.getItemList());
             } else if (commandList.get(0).equals("freedisk")) {
                 command = "du -sh " + workingDirectory;
                 log.info("COMMAND: " + command);
@@ -185,7 +176,6 @@ public class CommandExecutor {
     //download a file
     public void downloadFile(String filename, OutputStream outputStream) throws Exception {
         Session session = null;
-//        filename = filename.replaceAll("\\s", "\\\\ ");
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
@@ -260,9 +250,11 @@ public class CommandExecutor {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
-            setResultItemList(commandCentral.ls(session, path));
-//            setResultMap(stringUtils.categorizeResult(getResult()));
-//            setResultItemList(stringUtils.getResultsList(getResult()));
+            List<Item> ls = commandCentral.ls(session, path);
+            if (ls.isEmpty()){
+                ls = commandCentral.ls(session, path);
+            }
+            setResultItemList(ls);
         } catch (Exception e) {
             log.error("Error occured while listing files in " + path + "....", e);
             throw new Exception(e);

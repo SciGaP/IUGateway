@@ -89,8 +89,8 @@
                 <div class="alert alert-error">There was an error while loading the data. Please try again later...</b></a></div>
             </td>
         </tr>
-        <tr ng-show="files.length<1"></tr>
-        <tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>
+        <!--<tr ng-show="files.length<1"></tr>-->
+        <!--<tr ng-show="files.length<1"><td colspan="7"><div>Empty folder !</div></td></tr>-->
         <tr ng-repeat="file in files | orderBy:predicate:reverse" >
             <td><input type="checkbox" name="filename" ng-model="file.checked"/></td>
             <td><img ng-show="file.fileType=='file'" title="file" src="static/images/file.png" width="22" height="28"/>

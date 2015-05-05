@@ -13,10 +13,17 @@ import java.util.*;
 public class CommandCentral {
     private static final Logger log = LoggerFactory.getLogger(CommandCentral.class);
     public static final String KERB_PROPERTIES = "kerb.properties";
-    public static final String SDA_FILEDOWNLOAD_LOCATION = "file.download.location";
     private List<String> result;
     private List<Item> itemList;
     private static Properties properties = new Properties();
+
+    public List<Item> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<Item> itemList) {
+        this.itemList = itemList;
+    }
 
     public String pwdSFTP(Session session) throws Exception {
 
@@ -75,29 +82,31 @@ public class CommandCentral {
             channel.connect();
             c = (ChannelSftp) channel;
             Vector ls = c.ls(path);
-            if (ls != null && ls.size() != 0) for (int i = 0; i < ls.size(); i++) {
-                Object obj = ls.elementAt(i);
-                if (obj instanceof ChannelSftp.LsEntry) {
-                    ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) obj;
-                    if (!lsEntry.getFilename().startsWith(".")) {
-                        SftpATTRS attrs = lsEntry.getAttrs();
-                        String fileType = "";
-                        if (attrs.isDir()) {
-                            fileType = "dir";
-                        } else if (attrs.isLink()) {
-                            fileType = "symlink";
-                        } else {
-                            fileType = "file";
+            if (ls != null && ls.size() != 0) {
+                for (int i = 0; i < ls.size(); i++) {
+                    Object obj = ls.elementAt(i);
+                    if (obj instanceof ChannelSftp.LsEntry) {
+                        ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) obj;
+                        if (!lsEntry.getFilename().startsWith(".")) {
+                            SftpATTRS attrs = lsEntry.getAttrs();
+                            String fileType = "";
+                            if (attrs.isDir()) {
+                                fileType = "dir";
+                            } else if (attrs.isLink()) {
+                                fileType = "symlink";
+                            } else {
+                                fileType = "file";
+                            }
+                            int size = (int) attrs.getSize();
+                            long mTime = attrs.getMTime() * 1000L;
+                            Date date = new Date(mTime);
+                            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                            String dateText = df2.format(date);
+                            Item item = new Item(lsEntry.getFilename(), dateText, fileType, size);
+                            item.setSize(size);
+                            item.setPermission(attrs.getPermissionsString());
+                            itemList.add(item);
                         }
-                        int size = (int)attrs.getSize();
-                        long mTime = attrs.getMTime() * 1000L;
-                        Date date=new Date(mTime);
-                        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-                        String dateText = df2.format(date);
-                        Item item = new Item(lsEntry.getFilename(), dateText, fileType, size);
-                        item.setSize(size);
-                        item.setPermission(attrs.getPermissionsString());
-                        itemList.add(item);
                     }
                 }
             }
@@ -115,6 +124,7 @@ public class CommandCentral {
             }
             session.disconnect();
         }
+        setItemList(itemList);
         return itemList;
     }
 
@@ -395,29 +405,6 @@ public class CommandCentral {
                 log.error("Error occured while channel connect", ee.getMessage());
             }
             byte[] tmp = new byte[4096];
-//            if (channel.getExitStatus() != 0) {
-//                while (true) {
-//                    while (in.available() > 0) {
-//                        int i = in.read(tmp, 0, 4096);
-//                        if (i < 0) break;
-//                        result.add(new String(tmp, 0, i));
-//                    }
-//                    throw new Exception(result.toString());
-//                }
-//            }else {
-//                while (true) {
-//                    while (in.available() > 0) {
-//                        int i = in.read(tmp, 0, 4096);
-//                        if (i < 0) break;
-//                        result.add(new String(tmp, 0, i));
-//                    }
-//                    if (channel.isClosed()) {
-//                        System.out.println("exit-status: " + channel.getExitStatus());
-//                        break;
-//                    }
-//                }
-//            }
-
             while (true) {
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 4096);
@@ -477,14 +464,11 @@ public class CommandCentral {
             }
         } catch (FileNotFoundException e1) {
             log.error("Unable to find the file", e1.getMessage());
-//            throw new Exception(e1.getMessage());
         } catch (JSchException e1) {
             log.error("Auth failure", e1.getMessage());
-//            throw new Exception(e1.getMessage());
         } catch (IOException e1) {
             log.error("Error occured", e1.getMessage());
             if (channel.isClosed()){
-                log.info("***** channel closed *****");
                 channel.connect();
                 try {
                     Thread.sleep(10000);
@@ -500,7 +484,6 @@ public class CommandCentral {
                 inputStream.close();
                 outStream.close();
             }
-//            throw new Exception(e1.getMessage());
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -558,7 +541,6 @@ public class CommandCentral {
             }
         } catch (Exception e) {
             log.error("Auth failure", e);
-//            throw new Exception(e);
         }
         return isFile;
     }

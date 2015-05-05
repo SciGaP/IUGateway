@@ -94,6 +94,16 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 success(function (data, status) {
                     console.log(data);
                     $scope.files = data;
+                    if ($scope.files.length == 0){
+                        $http({method: "GET", url: "filemanager/command/ls" , cache: false}).
+                            success(function (data, status) {
+                                $scope.files = data;
+                            }).
+                            error(function (data, status) {
+                                $scope.hideLoader = false;
+                                $scope.showError = true;
+                            });
+                    }
                     $scope.hideLoader = false;
                     $http({method: "GET", url: "filemanager/getPwd", cache: false}).
                         success(function (data, status) {
