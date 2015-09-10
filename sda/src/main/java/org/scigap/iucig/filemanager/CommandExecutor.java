@@ -256,9 +256,9 @@ public class CommandExecutor {
                 session = kerberosConnector.getSession(remoteUser);
             }
             List<Item> ls = commandCentral.ls(session, path);
-            if (ls.isEmpty()){
-                ls = commandCentral.ls(session, path);
-            }
+//            if (ls.isEmpty()){
+//                ls = commandCentral.ls(session, path);
+//            }
             setResultItemList(ls);
         } catch (Exception e) {
             log.error("Error occured while listing files in " + path + "....", e);
