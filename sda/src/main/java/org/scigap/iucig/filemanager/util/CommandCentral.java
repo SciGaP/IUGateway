@@ -349,7 +349,7 @@ public class CommandCentral {
 
     private void folderDelete(ChannelSftp channel, String path) throws SftpException {
         try {
-            Vector ls = channel.ls(path);
+                Vector ls = channel.ls(path);
             if (ls != null && ls.size() == 2){
                 channel.rmdir(path);
             }

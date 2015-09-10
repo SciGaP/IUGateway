@@ -149,7 +149,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
     $scope.goInside = function (file) {
         if (file.fileType == "dir") {
             $scope.hideLoader = true;
-            var folderName = file.name;
+            var folderName = encodeURIComponent(file.name).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
             $http({method: "GET", url: "filemanager/command/cd " + folderName, cache: false}).
                 success(function (data, status) {
                     $scope.hideLoader = false;
@@ -173,7 +173,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 .done(function() {
                     window.location = url;
                 }).fail(function(e) {
-                    alert("Error occured while downloading the file. Please try again later..");
+                    alert("Error occurred while downloading the file. Please try again later..");
                     console.log(e);
                 })
 
@@ -200,7 +200,8 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
             }
         }
         if ($scope.addFolderdatas.folderExist == false) {
-            $http({method: "GET", url: "filemanager/command/mkdir " + folderName, cache: false}).
+            var name = encodeURIComponent(folderName).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
+            $http({method: "GET", url: "filemanager/command/mkdir " + name, cache: false}).
                 success(function (data, status) {
                     $scope.files = data;
                     $scope.addFolderdatas.createSuccess = true;
@@ -319,7 +320,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 } else {
                     var pwd = $scope.pwd.replace(/\//g, '*');
                     var source = $(this).attr('id');
-                    var encodedSource = encodeURIComponent(source);
+                    var encodedSource = encodeURIComponent(source).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
                     var dest = this.value;
                     $http({method: "GET", url: "filemanager/command/rename " + encodedSource + "*" + pwd + "*" + dest, cache: false}).
                         success(function (data, status) {
@@ -426,7 +427,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         for (var i = 0; i < selectedFiles.length; i++) {
             if (selectedFiles[i].fileType != "symlink") {
                 var mvSelectedFile = selectedFiles[i].name;
-                mvSelectedFile = encodeURIComponent(mvSelectedFile);
+                mvSelectedFile = encodeURIComponent(mvSelectedFile).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
                 var path = fileNameFullPath + "*" + mvSelectedFile;
                 $http({method: "GET", url: "filemanager/command/rename " + mvSelectedFile + "*" + path, cache: false}).
                     success(function (data, status) {
@@ -519,9 +520,12 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         var selectedFiles = getCheckedFiles($scope.files);
         var fileNameFullPath;
         var fileName;
+
         var home = $scope.home.replace(/\//g, '*');
         var pwd = $scope.pwd.replace(/\//g, '*');
-        if (targetFolder.name == "Specify Path") {
+        var decodedTagetFolderName;
+        var targetFolderName = targetFolder.name;
+        if (targetFolderName == "Specify Path") {
             if (customFolderName.contains("/")) {
                 customFolderName = customFolderName.replace(/\//g, '*');
                 fileNameFullPath = home + "*" + customFolderName;
@@ -533,24 +537,25 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 fileNameFullPath = home + "*" + customFolderName;
                 fileName = home + "/" + customFolderName;
             }
-        } else if (targetFolder.name == "Select from Home") {
+        } else if (targetFolderName == "Select from Home") {
             fileNameFullPath = home + "*" + homeFolder.name;
             fileName = homeFolder.name;
         } else {
-            fileNameFullPath = pwd + "*" + targetFolder.name;
-            fileName = targetFolder.name;
+            decodedTagetFolderName = encodeURIComponent(targetFolderName).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
+            fileNameFullPath = pwd + "*" + decodedTagetFolderName;
+            fileName = targetFolderName;
         }
         $scope.cpdatas.successMsg = "";
         $scope.cpdatas.errorMsg = "";
         for (var i = 0; i < selectedFiles.length; i++) {
             if (selectedFiles[i].fileType != "symlink") {
                 var selectedFile = selectedFiles[i].name;
-                var selectedCPFile = encodeURIComponent(selectedFile);
+                var selectedCPFile = encodeURIComponent(selectedFile).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
                 var path = "";
-                if (selectedCPFile == targetFolder.name) {
-                    path = pwd + "*" + "Copy_" + targetFolder.name;
-                    fileName = "Copy_" + targetFolder.name;
-                } else if (targetFolder.name == "To Current Folder") {
+                if (selectedCPFile == targetFolderName) {
+                    path = pwd + "*" + "Copy_" + targetFolderName;
+                    fileName = "Copy_" + targetFolderName;
+                } else if (targetFolderName == "To Current Folder") {
                     path = pwd + "*" + "Copy_" + selectedCPFile;
                     fileName = "Copy_" + selectedCPFile;
                 } else {
@@ -586,7 +591,8 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
             if (fileNames[j].fileType != "symlink"){
                 if (fileNames[j] != null || fileNames[j] != undefined) {
                     var filename = fileNames[j].name;
-                    var deleteFilename = encodeURIComponent(filename);
+                    var deleteFilename = encodeURIComponent(filename).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
+                    console.log(deleteFilename);
                     $http({method: "GET", url: "filemanager/command/rm " + deleteFilename, cache: false}).
                         success(function (data, status) {
                             $scope.files = data;

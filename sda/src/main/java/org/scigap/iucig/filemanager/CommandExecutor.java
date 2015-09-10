@@ -144,7 +144,12 @@ public class CommandExecutor {
                 String source =  getWorkingDirectory() + "/" + name;
                 String target =  "";
                 for (int i=2; i < commandList.size(); i++){
-                    String fname = commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    String fname;
+                    if (commandList.get(i).equals(name)){
+                        fname = name;
+                    }else {
+                        fname= commandList.get(i).replaceAll("\\s", "\\\\ ");
+                    }
                     command +=  "/" + fname ;
                     target +=  "/" + fname ;
                 }
