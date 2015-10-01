@@ -44,6 +44,10 @@ public class CommandExecutor {
 
     }
 
+    public String getRemoteUser() {
+        return remoteUser;
+    }
+
     //execute any command
     public void executeCommand(String command) throws Exception {
         Session session = null;

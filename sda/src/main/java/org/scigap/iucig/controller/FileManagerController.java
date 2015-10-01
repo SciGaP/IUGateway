@@ -106,6 +106,10 @@ public class FileManagerController {
             System.out.println("Command : " + decodedCommand);
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
+            }else {
+                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
             }
             commandExecutor.executeCommand(decodedCommand);
             return commandExecutor.getResultItemList();
@@ -123,6 +127,10 @@ public class FileManagerController {
             System.out.println("Remote User : " + remoteUser);
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
+            }else {
+                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
             }
             commandExecutor.executeCommand("freedisk");
             List<String> list = commandExecutor.getResult();
@@ -146,6 +154,10 @@ public class FileManagerController {
             System.out.println("Remote User : " + remoteUser);
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
+            }else {
+                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
             }
             commandExecutor.executeCommand("filecount");
             List<String> list = commandExecutor.getResult();
@@ -165,6 +177,10 @@ public class FileManagerController {
 
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
+            }else {
+                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
             }
             String workingDirectory = commandExecutor.getWorkingDirectory();
             System.out.println("Working Directory : " + workingDirectory);
@@ -204,6 +220,10 @@ public class FileManagerController {
 
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
+            }else {
+                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                    commandExecutor = new CommandExecutor(remoteUser);
+                }
             }
             String homePath = commandExecutor.getHomePath();
             System.out.println("Home dir : " + homePath);
@@ -258,6 +278,10 @@ public class FileManagerController {
                 System.out.println("Remote User : " + remoteUser);
                 if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
+                }else {
+                    if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                        commandExecutor = new CommandExecutor(remoteUser);
+                    }
                 }
             }
             response.setContentType("application/force-download");
@@ -316,6 +340,10 @@ public class FileManagerController {
                 System.out.println("Remote User : " + remoteUser);
                 if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
+                }else {
+                    if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                        commandExecutor = new CommandExecutor(remoteUser);
+                    }
                 }
             }
             boolean multipartContent = ServletFileUpload.isMultipartContent(request);
