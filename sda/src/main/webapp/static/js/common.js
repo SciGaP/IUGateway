@@ -6,6 +6,15 @@ userApp.config(['$httpProvider', function ($httpProvider) {
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }]);
 
+//$.ajaxSetup({
+//    global: true,
+//    error: function(xhr, status, err) {
+//        if (xhr.status == 401) {
+//            window.location.replace("https://www.google.lk");
+//         }
+//        }
+//    });
+
 angular.module("user", []).
     service("UserService",function ($http) {
         function service() {
@@ -47,7 +56,6 @@ angular.module("user", []).
             });
         $scope.logout = function () {
             UserService.logout().success(function () {
-                window.location = "/";
                 $scope.remoteUser = "";
                 $scope.authenticated = false;
                 $scope.$emit("UserLogin", { remoteUser: $scope.remoteUser, authenticated: $scope.authenticated});

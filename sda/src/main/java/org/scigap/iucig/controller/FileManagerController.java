@@ -27,11 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 @Controller
-@Scope("session")
 @RequestMapping(value = "/filemanager")
 public class FileManagerController {
     private static final Logger log = LoggerFactory.getLogger(FileManagerController.class);
@@ -40,11 +41,10 @@ public class FileManagerController {
     private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
     private AuthProvider authProvider;
-//    private static boolean isUserLoggedOut = false;
+    private static Map<String, Boolean> userLogoutStatus = new HashMap<String, Boolean>();
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
         log.info("Logging out of SDA Web Interface");
         SecurityContextHolder.getContext().setAuthentication(null);
         // delete kerberos ticket
@@ -54,13 +54,19 @@ public class FileManagerController {
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
             if (configUtil.isTicketAvailable(remoteUser)){
-                if(request.getSession(false)!=null) {
-                    response.setStatus(401);
-                    response.setHeader("WWW-Authenticate", "basic realm=\"IU Network ID\"");
-                    session.setAttribute("auth", Boolean.TRUE);
-                }
+                configUtil.deleteTicket(remoteUser);
+                userLogoutStatus.put(remoteUser, true);
             }
-            configUtil.deleteTicket(remoteUser);
+        }
+    }
+
+    private void popLogout(HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        if(request.getSession(false)!=null) {
+            response.setStatus(401);
+            response.setHeader("WWW-Authenticate", "basic realm=\"IU Network ID\"");
+//                    response.setHeader("WWW-Authenticate", "None");
+            session.setAttribute("auth", Boolean.TRUE);
         }
     }
 
@@ -71,6 +77,13 @@ public class FileManagerController {
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(remoteUser, remoteUser);
             token.setDetails(new WebAuthenticationDetails(request));
@@ -90,6 +103,13 @@ public class FileManagerController {
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             String defaultPath = "sda/filemanager/command/";
             String requestURI = request.getRequestURI();
             String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
@@ -146,11 +166,18 @@ public class FileManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/fileCount", method = RequestMethod.GET)
-    public String getFileCount(HttpServletRequest request) throws Exception {
+    public String getFileCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             System.out.println("Remote User : " + remoteUser);
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
@@ -168,13 +195,19 @@ public class FileManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
-    public String getPWD(HttpServletRequest request) throws Exception {
+    public String getPWD(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
             }else {
@@ -212,12 +245,19 @@ public class FileManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/getHome", method = RequestMethod.GET)
-    public String getHome(HttpServletRequest request) throws Exception {
+    public String getHome(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
 
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             if (commandExecutor == null) {
                 commandExecutor = new CommandExecutor(remoteUser);
             }else {
@@ -257,6 +297,13 @@ public class FileManagerController {
         String decodedFN = "";
         try {
             String remoteUser = request.getRemoteUser();
+            if (userLogoutStatus.containsKey(remoteUser)){
+                Boolean status = userLogoutStatus.get(remoteUser);
+                if (status){
+                    popLogout(request, response);
+                }
+                userLogoutStatus.put(remoteUser, false);
+            }
             String defaultPath = "sda/filemanager/download/";
             String requestURI = request.getRequestURI();
 //            requestURI = URLDecoder.decode(requestURI, "ASCII");
@@ -330,13 +377,20 @@ public class FileManagerController {
 
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public String uploadFile(HttpServletRequest request) throws Exception {
+    public String uploadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             System.out.println("**********upload file*********");
             String remoteUser = request.getRemoteUser();
             String mail = "@ADS.IU.EDU";
             if (remoteUser != null) {
                 remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+                if (userLogoutStatus.containsKey(remoteUser)){
+                    Boolean status = userLogoutStatus.get(remoteUser);
+                    if (status){
+                        popLogout(request, response);
+                    }
+                    userLogoutStatus.put(remoteUser, false);
+                }
                 System.out.println("Remote User : " + remoteUser);
                 if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
