@@ -64,10 +64,14 @@ public class CommandExecutor {
             if (commandList.get(0).equals("cd")) {
                 if (commandList.get(1).equals("..")) {
                     pathStack.pop();
-                } else {
+                    workingDirectory = stringUtils.constructPathFromStack(pathStack);
+                } else if (commandList.get(1).equals("~")){
+                    workingDirectory = getHomePath();
+                    pathStack = stringUtils.getPathStack(workingDirectory);
+                }else {
                     pathStack.push(name);
+                    workingDirectory = stringUtils.constructPathFromStack(pathStack);
                 }
-                workingDirectory = stringUtils.constructPathFromStack(pathStack);
                 command = "ls" + workingDirectory;
                 log.info("COMMAND: " + command);
                 ls(workingDirectory, session);
@@ -265,6 +269,24 @@ public class CommandExecutor {
 //            }
             setResultItemList(ls);
         } catch (Exception e) {
+            // construct path stack again
+            if (path.contains("/")){
+                String[] splitPaths = path.split("/");
+                String correctedPath = "/";
+                if (splitPaths.length != 0){
+                    for (int i=0; i < splitPaths.length -1; i++){
+                        correctedPath += splitPaths[i];
+                    }
+                }
+                pathStack = stringUtils.getPathStack(correctedPath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }else if (path.equals("")){
+                pathStack = stringUtils.getPathStack(homePath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }else {
+                pathStack = stringUtils.getPathStack(homePath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }
             log.error("Error occured while listing files in " + path + "....", e);
             throw new Exception(e);
         } finally {

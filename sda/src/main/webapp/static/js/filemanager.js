@@ -124,6 +124,28 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         error(function (data, status) {
         });
 
+    $scope.goHome = function () {
+        $scope.hideLoader = true;
+        var homePath = $scope.home;
+        homePath = encodeURIComponent(homePath).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
+        $http({method: "GET", url: "filemanager/command/cd ~", cache: false}).
+            success(function (data, status) {
+                $scope.files = data;
+                $scope.hideLoader = false;
+                $http({method: "GET", url: "filemanager/getPwd", cache: false}).
+                    success(function (data, status) {
+                        $scope.pwd = data;
+                    }).
+                    error(function (data, status) {
+                        console.log("Error getting current working directory !");
+                    });
+            }).
+            error(function (data, status) {
+                $scope.hideLoader = false;
+                console.log("Error getting files !");
+            });
+    }
+
     $scope.upOneLevel = function () {
         $scope.hideLoader = true;
         var parent = "..";

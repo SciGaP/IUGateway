@@ -44,7 +44,7 @@
 <div id="allTable" class="pull-left">
     <button class="btn pull-left" data-toggle="modal" data-target="#newFolderModel">New Folder</button>
     <button class="btn pull-left" data-toggle="modal" data-target="#uploadFileModel">Upload File</button>
-    <!--<button class="btn pull-left" ng-click="viewUsedSpace()" data-toggle="modal" data-target="#viewUsedSpaceModel">View Used Space</button>-->
+    <button class="btn pull-left" ng-click="goHome()" data-toggle="modal" data-target="#goHome">Go to Home</button>
 </div>
 <div class="pull-right span4"><strong >Select File to : </strong>
     <button class="btn pull-right" ng-click="generateDeleteModel()" data-toggle="modal" data-target="#deleteModel">Delete</button>
@@ -64,6 +64,7 @@
             <th><a href="#" ng-click="predicate = 'name'; reverse=!reverse">Name</a><i ng-show="predicate=='name' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='name' && !reverse" class="icon-arrow-down"></i></th>
             <th><a href="#" ng-click="predicate = 'size'; reverse=!reverse">Size (Byte)</a><i ng-show="predicate=='size' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='size' && !reverse" class="icon-arrow-down"></i></th>
             <th><a href="#" ng-click="predicate = 'date'; reverse=!reverse">Last Modified</a><i ng-show="predicate=='date' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='date' && !reverse" class="icon-arrow-down"></i></th>
+            <th><a href="#" ng-click="predicate = 'permission'; reverse=!reverse">Permissions</a><i ng-show="predicate=='permission' && reverse" class="icon-arrow-up"></i><i ng-show="predicate=='permission' && !reverse" class="icon-arrow-down"></i></th>
         </tr>
         </thead>
         <tbody>
@@ -71,6 +72,7 @@
             <td></td>
             <td><img title="Up one level" src="static/images/up.png" width="22" height="28"/></td>
             <td class="tdcolor" ng-click="upOneLevel()"><a class="underline tdcolor" href="#">Up One Level</a></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -100,6 +102,7 @@
             <td ng-click="goInside(file)"><a class="underline tdcolor" href="#">{{file.name}}</a></td>
             <td>{{file.size}}</td>
             <td>{{file.date}}</td>
+            <td>{{file.permission}}</td>
         </tr>
         </tbody>
     </table>
