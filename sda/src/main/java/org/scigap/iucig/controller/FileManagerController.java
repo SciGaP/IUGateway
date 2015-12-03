@@ -47,14 +47,12 @@ public class FileManagerController {
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         log.info("Logging out of SDA Web Interface");
         SecurityContextHolder.getContext().setAuthentication(null);
-        // delete kerberos ticket
         LoginConfigUtil configUtil = new LoginConfigUtil();
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
             remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
             if (configUtil.isTicketAvailable(remoteUser)){
-                configUtil.deleteTicket(remoteUser);
                 userLogoutStatus.put(remoteUser, true);
             }
         }
@@ -81,15 +79,9 @@ public class FileManagerController {
                 Boolean status = userLogoutStatus.get(remoteUser);
                 if (status){
                     popLogout(request, response);
+                    userLogoutStatus.put(remoteUser, false);
                 }
-                userLogoutStatus.put(remoteUser, false);
             }
-            UsernamePasswordAuthenticationToken token =
-                    new UsernamePasswordAuthenticationToken(remoteUser, remoteUser);
-            token.setDetails(new WebAuthenticationDetails(request));
-            authProvider = new AuthProvider();
-            Authentication auth = authProvider.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
         }
         return remoteUser;
     }

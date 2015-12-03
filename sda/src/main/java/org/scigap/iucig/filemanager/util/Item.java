@@ -8,9 +8,9 @@ public class Item {
     private String group;
     private String permission;
     private String fileType;
-    private int size;
+    private long size;
 
-    public Item(String name, String date, String fileType, int size) {
+    public Item(String name, String date, String fileType, long size) {
         this.name = name;
         this.date = date;
         this.size = size;
@@ -25,7 +25,7 @@ public class Item {
         this.date = date;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -69,7 +69,7 @@ public class Item {
         this.fileType = fileType;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 

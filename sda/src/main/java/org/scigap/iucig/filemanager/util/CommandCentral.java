@@ -97,7 +97,7 @@ public class CommandCentral {
                             } else {
                                 fileType = "file";
                             }
-                            int size = (int) attrs.getSize();
+                            long size =  attrs.getSize();
                             long mTime = attrs.getMTime() * 1000L;
                             Date date = new Date(mTime);
                             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
