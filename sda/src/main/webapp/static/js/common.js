@@ -57,6 +57,9 @@ angular.module("user", []).
         $scope.logout = function () {
             UserService.logout().success(function () {
                 $scope.remoteUser = "";
+                $scope.files = [];
+                $scope.pwd="";
+                $scope.home="";
                 $scope.authenticated = false;
                 $scope.$emit("UserLogin", { remoteUser: $scope.remoteUser, authenticated: $scope.authenticated});
                 $scope.message = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button>"
@@ -65,7 +68,7 @@ angular.module("user", []).
 //                    $("#loginModal").modal({keyboard:false,backdrop:'static',show:true});
 //                }
 
-                $scope.files = [];
+//                $scope.files = [];
                 $( "#allTable1" ).hide();
             }).
                 error(function () {
