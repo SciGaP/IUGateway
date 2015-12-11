@@ -62,7 +62,7 @@ public class FileManagerController {
         HttpSession session = request.getSession();
         if(request.getSession(false)!=null) {
             response.setStatus(401);
-            response.setHeader("WWW-Authenticate", "basic realm=\"IU Network ID\"");
+            response.setHeader("WWW-Authenticate", "basic realm=\"A valid Scholarly Data Archive account is required to access this system\"");
 //                    response.setHeader("WWW-Authenticate", "None");
             session.setAttribute("auth", Boolean.TRUE);
         }

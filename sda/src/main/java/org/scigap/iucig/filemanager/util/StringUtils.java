@@ -107,6 +107,7 @@ public class StringUtils {
         }
         return resultMap;
     }
+
 //    public List<Item> getResultsList(List<String> resultList) {
 //        //Result Array
 //        List<Item> itemList = new ArrayList<Item>();
@@ -150,7 +151,7 @@ public class StringUtils {
 //                    permission = temp.get(0);
 //
 //                    date = month + " " + day + " " + time;
-//                    item = new Item(name, date, owner, fileType);
+//                    item = new Item(name, date, fileType, size);
 //                    item.setGroup(group);
 //                    item.setSize(size);
 //                    item.setPermission(permission);
@@ -160,4 +161,22 @@ public class StringUtils {
 //        }
 //        return itemList;
 //    }
+
+    public Item updateUserAndGroup(String lsEntryAsString, Item item) {
+        String owner;
+        String group;
+        List<String> temp = new ArrayList<String>();
+        StringTokenizer tokenizer = new StringTokenizer(lsEntryAsString, " ");
+        while (tokenizer.hasMoreTokens()) {
+            temp.add(tokenizer.nextToken());
+        }
+        if (temp.size() > 8) {
+            owner = temp.get(2);
+            group = temp.get(3);
+            item.setGroup(group);
+            item.setOwner(owner);
+
+        }
+        return item;
+    }
 }

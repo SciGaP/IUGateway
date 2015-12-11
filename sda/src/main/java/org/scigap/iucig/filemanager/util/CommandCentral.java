@@ -77,6 +77,7 @@ public class CommandCentral {
         }
         Channel channel = null;
         ChannelSftp c = null;
+        StringUtils stringUtils = new StringUtils();
         try {
             channel = session.openChannel("sftp");
             channel.connect();
@@ -105,6 +106,7 @@ public class CommandCentral {
                             Item item = new Item(lsEntry.getFilename(), dateText, fileType, size);
                             item.setSize(size);
                             item.setPermission(attrs.getPermissionsString());
+                            item = stringUtils.updateUserAndGroup(lsEntry.toString(), item);
                             itemList.add(item);
                         }
                     }

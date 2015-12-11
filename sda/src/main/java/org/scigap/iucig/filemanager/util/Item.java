@@ -4,7 +4,7 @@ public class Item {
 
     private String name;
     private String date;
-//    private String owner;
+    private String owner;
     private String group;
     private String permission;
     private String fileType;
@@ -37,13 +37,13 @@ public class Item {
         this.name = name;
     }
 
-//    public String getOwner() {
-//        return owner;
-//    }
-//
-//    public void setOwner(String owner) {
-//        this.owner = owner;
-//    }
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     public String getGroup() {
         return group;
@@ -78,7 +78,7 @@ public class Item {
         return "Item{" +
                 "name='" + name + '\'' +
                 ", date='" + date + '\'' +
-//                ", owner='" + owner + '\'' +
+                ", owner='" + owner + '\'' +
                 ", group='" + group + '\'' +
                 ", permission='" + permission + '\'' +
                 ", fileType=" + fileType +
