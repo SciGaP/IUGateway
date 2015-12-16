@@ -191,10 +191,15 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
         } else if (file.fileType == "file"){
             var name = encodeURIComponent(file.name).replace(/['()]/g, escape).replace(/\*/g, '%2A').replace(/%(?:7C|60|5E)/g, unescape);
             var url = "filemanager/download/ " + name;
+
+            $('#downloadWaiting').modal('show');
+//            $("#downloadWaiting").showPopup();
             $.get(url)
                 .done(function() {
                     window.location = url;
+                    $('#downloadWaiting').modal('hide');
                 }).fail(function(e) {
+                    $('#downloadWaiting').modal('hide');
                     alert("Error occurred while downloading the file. Please try again later..");
                     console.log(e);
                 })
