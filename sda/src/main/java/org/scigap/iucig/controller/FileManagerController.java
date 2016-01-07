@@ -1,11 +1,16 @@
 package org.scigap.iucig.controller;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.scigap.iucig.filemanager.CommandExecutor;
+import org.scigap.iucig.filemanager.util.Constants;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.filemanager.util.LoginConfigUtil;
+import org.scigap.iucig.filemanager.util.SDAUtils;
 import org.scigap.iucig.util.ViewNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -36,11 +42,7 @@ import java.util.Properties;
 @RequestMapping(value = "/filemanager")
 public class FileManagerController {
     private static final Logger log = LoggerFactory.getLogger(FileManagerController.class);
-    public static final String PORTAL_URL = "portal.url";
-    public static final String KERB_PROPERTIES = "kerb.properties";
-    private Properties properties = new Properties();
     private CommandExecutor commandExecutor;
-    private AuthProvider authProvider;
     private static Map<String, Boolean> userLogoutStatus = new HashMap<String, Boolean>();
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -70,7 +72,7 @@ public class FileManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/getRemoteUser", method = RequestMethod.GET)
-    public String getRemoteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String getRemoteUser(HttpServletRequest request, HttpServletResponse response) {
         String remoteUser = request.getRemoteUser();
         String mail = "@ADS.IU.EDU";
         if (remoteUser != null) {
@@ -90,43 +92,62 @@ public class FileManagerController {
      */
     @ResponseBody
     @RequestMapping(value = "/command/{command}", method = RequestMethod.GET)
-    public List<Item> executeCommand(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String remoteUser = request.getRemoteUser();
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            if (userLogoutStatus.containsKey(remoteUser)){
-                Boolean status = userLogoutStatus.get(remoteUser);
-                if (status){
-                    popLogout(request, response);
+    public List<Item> executeCommand(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String decodedCommand = "";
+        try {
+            String remoteUser = request.getRemoteUser();
+            String mail = "@ADS.IU.EDU";
+            if (remoteUser != null) {
+                remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+                if (userLogoutStatus.containsKey(remoteUser)) {
+                    Boolean status = userLogoutStatus.get(remoteUser);
+                    if (status) {
+                        popLogout(request, response);
+                    }
+                    userLogoutStatus.put(remoteUser, false);
                 }
-                userLogoutStatus.put(remoteUser, false);
-            }
-            String defaultPath = "sda/filemanager/command/";
-            String requestURI = request.getRequestURI();
-            String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
-            String decodedCommand = "";
-            if (commandFinal.contains("+")) {
-                String[] strings = commandFinal.split("\\+");
-                decodedCommand = URLDecoder.decode(strings[0], "UTF-8");
-                for (int i = 1; i < strings.length; i++) {
-                    decodedCommand += "+" + URLDecoder.decode(strings[i], "UTF-8");
+                String defaultPath = "sda/filemanager/command/";
+                String requestURI = request.getRequestURI();
+                String commandFinal = requestURI.substring(defaultPath.length() + 1, requestURI.length());
+
+                if (commandFinal.contains("+")) {
+                    String[] strings = commandFinal.split("\\+");
+                    decodedCommand = URLDecoder.decode(strings[0], "UTF-8");
+                    for (int i = 1; i < strings.length; i++) {
+                        decodedCommand += "+" + URLDecoder.decode(strings[i], "UTF-8");
+                    }
+                } else {
+                    decodedCommand = URLDecoder.decode(commandFinal, "UTF-8");
                 }
-            } else {
-                decodedCommand = URLDecoder.decode(commandFinal, "UTF-8");
-            }
-            System.out.println("Command : " + decodedCommand);
-            if (commandExecutor == null) {
-                commandExecutor = new CommandExecutor(remoteUser);
-            }else {
-                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                System.out.println("Command : " + decodedCommand);
+                if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
+                } else {
+                    if (!commandExecutor.getRemoteUser().equals(remoteUser)) {
+                        commandExecutor = new CommandExecutor(remoteUser);
+                    }
                 }
+                commandExecutor.executeCommand(decodedCommand);
+                return commandExecutor.getResultItemList();
             }
-            commandExecutor.executeCommand(decodedCommand);
-            return commandExecutor.getResultItemList();
+        } catch (UnsupportedEncodingException e) {
+            handleRuntimeException(e, response, "Unsupported encoding type");
+        } catch (IOException e) {
+            handleRuntimeException(e, response, "Error while executing command : " + decodedCommand);
+        } catch (JSchException e) {
+            handleRuntimeException(e, response, e.getLocalizedMessage());
+        } catch (SftpException e) {
+            handleRuntimeException(e, response, "Error while executing command : " + decodedCommand);
         }
+
         return null;
+    }
+
+    public static void handleRuntimeException(Exception ex, HttpServletResponse response,String message) throws IOException {
+        log.error(message, ex);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.getWriter().write(message);
+        response.flushBuffer();
     }
 
     @ResponseBody
@@ -187,80 +208,88 @@ public class FileManagerController {
 
     @ResponseBody
     @RequestMapping(value = "/getPwd", method = RequestMethod.GET)
-    public String getPWD(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String getPWD(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String remoteUser = request.getRemoteUser();
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
-            if (userLogoutStatus.containsKey(remoteUser)){
-                Boolean status = userLogoutStatus.get(remoteUser);
-                if (status){
-                    popLogout(request, response);
+        try {
+            String remoteUser = request.getRemoteUser();
+            String mail = "@ADS.IU.EDU";
+            if (remoteUser != null) {
+                remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+                if (userLogoutStatus.containsKey(remoteUser)){
+                    Boolean status = userLogoutStatus.get(remoteUser);
+                    if (status){
+                        popLogout(request, response);
+                    }
+                    userLogoutStatus.put(remoteUser, false);
                 }
-                userLogoutStatus.put(remoteUser, false);
-            }
-            if (commandExecutor == null) {
-                commandExecutor = new CommandExecutor(remoteUser);
-            }else {
-                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
+                }else {
+                    if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                        commandExecutor = new CommandExecutor(remoteUser);
+                    }
                 }
-            }
-            String workingDirectory = commandExecutor.getWorkingDirectory();
-            System.out.println("Working Directory : " + workingDirectory);
-            return workingDirectory;
+                String workingDirectory = commandExecutor.getWorkingDirectory();
+                System.out.println("Working Directory : " + workingDirectory);
+                return workingDirectory;
 
+            }
+        } catch (IOException e) {
+            handleRuntimeException(e, response, "Error while getting current working directory... ");
+        } catch (JSchException e) {
+            handleRuntimeException(e, response, e.getLocalizedMessage());
+        } catch (SftpException e) {
+            handleRuntimeException(e, response, "Error while getting current working directory... ");
         }
+
         return null;
     }
 
     @ResponseBody
     @RequestMapping(value = "/getPortalUrl", method = RequestMethod.GET)
-    public String getPortalUrl(HttpServletRequest request) throws Exception {
-        return readProperty(PORTAL_URL);
-    }
-
-    public String readProperty (String propertyName) throws Exception{
+    public String getPortalUrl(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            URL resource = FileManagerController.class.getClassLoader().getResource(KERB_PROPERTIES);
-            if (resource != null){
-                properties.load(resource.openStream());
-                return properties.getProperty(propertyName);
-            }
+            return SDAUtils.getPortalURL();
         } catch (IOException e) {
-            log.error("Unable to read properties..", e);
-            throw new Exception("Unable to read properties.." , e) ;
+            handleRuntimeException(e, response, "Unable to read properties..");
         }
         return null;
     }
 
     @ResponseBody
     @RequestMapping(value = "/getHome", method = RequestMethod.GET)
-    public String getHome(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String remoteUser = request.getRemoteUser();
-        String mail = "@ADS.IU.EDU";
-        if (remoteUser != null) {
-            remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
+    public String getHome(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            String remoteUser = request.getRemoteUser();
+            String mail = "@ADS.IU.EDU";
+            if (remoteUser != null) {
+                remoteUser = remoteUser.substring(0, remoteUser.length() - mail.length());
 
-            if (userLogoutStatus.containsKey(remoteUser)){
-                Boolean status = userLogoutStatus.get(remoteUser);
-                if (status){
-                    popLogout(request, response);
+                if (userLogoutStatus.containsKey(remoteUser)) {
+                    Boolean status = userLogoutStatus.get(remoteUser);
+                    if (status) {
+                        popLogout(request, response);
+                    }
+                    userLogoutStatus.put(remoteUser, false);
                 }
-                userLogoutStatus.put(remoteUser, false);
-            }
-            if (commandExecutor == null) {
-                commandExecutor = new CommandExecutor(remoteUser);
-            }else {
-                if (!commandExecutor.getRemoteUser().equals(remoteUser)){
+                if (commandExecutor == null) {
                     commandExecutor = new CommandExecutor(remoteUser);
+                } else {
+                    if (!commandExecutor.getRemoteUser().equals(remoteUser)) {
+                        commandExecutor = new CommandExecutor(remoteUser);
+                    }
                 }
-            }
-            String homePath = commandExecutor.getHomePath();
-            System.out.println("Home dir : " + homePath);
-            return homePath;
+                String homePath = commandExecutor.getHomePath();
+                System.out.println("Home dir : " + homePath);
+                return homePath;
 
+            }
+        } catch (IOException e) {
+            handleRuntimeException(e, response, "Error while getting current home directory... ");
+        } catch (JSchException e) {
+            handleRuntimeException(e, response, e.getLocalizedMessage());
+        } catch (SftpException e) {
+            handleRuntimeException(e, response, "Error while getting current home directory... ");
         }
         return null;
     }
@@ -284,7 +313,7 @@ public class FileManagerController {
     @RequestMapping(value = "/download/{filename}", method = RequestMethod.GET)
     public void downloadFile(@PathVariable(value = "filename") final String filename,
                              HttpServletResponse response,
-                             HttpServletRequest request) throws Exception {
+                             HttpServletRequest request) throws IOException {
         String fileName = null;
         String decodedFN = "";
         try {
@@ -330,8 +359,11 @@ public class FileManagerController {
 
             response.flushBuffer();
         } catch (IOException ex) {
-            log.error("Error writing file to output stream. Filename :'" + decodedFN);
-            throw new Exception("IOError writing file to output stream", ex);
+            handleRuntimeException(ex, response, "Error writing file to output stream. Filename :'" + decodedFN);
+        } catch (JSchException e) {
+            handleRuntimeException(e, response, Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            handleRuntimeException(e, response, "Error writing file to output stream. Filename :'" + decodedFN);
         }
     }
 
@@ -369,7 +401,7 @@ public class FileManagerController {
 
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public String uploadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String uploadFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             System.out.println("**********upload file*********");
             String remoteUser = request.getRemoteUser();
@@ -415,9 +447,14 @@ public class FileManagerController {
             }else {
                 return ViewNames.SDA_PAGE;
             }
-        }catch (Exception e){
-            log.error("Error occured while uploading file ", e);
-            throw new Exception(e);
+        } catch (IOException ex) {
+            handleRuntimeException(ex, response, "Error writing uploading file...");
+        } catch (JSchException e) {
+            handleRuntimeException(e, response, Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            handleRuntimeException(e, response, "Error writing uploading file...");
+        } catch (FileUploadException e) {
+            e.printStackTrace();
         }
 
         return ViewNames.SDA_PAGE;

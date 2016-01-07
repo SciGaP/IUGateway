@@ -1,13 +1,16 @@
 package org.scigap.iucig.filemanager;
 
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import org.scigap.iucig.filemanager.util.CommandCentral;
+import org.scigap.iucig.filemanager.util.Constants;
 import org.scigap.iucig.filemanager.util.Item;
 import org.scigap.iucig.filemanager.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -28,7 +31,7 @@ public class CommandExecutor {
     private static final String LS = "ls -l ";
     private String remoteUser;
 
-    public CommandExecutor(String user) throws Exception{
+    public CommandExecutor(String user) throws JSchException, SftpException, IOException {
         try {
             remoteUser = user;
             kerberosConnector = new KerberosConnector();
@@ -37,11 +40,17 @@ public class CommandExecutor {
             resultItemList = new ArrayList<Item>();
             //get the current working directory
             pwd();
-        } catch (Exception e) {
-            log.error("Error occured..", e);
-            throw new Exception("Error occured", e);
         }
-
+        catch (IOException e) {
+            log.error("Error occurred while getting working directory", e);
+            throw new IOException("Error occurred while getting working directory", e);
+        } catch (SftpException e) {
+            log.error("Error occurred while getting working directory", e);
+            throw new SftpException(0, "Error occurred while getting working directory", e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        }
     }
 
     public String getRemoteUser() {
@@ -49,7 +58,7 @@ public class CommandExecutor {
     }
 
     //execute any command
-    public void executeCommand(String command) throws Exception {
+    public void executeCommand(String command) throws JSchException, SftpException, IOException {
         Session session = null;
         String name = "";
         try {
@@ -174,9 +183,15 @@ public class CommandExecutor {
                 log.info("COMMAND: " + command);
                 setResult(commandCentral.executeCommand(session, command));
             }
-        } catch (Exception e) {
-            log.error("Error occured", e);
-            throw new Exception(e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR,e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while executing command : " + command, e);
+            throw new SftpException(0,"Error occurred while executing command : " + command, e);
+        } catch (IOException e) {
+            log.error("Error occurred while executing command : " + command, e);
+            throw new IOException("Error occurred while executing command : " + command, e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -187,16 +202,22 @@ public class CommandExecutor {
     }
 
     //download a file
-    public void downloadFile(String filename, OutputStream outputStream) throws Exception {
+    public void downloadFile(String filename, OutputStream outputStream) throws JSchException, SftpException, IOException {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
             log.info("DOWNLOADING FILE: " + filename);
             String filepath = workingDirectory + "/" + filename;
             commandCentral.scpFrom(session, filepath, outputStream);
-        } catch (Exception e) {
-            log.error("Error occured", e);
-            throw new Exception(e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error while downloading file " + filename, e);
+            throw new SftpException(0, "Error while downloading file " + filename, e);
+        } catch (IOException e) {
+            log.error("Error while downloading file " + filename, e);
+            throw new IOException("Error while downloading file " + filename, e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -208,7 +229,7 @@ public class CommandExecutor {
     }
 
     //upload a file
-    public void uploadFile(String filename,InputStream uploadedFile) throws Exception {
+    public void uploadFile(String filename,InputStream uploadedFile) throws SftpException, JSchException, IOException {
         Session session = null;
         filename = filename.replaceAll("\\s", "\\\\ ");
         String filepath = "";
@@ -218,11 +239,17 @@ public class CommandExecutor {
             filepath = workingDirectory + "/" + filename;
             commandCentral.scpToSFTP(session, filepath, uploadedFile);
 //            ls();
-        } catch (Exception e) {
+        } catch (JSchException e) {
             // remove partial uploads
             remove(filepath, session);
-            log.error("Error occured while uploading file", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error while uploading file " + filename, e);
+            throw new SftpException(0,"Error while uploading file " + filename, e);
+        } catch (IOException e) {
+            log.error("Error while downloading file " + filename, e);
+            throw new IOException("Error while uploading file " + filename, e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -232,7 +259,7 @@ public class CommandExecutor {
         }
     }
     //get the home directory
-    public String pwd() throws Exception {
+    public String pwd() throws JSchException, SftpException {
         Session session = null;
         try {
             session = kerberosConnector.getSession(remoteUser);
@@ -245,10 +272,13 @@ public class CommandExecutor {
             workingDirectory = stringUtils.constructPathString(pathStack);
             log.info("CURRENT WORKING DIR: " + workingDirectory);
             log.info("CURRENT PATH: " + path);
-        } catch (Exception e) {
-            log.error("Error occured while getting current working directory... ", e);
-            throw new Exception(e);
-        } finally {
+        } catch (SftpException e) {
+            log.error("Error occurred while getting working directory", e);
+            throw new SftpException(0, "Error occurred while getting working directory", e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        }finally {
             if (session != null) {
                 if (session.isConnected()) {
                     session.disconnect();
@@ -258,7 +288,7 @@ public class CommandExecutor {
         return workingDirectory;
     }
 
-    public void ls(String path, Session session) throws Exception {
+    public void ls(String path, Session session) throws SftpException, JSchException {
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
@@ -268,7 +298,7 @@ public class CommandExecutor {
 //                ls = commandCentral.ls(session, path);
 //            }
             setResultItemList(ls);
-        } catch (Exception e) {
+        } catch (JSchException e) {
             // construct path stack again
             if (path.contains("/")){
                 String[] splitPaths = path.split("/");
@@ -287,8 +317,29 @@ public class CommandExecutor {
                 pathStack = stringUtils.getPathStack(homePath);
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
             }
-            log.error("Error occured while listing files in " + path + "....", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            // construct path stack again
+            if (path.contains("/")){
+                String[] splitPaths = path.split("/");
+                String correctedPath = "/";
+                if (splitPaths.length != 0){
+                    for (int i=0; i < splitPaths.length -1; i++){
+                        correctedPath += splitPaths[i];
+                    }
+                }
+                pathStack = stringUtils.getPathStack(correctedPath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }else if (path.equals("")){
+                pathStack = stringUtils.getPathStack(homePath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }else {
+                pathStack = stringUtils.getPathStack(homePath);
+                workingDirectory = stringUtils.constructPathFromStack(pathStack);
+            }
+            log.error("Error occurred while listing files in " + path + "....", e);
+            throw new SftpException(0, "Error occurred while listing files in " + path + "....", e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -298,15 +349,17 @@ public class CommandExecutor {
         }
     }
 
-    public void cp(String source, String target, Session session) throws Exception {
+    public void cp(String source, String target, Session session) throws JSchException, SftpException {
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
             commandCentral.cp(session, source, target);
-        } catch (Exception e) {
-            log.error("Error occured while copy from " + source + " to destination " + target + "....", e);
-            throw new Exception(e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException("Error occurred while copy from " + source + " to destination " + target + "....");
+        } catch (SftpException e) {
+            throw new SftpException(0,"Error occurred while copy from " + source + " to destination " + target + "....", e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -316,15 +369,18 @@ public class CommandExecutor {
         }
     }
 
-    public void move(String source, String target, Session session) throws Exception {
+    public void move(String source, String target, Session session) throws SftpException, JSchException {
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
             commandCentral.move(session, source, target);
-        } catch (Exception e) {
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
             log.error("Error occured while move from " + source + " to destination " + target + "....", e);
-            throw new Exception(e);
+            throw new SftpException(0, "Error occured while move from " + source + " to destination " + target + "....", e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -334,15 +390,18 @@ public class CommandExecutor {
         }
     }
 
-    public void rename(String source, String target, Session session) throws Exception {
+    public void rename(String source, String target, Session session) throws SftpException, JSchException {
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
             commandCentral.rename(session, source, target);
-        } catch (Exception e) {
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
             log.error("Error occured while rename " + source + " to " + target + "....", e);
-            throw new Exception(e);
+            throw new SftpException(0, "Error occured while rename " + source + " to " + target + "....", e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -352,15 +411,15 @@ public class CommandExecutor {
         }
     }
 
-    public void mkdir(String path, Session session) throws Exception {
+    public void mkdir(String path, Session session) throws JSchException {
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
            commandCentral.mkdir(session, path);
-        } catch (Exception e) {
-            log.error("Error occured while mkdir " + path + "....", e);
-            throw new Exception(e);
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -370,15 +429,18 @@ public class CommandExecutor {
         }
     }
 
-    public void remove(String path, Session session) throws Exception {
+    public void remove(String path, Session session) throws JSchException, SftpException{
         try {
             if (!session.isConnected()){
                 session = kerberosConnector.getSession(remoteUser);
             }
             commandCentral.remove(session, path);
-        } catch (Exception e) {
+        } catch (JSchException e) {
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
             log.error("Error occured while remove files " + path + "....", e);
-            throw new Exception(e);
+            throw new SftpException(0, "Error occured while remove files " + path + "....", e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -412,7 +474,7 @@ public class CommandExecutor {
         this.resultItemList = resultItemList;
     }
 
-    public String getWorkingDirectory() throws Exception {
+    public String getWorkingDirectory() throws SftpException, JSchException {
         if (workingDirectory == null ){
             return pwd();
         }
@@ -423,7 +485,7 @@ public class CommandExecutor {
         this.workingDirectory = workingDirectory;
     }
 
-    public String getHomePath() throws Exception {
+    public String getHomePath() throws SftpException, JSchException {
         if (homePath == null ){
             return pwd();
         }

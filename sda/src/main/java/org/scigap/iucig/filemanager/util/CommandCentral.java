@@ -25,11 +25,13 @@ public class CommandCentral {
         this.itemList = itemList;
     }
 
-    public String pwdSFTP(Session session) throws Exception {
+    public String pwdSFTP(Session session) throws JSchException, SftpException {
 
         if (!session.isConnected()) {
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
+
         result = new ArrayList<String>();
         String path = "";
         Channel channel = null;
@@ -40,8 +42,11 @@ public class CommandCentral {
             c = (ChannelSftp) channel;
             path = c.pwd();
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while getting working directory", e);
+            throw new SftpException(1, "Error occurred while getting working directory", e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -69,11 +74,12 @@ public class CommandCentral {
         return null;
     }
 
-    public List<Item> ls (Session session, String path) throws Exception {
+    public List<Item> ls (Session session, String path) throws JSchException, SftpException {
         log.info("COMMAND: ls " + path);
         itemList = new ArrayList<Item>();
         if (!session.isConnected()) {
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
         Channel channel = null;
         ChannelSftp c = null;
@@ -113,8 +119,11 @@ public class CommandCentral {
                 }
             }
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while folder content for path : " + path, e);
+            throw new SftpException(1, "Error occurred while folder content for path : " + path, e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -131,13 +140,14 @@ public class CommandCentral {
     }
 
 
-    public void cp (Session session, String source, String target) throws Exception {
+    public void cp (Session session, String source, String target) throws JSchException, SftpException {
         log.info("COMMAND: cp " + source + " " + target);
 
         if (!session.isConnected()) {
-            log.error("Session is not connected");
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
+
         Channel upChannel = null;
         Channel downChannel = null;
         ChannelSftp uploadChannel = null;
@@ -158,7 +168,10 @@ public class CommandCentral {
 
         } catch (JSchException e) {
             log.error("Auth failure", e);
-            throw new Exception(e);
+            throw new JSchException("Auth failure");
+        } catch (SftpException e) {
+            log.error("Error occurred while copying data from " + source + " to " + target, e);
+            throw new SftpException(1, "Error occurred while copying data from " + source + " to " + target , e);
         } finally {
             if (upChannel == null || downChannel == null) {
                 System.out.println("Channel is null ...");
@@ -181,7 +194,7 @@ public class CommandCentral {
             channel1.cd(destPath);
             // Copy remote folders one by one.
             lsFolderCopy(channel1, channel2, sourcePath, destPath);
-        } catch (Exception e) {
+        } catch (SftpException e) {
             log.error("Error occured while copy folder", e);
             throw new SftpException(0, "Error occured while copy folder" + e);
         }
@@ -210,17 +223,17 @@ public class CommandCentral {
             }
         }catch (SftpException e){
             log.error("Error occured while copy folder", e);
-            throw new SftpException(0, "Error occured while copy folder", e);
+            throw new SftpException(0, "Error occurred while copy folder", e);
         }
 
     }
 
-    public void move (Session session, String source, String target) throws Exception {
+    public void move (Session session, String source, String target) throws JSchException, SftpException {
         log.info("COMMAND: mv " + source + " " + target);
 
         if (!session.isConnected()) {
-            log.error("Session is not connected");
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
         Channel upChannel = null;
         Channel downChannel = null;
@@ -237,8 +250,11 @@ public class CommandCentral {
             uploadChannel.put(inputStream, target);
             remove(session, source);
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while moving data from " + source + " to " + target);
+            throw new SftpException(0, "Error occurred while moving data from " + source + " to " + target, e);
         } finally {
             if (upChannel == null || downChannel == null) {
                 System.out.println("Channel is null ...");
@@ -255,12 +271,12 @@ public class CommandCentral {
         }
     }
 
-    public void rename (Session session, String source, String target) throws Exception {
+    public void rename (Session session, String source, String target) throws JSchException, SftpException {
         log.info("COMMAND: rename " + source + " " + target);
 
         if (!session.isConnected()) {
-            log.error("Session is not connected");
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
         Channel channel = null;
         ChannelSftp c = null;
@@ -270,8 +286,11 @@ public class CommandCentral {
             c = (ChannelSftp) channel;
             c.rename(source, target);
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while renaming " + source + " to " + target, e);
+            throw new SftpException(0, "Error occurred while renaming " + source + " to " + target, e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -285,12 +304,12 @@ public class CommandCentral {
         }
     }
 
-    public void mkdir (Session session, String path) throws Exception {
+    public void mkdir (Session session, String path) throws JSchException {
         log.info("COMMAND: mkdir " + path);
 
         if (!session.isConnected()) {
-            log.error("Session is not connected");
-            throw new Exception("Session is not connected");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
         Channel channel = null;
         ChannelSftp c = null;
@@ -300,8 +319,10 @@ public class CommandCentral {
             c = (ChannelSftp) channel;
             c.mkdir(path);
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            e.printStackTrace();
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -315,12 +336,12 @@ public class CommandCentral {
         }
     }
 
-    public void remove (Session session, String path) throws Exception {
+    public void remove (Session session, String path) throws JSchException, SftpException {
         log.info("COMMAND: rm -rf " + path);
 
         if (!session.isConnected()) {
-            log.error("Session is not connected");
-            throw new Exception("Session is not connected");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
         Channel channel = null;
         ChannelSftp c = null;
@@ -334,8 +355,11 @@ public class CommandCentral {
                 folderDelete(c, path);
             }
         } catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while deleting " + path, e);
+            throw new SftpException(0, "Error occurred while deleting " + path, e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -377,20 +401,22 @@ public class CommandCentral {
                 }
             }
         }catch (SftpException e){
-            log.error("Error occured while copy folder", e);
-            throw new SftpException(0, "Error occured while copy folder", e);
+            log.error("Error occurred while copy folder", e);
+            throw new SftpException(0, "Error occurred while copy folder", e);
         }
 
     }
 
-    public List<String> executeCommand(Session session, String command) throws Exception {
+    public List<String> executeCommand(Session session, String command) throws JSchException, IOException {
         //FIXME  validate the second part of the command
         result = new ArrayList<String>();
         log.info("COMMAND: " + command);
 
         if (!session.isConnected()) {
-            throw new Exception("Session is not connected...");
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         }
+
         ChannelExec channel = null;
         InputStream in = null;
         try {
@@ -404,7 +430,7 @@ public class CommandCentral {
             try {
                 Thread.sleep(1000);
             } catch (Exception ee) {
-                log.error("Error occured while channel connect", ee.getMessage());
+                log.error("Error occurred while channel connect", ee.getMessage());
             }
             byte[] tmp = new byte[4096];
             while (true) {
@@ -412,27 +438,27 @@ public class CommandCentral {
                     int i = in.read(tmp, 0, 4096);
                     if (i < 0) break;
                     result.add(new String(tmp, 0, i));
-                    System.out.println(new String(tmp, 0, i));
+//                    System.out.println(new String(tmp, 0, i));
                 }
                 if (channel.isClosed()) {
                     System.out.println("exit-status: " + channel.getExitStatus());
                     if (channel.getExitStatus() !=  0){
-                        throw new Exception(result.toString());
+                        throw new JSchException(result.toString());
                     }
                     break;
                 }
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ee) {
-                    log.error("Error occured while channel connect", ee.getMessage());
+                    log.error("Error occurred while channel connect", ee.getMessage());
                 }
             }
         } catch (IOException e) {
-            log.error("Error occured while opening channel", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error("Error occurred while opening channel", e.getMessage());
+            throw new IOException(e.getMessage(),e);
         } catch (JSchException e) {
-            log.error("Auth failure", e.getMessage());
-            throw new Exception(e.getMessage());
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -445,7 +471,7 @@ public class CommandCentral {
         return result;
     }
 
-    public void scpFrom(Session session, String filePath, OutputStream outStream) throws Exception {
+    public void scpFrom(Session session, String filePath, OutputStream outStream) throws JSchException, SftpException, IOException {
         Channel channel = null;
         ChannelSftp c = null;
         InputStream inputStream = null;
@@ -467,7 +493,8 @@ public class CommandCentral {
         } catch (FileNotFoundException e1) {
             log.error("Unable to find the file", e1.getMessage());
         } catch (JSchException e1) {
-            log.error("Auth failure", e1.getMessage());
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
         } catch (IOException e1) {
             log.error("Error occured", e1.getMessage());
             if (channel.isClosed()){
@@ -486,6 +513,8 @@ public class CommandCentral {
                 inputStream.close();
                 outStream.close();
             }
+        } catch (SftpException e) {
+            e.printStackTrace();
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -503,7 +532,7 @@ public class CommandCentral {
         }
     }
 
-    public void scpToSFTP(Session session,String filePath, InputStream fileInputStream) throws Exception{
+    public void scpToSFTP(Session session,String filePath, InputStream fileInputStream) throws JSchException, IOException, SftpException {
         Channel channel = null;
         ChannelSftp c = null;
         try {
@@ -513,8 +542,14 @@ public class CommandCentral {
             c.put(fileInputStream, filePath);
             fileInputStream.close();
         }catch (JSchException e) {
-            log.error("Auth failure", e);
-            throw new Exception(e);
+            log.error(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+        } catch (SftpException e) {
+            log.error("Error occurred while copy file to " + filePath, e);
+            throw new SftpException(0, "Error occurred while copy file to " + filePath, e);
+        } catch (IOException e) {
+            log.error("Could not find file", e);
+            throw new IOException("Could not find file", e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -530,7 +565,7 @@ public class CommandCentral {
         }
     }
 
-    public boolean isFile (ChannelSftp channelSftp, String path) throws Exception{
+    public boolean isFile (ChannelSftp channelSftp, String path) throws SftpException{
         boolean isFile = false;
         log.info("COMMAND: ls " + path);
         try {
@@ -541,8 +576,9 @@ public class CommandCentral {
                     isFile = true;
                 }
             }
-        } catch (Exception e) {
-            log.error("Auth failure", e);
+        } catch (SftpException e) {
+            log.error("Error occurred while executing command ls " + path, e);
+            throw new SftpException(0,"Error occurred while executing command ls " + path, e );
         }
         return isFile;
     }
@@ -558,9 +594,9 @@ public class CommandCentral {
                     isEmpty = true;
                 }
             }
-        } catch (Exception e) {
-            log.error("Auth failure", e);
-            throw new SftpException(0, "Error..", e);
+        } catch (SftpException e) {
+            log.error("Error occurred while executing command ls " + path, e);
+            throw new SftpException(0,"Error occurred while executing command ls " + path, e );
         }
         return isEmpty;
     }

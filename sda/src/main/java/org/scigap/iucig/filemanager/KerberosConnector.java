@@ -25,7 +25,7 @@ public class KerberosConnector {
     private static Properties properties = new Properties();
     private String host;
 
-    public KerberosConnector() throws Exception{
+    public KerberosConnector() throws IOException{
 //        loginFile = readProperty(LOGIN_FILE_LOCATION)+LOGIN_FILE_NAME;
         host = readProperty(KERB_HOST);
         System.out.println("HOST : " + host);
@@ -36,7 +36,7 @@ public class KerberosConnector {
         System.setProperty(SUN_SECURITY_KRB5_DEBUG, "true");
     }
 
-    public Session getSession(String remoteUser) throws Exception{
+    public Session getSession(String remoteUser) throws JSchException{
         LoginConfigUtil loginConfigUtil = new LoginConfigUtil();
         String ticketCache = loginConfigUtil.searchTicket(remoteUser);
         javax.security.auth.login.Configuration.setConfiguration(new JaaSConfiguration(ticketCache));
@@ -56,12 +56,12 @@ public class KerberosConnector {
             session.connect(20000);
         } catch (JSchException e) {
             log.error("Authentication fails.." , e);
-            throw new Exception("Authentication fails..", e);
+            throw new JSchException("Authentication fails..", e);
         }
         return session;
     }
 
-    public String readProperty (String propertyName) throws Exception{
+    public String readProperty (String propertyName) throws IOException{
         try {
             URL resource = KerberosConnector.class.getClassLoader().getResource(KERB_PROPERTIES);
             if (resource != null){
@@ -70,7 +70,7 @@ public class KerberosConnector {
             }
         } catch (IOException e) {
             log.error("Unable to read properties..", e);
-            throw new Exception("Unable to read properties.." , e) ;
+            throw new IOException("Unable to read properties.." , e) ;
         }
         return null;
     }

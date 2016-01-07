@@ -2,6 +2,7 @@ var fileManagerApp = angular.module("fileManagerApp", ["user", "urlprovider"]);
 
 fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
     $scope.hideLoader = true;
+    $scope.error = "";
     $scope.addFolderinitial = [
         {
             folderExist: false,
@@ -71,6 +72,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                     $scope.portalUrl = data;
                 }).
                 error(function (data, status) {
+                    console.log(status);
                     console.log("Error getting home directory !");
                 });
             $http({method: "GET", url: "filemanager/getPwd", cache: false}).
@@ -79,6 +81,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                     $scope.pwd = data;
                 }).
                 error(function (data, status) {
+                    $scope.error = data;
                     console.log("Error getting current working directory !");
                 });
             $http({method: "GET", url: "filemanager/getHome", cache: false}).
@@ -87,6 +90,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                     $scope.home = data;
                 }).
                 error(function (data, status) {
+                    $scope.error = data;
                     console.log("Error getting home directory !");
                 });
             console.log( $scope.remoteUser);
@@ -100,6 +104,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                                 $scope.files = data;
                             }).
                             error(function (data, status) {
+                                $scope.error = data;
                                 $scope.hideLoader = false;
                                 $scope.showError = true;
                             });
@@ -111,6 +116,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                             $scope.pwd = data;
                         }).
                         error(function (data, status) {
+                            $scope.error = data;
                             console.log("Error getting current working directory !");
                             $scope.hideLoader = false;
                             $scope.showError = true;
@@ -137,6 +143,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                         $scope.pwd = data;
                     }).
                     error(function (data, status) {
+                        alert(data);
                         console.log("Error getting current working directory !");
                     });
             }).
@@ -159,11 +166,13 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                         $scope.pwd = data;
                     }).
                     error(function (data, status) {
+                        alert(data);
                         console.log("Error getting current working directory !");
                     });
             }).
             error(function (data, status) {
                 $scope.hideLoader = false;
+                alert(data);
                 console.log("Error getting files !");
             });
     }
@@ -181,10 +190,12 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                             $scope.pwd = data;
                         }).
                         error(function (data, status) {
+                            alert(data);
                             console.log("Error getting current working directory !");
                         });
                 }).
                 error(function (data, status) {
+                    alert(data);
                     $scope.hideLoader = false;
                     console.log("Error while cd ing to folder !");
                 });
