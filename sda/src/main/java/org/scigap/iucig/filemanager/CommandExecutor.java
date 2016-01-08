@@ -49,7 +49,7 @@ public class CommandExecutor {
             throw new SftpException(0, "Error occurred while getting working directory", e);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         }
     }
 
@@ -185,7 +185,7 @@ public class CommandExecutor {
             }
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR,e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while executing command : " + command, e);
             throw new SftpException(0,"Error occurred while executing command : " + command, e);
@@ -211,7 +211,7 @@ public class CommandExecutor {
             commandCentral.scpFrom(session, filepath, outputStream);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error while downloading file " + filename, e);
             throw new SftpException(0, "Error while downloading file " + filename, e);
@@ -243,7 +243,7 @@ public class CommandExecutor {
             // remove partial uploads
             remove(filepath, session);
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error while uploading file " + filename, e);
             throw new SftpException(0,"Error while uploading file " + filename, e);
@@ -277,7 +277,7 @@ public class CommandExecutor {
             throw new SftpException(0, "Error occurred while getting working directory", e);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         }finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -318,7 +318,7 @@ public class CommandExecutor {
                 workingDirectory = stringUtils.constructPathFromStack(pathStack);
             }
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             // construct path stack again
             if (path.contains("/")){
@@ -377,7 +377,7 @@ public class CommandExecutor {
             commandCentral.move(session, source, target);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occured while move from " + source + " to destination " + target + "....", e);
             throw new SftpException(0, "Error occured while move from " + source + " to destination " + target + "....", e);
@@ -398,7 +398,7 @@ public class CommandExecutor {
             commandCentral.rename(session, source, target);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occured while rename " + source + " to " + target + "....", e);
             throw new SftpException(0, "Error occured while rename " + source + " to " + target + "....", e);
@@ -419,7 +419,7 @@ public class CommandExecutor {
            commandCentral.mkdir(session, path);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } finally {
             if (session != null) {
                 if (session.isConnected()) {
@@ -437,7 +437,7 @@ public class CommandExecutor {
             commandCentral.remove(session, path);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occured while remove files " + path + "....", e);
             throw new SftpException(0, "Error occured while remove files " + path + "....", e);

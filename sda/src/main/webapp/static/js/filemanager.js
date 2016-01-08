@@ -82,6 +82,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 }).
                 error(function (data, status) {
                     $scope.error = data;
+                    console.log($scope.error);
                     console.log("Error getting current working directory !");
                 });
             $http({method: "GET", url: "filemanager/getHome", cache: false}).
@@ -91,6 +92,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                 }).
                 error(function (data, status) {
                     $scope.error = data;
+                    console.log($scope.error);
                     console.log("Error getting home directory !");
                 });
             console.log( $scope.remoteUser);
@@ -105,6 +107,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                             }).
                             error(function (data, status) {
                                 $scope.error = data;
+                                console.log($scope.error);
                                 $scope.hideLoader = false;
                                 $scope.showError = true;
                             });
@@ -117,7 +120,7 @@ fileManagerApp.controller("FileManagerCtrl", function ($scope, $http) {
                         }).
                         error(function (data, status) {
                             $scope.error = data;
-                            console.log("Error getting current working directory !");
+                            console.log($scope.error);
                             $scope.hideLoader = false;
                             $scope.showError = true;
                         });

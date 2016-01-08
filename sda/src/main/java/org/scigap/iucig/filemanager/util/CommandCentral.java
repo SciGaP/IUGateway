@@ -43,7 +43,7 @@ public class CommandCentral {
             path = c.pwd();
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while getting working directory", e);
             throw new SftpException(1, "Error occurred while getting working directory", e);
@@ -120,7 +120,7 @@ public class CommandCentral {
             }
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while folder content for path : " + path, e);
             throw new SftpException(1, "Error occurred while folder content for path : " + path, e);
@@ -251,7 +251,7 @@ public class CommandCentral {
             remove(session, source);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while moving data from " + source + " to " + target);
             throw new SftpException(0, "Error occurred while moving data from " + source + " to " + target, e);
@@ -287,7 +287,7 @@ public class CommandCentral {
             c.rename(source, target);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR, e);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while renaming " + source + " to " + target, e);
             throw new SftpException(0, "Error occurred while renaming " + source + " to " + target, e);
@@ -320,7 +320,7 @@ public class CommandCentral {
             c.mkdir(path);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             e.printStackTrace();
         } finally {
@@ -356,7 +356,7 @@ public class CommandCentral {
             }
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while deleting " + path, e);
             throw new SftpException(0, "Error occurred while deleting " + path, e);
@@ -458,7 +458,7 @@ public class CommandCentral {
             throw new IOException(e.getMessage(),e);
         } catch (JSchException e) {
             log.error(Constants.ErrorMessages.AUTH_ERROR);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } finally {
             if (channel == null) {
                 System.out.println("Channel is null ...");
@@ -493,8 +493,8 @@ public class CommandCentral {
         } catch (FileNotFoundException e1) {
             log.error("Unable to find the file", e1.getMessage());
         } catch (JSchException e1) {
-            log.error(Constants.ErrorMessages.AUTH_ERROR);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e1);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e1);
         } catch (IOException e1) {
             log.error("Error occured", e1.getMessage());
             if (channel.isClosed()){
@@ -542,8 +542,8 @@ public class CommandCentral {
             c.put(fileInputStream, filePath);
             fileInputStream.close();
         }catch (JSchException e) {
-            log.error(Constants.ErrorMessages.AUTH_ERROR);
-            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR);
+            log.error(Constants.ErrorMessages.AUTH_ERROR, e);
+            throw new JSchException(Constants.ErrorMessages.AUTH_ERROR, e);
         } catch (SftpException e) {
             log.error("Error occurred while copy file to " + filePath, e);
             throw new SftpException(0, "Error occurred while copy file to " + filePath, e);
