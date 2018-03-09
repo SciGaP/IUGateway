@@ -38,13 +38,19 @@ public class ModuleRepository {
     public List<Module> getAllModules() {
 	List<Map<String,Object>> table = jdbc.queryForList("select m.name as Name, v.name as Version, v.description as Description, c.name as Cluster "
 							   + "from stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id "
-							   + "inner join stats.clusters c on m.cluster_id = c.id order by m.name");
+							   + "inner join stats.clusters c on m.cluster_id = c.id "
+                               + "where (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0 "
+                               + "and (hidden is null or hidden = 0) "
+							   + "order by m.name");
 	List<Module> modulesList = getModulesList(table);
 	return modulesList;
     }
     
     public List<Module> getAllModuleNames() {
-	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from stats.cluster_modules m");
+	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from stats.cluster_modules m " +
+							   "where (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
+
 	List<Module> modulesList = getModulesList(table);
 	return modulesList;
     }
@@ -52,7 +58,9 @@ public class ModuleRepository {
     public List<Module> getMasonModules() {
 	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from " +
 							   "stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id " +
-							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'mason'");
+							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'mason' " +
+							   "and (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
 	List<Module> modulesList = getModulesList(table);
         Collections.sort(modulesList, new NameComparator());
 	return modulesList;
@@ -61,7 +69,9 @@ public class ModuleRepository {
     public List<Module> getCarbonateModules() {
 	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from " +
 							   "stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id " +
-							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'carbonate'");
+							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'carbonate' " + 
+							   "and (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
 	List<Module> modulesList = getModulesList(table);
         Collections.sort(modulesList, new NameComparator());
 	return modulesList;
@@ -70,7 +80,9 @@ public class ModuleRepository {
     public List<Module> getKarstModules() {
 	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from " +
 							   "stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id " +
-							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'karst'");
+							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'karst' " +
+							   "and (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
 	List<Module> modulesList = getModulesList(table);
         Collections.sort(modulesList, new NameComparator());
 	return modulesList;
@@ -79,7 +91,9 @@ public class ModuleRepository {
         public List<Module> getQuarryModules() {
 	List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from " +
 							   "stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id " +
-							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'quarry'");
+							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'quarry'" +
+							   "and (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
 	List<Module> modulesList = getModulesList(table);
         Collections.sort(modulesList, new NameComparator());
 	return modulesList;
@@ -88,7 +102,9 @@ public class ModuleRepository {
     public List<Module> getBR2Modules() {
         List<Map<String,Object>> table = jdbc.queryForList("select distinct(m.name) as Name from " +
 							   "stats.cluster_modules m inner join stats.cluster_module_versions v on m.id = v.cluster_module_id " +
-							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'bigred2'");
+							   "inner join stats.clusters c on m.cluster_id = c.id where c.code = 'bigred2' " +
+							   "and (select count(1) from stats.cluster_module_versions where retired is null and cluster_module_id = m.id) > 0" +
+                               "and (hidden is null or hidden = 0)");
         List<Module> modulesList = getModulesList(table);
         Collections.sort(modulesList, new NameComparator());
         return modulesList;
